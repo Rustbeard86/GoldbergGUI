@@ -697,8 +697,9 @@ namespace GoldbergGUI.Core.Services
                 _log.Warn($"Previously downloaded image '{imageUrl}' is now missing!");
             }
 
-            var wc = new System.Net.WebClient();
-            await wc.DownloadFileTaskAsync(new Uri(imageUrl, UriKind.Absolute), targetPath);
+            using var httpClient = new HttpClient();
+            var imageBytes = await httpClient.GetByteArrayAsync(new Uri(imageUrl, UriKind.Absolute));
+            await File.WriteAllBytesAsync(targetPath, imageBytes);
         }
     }
 }

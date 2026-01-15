@@ -1,0 +1,1704 @@
+{
+  "settings": {
+    "components": {
+      "code": false,
+      "binaries": false
+    },
+    "targetId": "net10.0",
+    "targetDisplayName": ".NETCoreApp,Version=v10.0"
+  },
+  "analysisStartTime": "2026-01-15T07:39:36.4768109Z",
+  "analysisEndTime": "2026-01-15T07:39:39.7903941Z",
+  "privacyModeHelpUrl": "https://go.microsoft.com/fwlink/?linkid=2270980",
+  "stats": {
+    "summary": {
+      "projects": 2,
+      "issues": 5,
+      "incidents": 66,
+      "effort": 66
+    },
+    "charts": {
+      "severity": {
+        "Mandatory": 37,
+        "Optional": 0,
+        "Potential": 29,
+        "Information": 0
+      },
+      "category": {
+        "Project": 2,
+        "Api": 64
+      }
+    }
+  },
+  "projects": [
+    {
+      "path": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+      "startingProject": true,
+      "issues": 4,
+      "storyPoints": 43,
+      "properties": {
+        "appName": "GoldbergGUI.Core",
+        "projectKind": "Wpf",
+        "frameworks": [
+          "net8.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 11,
+        "numberOfCodeFiles": 11,
+        "linesTotal": 2164,
+        "linesOfCode": 2164,
+        "totalApiScanned": 2920,
+        "minLinesOfCodeToChange": 42,
+        "maxLinesOfCodeToChange": 42
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "cdd99444-eadb-49ee-b1ab-e6c0b7e55020",
+          "ruleId": "Project.0002",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net8.0\nRecommended target framework: net10.0-windows",
+              "protected": "Current target framework: net8.0\nRecommended target framework: net10.0-windows"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+            "snippet": "Current target framework: net8.0\nRecommended target framework: net10.0-windows",
+            "protectedSnippet": "Current target framework: net8.0\nRecommended target framework: net10.0-windows",
+            "properties": {
+              "CurrentTargetFramework": "net8.0",
+              "RecommendedTargetFramework": "net10.0-windows"
+            }
+          }
+        },
+        {
+          "incidentId": "b50d25f1-50f2-49d4-84eb-d79b0eb5cb22",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "set;",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\Models\\GoldbergModel.cs",
+            "snippet": "set;",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 178,
+            "column": 39
+          }
+        },
+        {
+          "incidentId": "fcf597da-7a95-46c1-a0c3-581ec51421f7",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "get;",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\Models\\GoldbergModel.cs",
+            "snippet": "get;",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 178,
+            "column": 34
+          }
+        },
+        {
+          "incidentId": "480f5782-de32-44b5-936a-3a67c23ed9d1",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "public Uri IconUrlLarge",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\Models\\GoldbergModel.cs",
+            "snippet": "public Uri IconUrlLarge",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 177,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "933bac45-de94-4563-af77-250cea46a413",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "set;",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\Models\\GoldbergModel.cs",
+            "snippet": "set;",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 175,
+            "column": 34
+          }
+        },
+        {
+          "incidentId": "5cb6a264-67bb-4b98-b2f5-0e6201870c7d",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "get;",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\Models\\GoldbergModel.cs",
+            "snippet": "get;",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 175,
+            "column": 29
+          }
+        },
+        {
+          "incidentId": "a1c8b460-07e3-4485-a76b-a1c93ad97382",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "public Uri IconUrl",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\Models\\GoldbergModel.cs",
+            "snippet": "public Uri IconUrl",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 174,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "975730e9-c85c-47ce-beb6-80e5be749a07",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var result = Clipboard.GetText();",
+              "protected": "T:System.Windows.Clipboard"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\ViewModels\\MainViewModel.cs",
+            "snippet": "var result = Clipboard.GetText();",
+            "protectedSnippet": "T:System.Windows.Clipboard",
+            "label": "T:System.Windows.Clipboard",
+            "line": 517,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "7f0b0dec-e11c-4964-91c7-d9ec6e9c7af2",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var result = Clipboard.GetText();",
+              "protected": "M:System.Windows.Clipboard.GetText"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\ViewModels\\MainViewModel.cs",
+            "snippet": "var result = Clipboard.GetText();",
+            "protectedSnippet": "M:System.Windows.Clipboard.GetText",
+            "label": "M:System.Windows.Clipboard.GetText",
+            "line": 517,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "dbbeb5c6-3971-4597-82c9-90435e17d43c",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (!(Clipboard.ContainsText(TextDataFormat.UnicodeText) || Clipboard.ContainsText(TextDataFormat.Text)))\r\n            {\r\n                _log.Warn(\u0022Invalid DLC list!\u0022);\r\n            }\r\n            else\r\n            {\r\n                var result = Clipboard.GetText();\r\n                var expression = new Regex(@\u0022(?\u003Cid\u003E.*) *= *(?\u003Cname\u003E.*)\u0022);\r\n                var pastedDlc = (from line in result.Split(new[] { \u0022\\n\u0022, \u0022\\r\\n\u0022 },\r\n                    StringSplitOptions.RemoveEmptyEntries)\r\n                                 select expression.Match(line) into match\r\n                                 where match.Success\r\n                                 select new DlcApp\r\n                                 {\r\n                                     AppId = Convert.ToInt32(match.Groups[\u0022id\u0022].Value),\r\n                                     Name = match.Groups[\u0022name\u0022].Value\r\n                                 }).ToList();\r\n                if (pastedDlc.Count \u003E 0)\r\n                {\r\n                    DLCs.Clear();\r\n                    DLCs = new ObservableCollection\u003CDlcApp\u003E(pastedDlc);\r\n                    //var empty = DLCs.Count == 1 ? \u0022\u0022 : \u0022s\u0022;\r\n                    //StatusText = $\u0022Successfully got {DLCs.Count} DLC{empty} from clipboard! Ready.\u0022;\r\n                    var statusTextCount = DLCs.Count == 1 ? \u0022one DLC\u0022 : $\u0022{DLCs.Count} DLCs\u0022;\r\n                    StatusText = $\u0022Successfully got {statusTextCount} from clipboard! Ready.\u0022;\r\n                }\r\n                else\r\n                {\r\n                    StatusText = \u0022No DLC found in clipboard! Ready.\u0022;\r\n                }\r\n            }",
+              "protected": "T:System.Windows.TextDataFormat"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\ViewModels\\MainViewModel.cs",
+            "snippet": "if (!(Clipboard.ContainsText(TextDataFormat.UnicodeText) || Clipboard.ContainsText(TextDataFormat.Text)))\r\n            {\r\n                _log.Warn(\u0022Invalid DLC list!\u0022);\r\n            }\r\n            else\r\n            {\r\n                var result = Clipboard.GetText();\r\n                var expression = new Regex(@\u0022(?\u003Cid\u003E.*) *= *(?\u003Cname\u003E.*)\u0022);\r\n                var pastedDlc = (from line in result.Split(new[] { \u0022\\n\u0022, \u0022\\r\\n\u0022 },\r\n                    StringSplitOptions.RemoveEmptyEntries)\r\n                                 select expression.Match(line) into match\r\n                                 where match.Success\r\n                                 select new DlcApp\r\n                                 {\r\n                                     AppId = Convert.ToInt32(match.Groups[\u0022id\u0022].Value),\r\n                                     Name = match.Groups[\u0022name\u0022].Value\r\n                                 }).ToList();\r\n                if (pastedDlc.Count \u003E 0)\r\n                {\r\n                    DLCs.Clear();\r\n                    DLCs = new ObservableCollection\u003CDlcApp\u003E(pastedDlc);\r\n                    //var empty = DLCs.Count == 1 ? \u0022\u0022 : \u0022s\u0022;\r\n                    //StatusText = $\u0022Successfully got {DLCs.Count} DLC{empty} from clipboard! Ready.\u0022;\r\n                    var statusTextCount = DLCs.Count == 1 ? \u0022one DLC\u0022 : $\u0022{DLCs.Count} DLCs\u0022;\r\n                    StatusText = $\u0022Successfully got {statusTextCount} from clipboard! Ready.\u0022;\r\n                }\r\n                else\r\n                {\r\n                    StatusText = \u0022No DLC found in clipboard! Ready.\u0022;\r\n                }\r\n            }",
+            "protectedSnippet": "T:System.Windows.TextDataFormat",
+            "label": "T:System.Windows.TextDataFormat",
+            "line": 511,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "f032748a-9b58-4f65-bea4-5f160551de37",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (!(Clipboard.ContainsText(TextDataFormat.UnicodeText) || Clipboard.ContainsText(TextDataFormat.Text)))\r\n            {\r\n                _log.Warn(\u0022Invalid DLC list!\u0022);\r\n            }\r\n            else\r\n            {\r\n                var result = Clipboard.GetText();\r\n                var expression = new Regex(@\u0022(?\u003Cid\u003E.*) *= *(?\u003Cname\u003E.*)\u0022);\r\n                var pastedDlc = (from line in result.Split(new[] { \u0022\\n\u0022, \u0022\\r\\n\u0022 },\r\n                    StringSplitOptions.RemoveEmptyEntries)\r\n                                 select expression.Match(line) into match\r\n                                 where match.Success\r\n                                 select new DlcApp\r\n                                 {\r\n                                     AppId = Convert.ToInt32(match.Groups[\u0022id\u0022].Value),\r\n                                     Name = match.Groups[\u0022name\u0022].Value\r\n                                 }).ToList();\r\n                if (pastedDlc.Count \u003E 0)\r\n                {\r\n                    DLCs.Clear();\r\n                    DLCs = new ObservableCollection\u003CDlcApp\u003E(pastedDlc);\r\n                    //var empty = DLCs.Count == 1 ? \u0022\u0022 : \u0022s\u0022;\r\n                    //StatusText = $\u0022Successfully got {DLCs.Count} DLC{empty} from clipboard! Ready.\u0022;\r\n                    var statusTextCount = DLCs.Count == 1 ? \u0022one DLC\u0022 : $\u0022{DLCs.Count} DLCs\u0022;\r\n                    StatusText = $\u0022Successfully got {statusTextCount} from clipboard! Ready.\u0022;\r\n                }\r\n                else\r\n                {\r\n                    StatusText = \u0022No DLC found in clipboard! Ready.\u0022;\r\n                }\r\n            }",
+              "protected": "T:System.Windows.TextDataFormat"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\ViewModels\\MainViewModel.cs",
+            "snippet": "if (!(Clipboard.ContainsText(TextDataFormat.UnicodeText) || Clipboard.ContainsText(TextDataFormat.Text)))\r\n            {\r\n                _log.Warn(\u0022Invalid DLC list!\u0022);\r\n            }\r\n            else\r\n            {\r\n                var result = Clipboard.GetText();\r\n                var expression = new Regex(@\u0022(?\u003Cid\u003E.*) *= *(?\u003Cname\u003E.*)\u0022);\r\n                var pastedDlc = (from line in result.Split(new[] { \u0022\\n\u0022, \u0022\\r\\n\u0022 },\r\n                    StringSplitOptions.RemoveEmptyEntries)\r\n                                 select expression.Match(line) into match\r\n                                 where match.Success\r\n                                 select new DlcApp\r\n                                 {\r\n                                     AppId = Convert.ToInt32(match.Groups[\u0022id\u0022].Value),\r\n                                     Name = match.Groups[\u0022name\u0022].Value\r\n                                 }).ToList();\r\n                if (pastedDlc.Count \u003E 0)\r\n                {\r\n                    DLCs.Clear();\r\n                    DLCs = new ObservableCollection\u003CDlcApp\u003E(pastedDlc);\r\n                    //var empty = DLCs.Count == 1 ? \u0022\u0022 : \u0022s\u0022;\r\n                    //StatusText = $\u0022Successfully got {DLCs.Count} DLC{empty} from clipboard! Ready.\u0022;\r\n                    var statusTextCount = DLCs.Count == 1 ? \u0022one DLC\u0022 : $\u0022{DLCs.Count} DLCs\u0022;\r\n                    StatusText = $\u0022Successfully got {statusTextCount} from clipboard! Ready.\u0022;\r\n                }\r\n                else\r\n                {\r\n                    StatusText = \u0022No DLC found in clipboard! Ready.\u0022;\r\n                }\r\n            }",
+            "protectedSnippet": "T:System.Windows.TextDataFormat",
+            "label": "T:System.Windows.TextDataFormat",
+            "line": 511,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "5631879f-0c2a-4e3b-8c23-4ddb8597b64e",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (!(Clipboard.ContainsText(TextDataFormat.UnicodeText) || Clipboard.ContainsText(TextDataFormat.Text)))\r\n            {\r\n                _log.Warn(\u0022Invalid DLC list!\u0022);\r\n            }\r\n            else\r\n            {\r\n                var result = Clipboard.GetText();\r\n                var expression = new Regex(@\u0022(?\u003Cid\u003E.*) *= *(?\u003Cname\u003E.*)\u0022);\r\n                var pastedDlc = (from line in result.Split(new[] { \u0022\\n\u0022, \u0022\\r\\n\u0022 },\r\n                    StringSplitOptions.RemoveEmptyEntries)\r\n                                 select expression.Match(line) into match\r\n                                 where match.Success\r\n                                 select new DlcApp\r\n                                 {\r\n                                     AppId = Convert.ToInt32(match.Groups[\u0022id\u0022].Value),\r\n                                     Name = match.Groups[\u0022name\u0022].Value\r\n                                 }).ToList();\r\n                if (pastedDlc.Count \u003E 0)\r\n                {\r\n                    DLCs.Clear();\r\n                    DLCs = new ObservableCollection\u003CDlcApp\u003E(pastedDlc);\r\n                    //var empty = DLCs.Count == 1 ? \u0022\u0022 : \u0022s\u0022;\r\n                    //StatusText = $\u0022Successfully got {DLCs.Count} DLC{empty} from clipboard! Ready.\u0022;\r\n                    var statusTextCount = DLCs.Count == 1 ? \u0022one DLC\u0022 : $\u0022{DLCs.Count} DLCs\u0022;\r\n                    StatusText = $\u0022Successfully got {statusTextCount} from clipboard! Ready.\u0022;\r\n                }\r\n                else\r\n                {\r\n                    StatusText = \u0022No DLC found in clipboard! Ready.\u0022;\r\n                }\r\n            }",
+              "protected": "F:System.Windows.TextDataFormat.Text"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\ViewModels\\MainViewModel.cs",
+            "snippet": "if (!(Clipboard.ContainsText(TextDataFormat.UnicodeText) || Clipboard.ContainsText(TextDataFormat.Text)))\r\n            {\r\n                _log.Warn(\u0022Invalid DLC list!\u0022);\r\n            }\r\n            else\r\n            {\r\n                var result = Clipboard.GetText();\r\n                var expression = new Regex(@\u0022(?\u003Cid\u003E.*) *= *(?\u003Cname\u003E.*)\u0022);\r\n                var pastedDlc = (from line in result.Split(new[] { \u0022\\n\u0022, \u0022\\r\\n\u0022 },\r\n                    StringSplitOptions.RemoveEmptyEntries)\r\n                                 select expression.Match(line) into match\r\n                                 where match.Success\r\n                                 select new DlcApp\r\n                                 {\r\n                                     AppId = Convert.ToInt32(match.Groups[\u0022id\u0022].Value),\r\n                                     Name = match.Groups[\u0022name\u0022].Value\r\n                                 }).ToList();\r\n                if (pastedDlc.Count \u003E 0)\r\n                {\r\n                    DLCs.Clear();\r\n                    DLCs = new ObservableCollection\u003CDlcApp\u003E(pastedDlc);\r\n                    //var empty = DLCs.Count == 1 ? \u0022\u0022 : \u0022s\u0022;\r\n                    //StatusText = $\u0022Successfully got {DLCs.Count} DLC{empty} from clipboard! Ready.\u0022;\r\n                    var statusTextCount = DLCs.Count == 1 ? \u0022one DLC\u0022 : $\u0022{DLCs.Count} DLCs\u0022;\r\n                    StatusText = $\u0022Successfully got {statusTextCount} from clipboard! Ready.\u0022;\r\n                }\r\n                else\r\n                {\r\n                    StatusText = \u0022No DLC found in clipboard! Ready.\u0022;\r\n                }\r\n            }",
+            "protectedSnippet": "F:System.Windows.TextDataFormat.Text",
+            "label": "F:System.Windows.TextDataFormat.Text",
+            "line": 511,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "db276aa4-66ed-4097-a964-959e17e27210",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (!(Clipboard.ContainsText(TextDataFormat.UnicodeText) || Clipboard.ContainsText(TextDataFormat.Text)))\r\n            {\r\n                _log.Warn(\u0022Invalid DLC list!\u0022);\r\n            }\r\n            else\r\n            {\r\n                var result = Clipboard.GetText();\r\n                var expression = new Regex(@\u0022(?\u003Cid\u003E.*) *= *(?\u003Cname\u003E.*)\u0022);\r\n                var pastedDlc = (from line in result.Split(new[] { \u0022\\n\u0022, \u0022\\r\\n\u0022 },\r\n                    StringSplitOptions.RemoveEmptyEntries)\r\n                                 select expression.Match(line) into match\r\n                                 where match.Success\r\n                                 select new DlcApp\r\n                                 {\r\n                                     AppId = Convert.ToInt32(match.Groups[\u0022id\u0022].Value),\r\n                                     Name = match.Groups[\u0022name\u0022].Value\r\n                                 }).ToList();\r\n                if (pastedDlc.Count \u003E 0)\r\n                {\r\n                    DLCs.Clear();\r\n                    DLCs = new ObservableCollection\u003CDlcApp\u003E(pastedDlc);\r\n                    //var empty = DLCs.Count == 1 ? \u0022\u0022 : \u0022s\u0022;\r\n                    //StatusText = $\u0022Successfully got {DLCs.Count} DLC{empty} from clipboard! Ready.\u0022;\r\n                    var statusTextCount = DLCs.Count == 1 ? \u0022one DLC\u0022 : $\u0022{DLCs.Count} DLCs\u0022;\r\n                    StatusText = $\u0022Successfully got {statusTextCount} from clipboard! Ready.\u0022;\r\n                }\r\n                else\r\n                {\r\n                    StatusText = \u0022No DLC found in clipboard! Ready.\u0022;\r\n                }\r\n            }",
+              "protected": "T:System.Windows.Clipboard"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\ViewModels\\MainViewModel.cs",
+            "snippet": "if (!(Clipboard.ContainsText(TextDataFormat.UnicodeText) || Clipboard.ContainsText(TextDataFormat.Text)))\r\n            {\r\n                _log.Warn(\u0022Invalid DLC list!\u0022);\r\n            }\r\n            else\r\n            {\r\n                var result = Clipboard.GetText();\r\n                var expression = new Regex(@\u0022(?\u003Cid\u003E.*) *= *(?\u003Cname\u003E.*)\u0022);\r\n                var pastedDlc = (from line in result.Split(new[] { \u0022\\n\u0022, \u0022\\r\\n\u0022 },\r\n                    StringSplitOptions.RemoveEmptyEntries)\r\n                                 select expression.Match(line) into match\r\n                                 where match.Success\r\n                                 select new DlcApp\r\n                                 {\r\n                                     AppId = Convert.ToInt32(match.Groups[\u0022id\u0022].Value),\r\n                                     Name = match.Groups[\u0022name\u0022].Value\r\n                                 }).ToList();\r\n                if (pastedDlc.Count \u003E 0)\r\n                {\r\n                    DLCs.Clear();\r\n                    DLCs = new ObservableCollection\u003CDlcApp\u003E(pastedDlc);\r\n                    //var empty = DLCs.Count == 1 ? \u0022\u0022 : \u0022s\u0022;\r\n                    //StatusText = $\u0022Successfully got {DLCs.Count} DLC{empty} from clipboard! Ready.\u0022;\r\n                    var statusTextCount = DLCs.Count == 1 ? \u0022one DLC\u0022 : $\u0022{DLCs.Count} DLCs\u0022;\r\n                    StatusText = $\u0022Successfully got {statusTextCount} from clipboard! Ready.\u0022;\r\n                }\r\n                else\r\n                {\r\n                    StatusText = \u0022No DLC found in clipboard! Ready.\u0022;\r\n                }\r\n            }",
+            "protectedSnippet": "T:System.Windows.Clipboard",
+            "label": "T:System.Windows.Clipboard",
+            "line": 511,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "2eb112ca-918a-4477-ab54-989053307bca",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (!(Clipboard.ContainsText(TextDataFormat.UnicodeText) || Clipboard.ContainsText(TextDataFormat.Text)))\r\n            {\r\n                _log.Warn(\u0022Invalid DLC list!\u0022);\r\n            }\r\n            else\r\n            {\r\n                var result = Clipboard.GetText();\r\n                var expression = new Regex(@\u0022(?\u003Cid\u003E.*) *= *(?\u003Cname\u003E.*)\u0022);\r\n                var pastedDlc = (from line in result.Split(new[] { \u0022\\n\u0022, \u0022\\r\\n\u0022 },\r\n                    StringSplitOptions.RemoveEmptyEntries)\r\n                                 select expression.Match(line) into match\r\n                                 where match.Success\r\n                                 select new DlcApp\r\n                                 {\r\n                                     AppId = Convert.ToInt32(match.Groups[\u0022id\u0022].Value),\r\n                                     Name = match.Groups[\u0022name\u0022].Value\r\n                                 }).ToList();\r\n                if (pastedDlc.Count \u003E 0)\r\n                {\r\n                    DLCs.Clear();\r\n                    DLCs = new ObservableCollection\u003CDlcApp\u003E(pastedDlc);\r\n                    //var empty = DLCs.Count == 1 ? \u0022\u0022 : \u0022s\u0022;\r\n                    //StatusText = $\u0022Successfully got {DLCs.Count} DLC{empty} from clipboard! Ready.\u0022;\r\n                    var statusTextCount = DLCs.Count == 1 ? \u0022one DLC\u0022 : $\u0022{DLCs.Count} DLCs\u0022;\r\n                    StatusText = $\u0022Successfully got {statusTextCount} from clipboard! Ready.\u0022;\r\n                }\r\n                else\r\n                {\r\n                    StatusText = \u0022No DLC found in clipboard! Ready.\u0022;\r\n                }\r\n            }",
+              "protected": "M:System.Windows.Clipboard.ContainsText(System.Windows.TextDataFormat)"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\ViewModels\\MainViewModel.cs",
+            "snippet": "if (!(Clipboard.ContainsText(TextDataFormat.UnicodeText) || Clipboard.ContainsText(TextDataFormat.Text)))\r\n            {\r\n                _log.Warn(\u0022Invalid DLC list!\u0022);\r\n            }\r\n            else\r\n            {\r\n                var result = Clipboard.GetText();\r\n                var expression = new Regex(@\u0022(?\u003Cid\u003E.*) *= *(?\u003Cname\u003E.*)\u0022);\r\n                var pastedDlc = (from line in result.Split(new[] { \u0022\\n\u0022, \u0022\\r\\n\u0022 },\r\n                    StringSplitOptions.RemoveEmptyEntries)\r\n                                 select expression.Match(line) into match\r\n                                 where match.Success\r\n                                 select new DlcApp\r\n                                 {\r\n                                     AppId = Convert.ToInt32(match.Groups[\u0022id\u0022].Value),\r\n                                     Name = match.Groups[\u0022name\u0022].Value\r\n                                 }).ToList();\r\n                if (pastedDlc.Count \u003E 0)\r\n                {\r\n                    DLCs.Clear();\r\n                    DLCs = new ObservableCollection\u003CDlcApp\u003E(pastedDlc);\r\n                    //var empty = DLCs.Count == 1 ? \u0022\u0022 : \u0022s\u0022;\r\n                    //StatusText = $\u0022Successfully got {DLCs.Count} DLC{empty} from clipboard! Ready.\u0022;\r\n                    var statusTextCount = DLCs.Count == 1 ? \u0022one DLC\u0022 : $\u0022{DLCs.Count} DLCs\u0022;\r\n                    StatusText = $\u0022Successfully got {statusTextCount} from clipboard! Ready.\u0022;\r\n                }\r\n                else\r\n                {\r\n                    StatusText = \u0022No DLC found in clipboard! Ready.\u0022;\r\n                }\r\n            }",
+            "protectedSnippet": "M:System.Windows.Clipboard.ContainsText(System.Windows.TextDataFormat)",
+            "label": "M:System.Windows.Clipboard.ContainsText(System.Windows.TextDataFormat)",
+            "line": 511,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "b3f2963b-4b9f-4d27-b423-af03796813bb",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (!(Clipboard.ContainsText(TextDataFormat.UnicodeText) || Clipboard.ContainsText(TextDataFormat.Text)))\r\n            {\r\n                _log.Warn(\u0022Invalid DLC list!\u0022);\r\n            }\r\n            else\r\n            {\r\n                var result = Clipboard.GetText();\r\n                var expression = new Regex(@\u0022(?\u003Cid\u003E.*) *= *(?\u003Cname\u003E.*)\u0022);\r\n                var pastedDlc = (from line in result.Split(new[] { \u0022\\n\u0022, \u0022\\r\\n\u0022 },\r\n                    StringSplitOptions.RemoveEmptyEntries)\r\n                                 select expression.Match(line) into match\r\n                                 where match.Success\r\n                                 select new DlcApp\r\n                                 {\r\n                                     AppId = Convert.ToInt32(match.Groups[\u0022id\u0022].Value),\r\n                                     Name = match.Groups[\u0022name\u0022].Value\r\n                                 }).ToList();\r\n                if (pastedDlc.Count \u003E 0)\r\n                {\r\n                    DLCs.Clear();\r\n                    DLCs = new ObservableCollection\u003CDlcApp\u003E(pastedDlc);\r\n                    //var empty = DLCs.Count == 1 ? \u0022\u0022 : \u0022s\u0022;\r\n                    //StatusText = $\u0022Successfully got {DLCs.Count} DLC{empty} from clipboard! Ready.\u0022;\r\n                    var statusTextCount = DLCs.Count == 1 ? \u0022one DLC\u0022 : $\u0022{DLCs.Count} DLCs\u0022;\r\n                    StatusText = $\u0022Successfully got {statusTextCount} from clipboard! Ready.\u0022;\r\n                }\r\n                else\r\n                {\r\n                    StatusText = \u0022No DLC found in clipboard! Ready.\u0022;\r\n                }\r\n            }",
+              "protected": "T:System.Windows.TextDataFormat"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\ViewModels\\MainViewModel.cs",
+            "snippet": "if (!(Clipboard.ContainsText(TextDataFormat.UnicodeText) || Clipboard.ContainsText(TextDataFormat.Text)))\r\n            {\r\n                _log.Warn(\u0022Invalid DLC list!\u0022);\r\n            }\r\n            else\r\n            {\r\n                var result = Clipboard.GetText();\r\n                var expression = new Regex(@\u0022(?\u003Cid\u003E.*) *= *(?\u003Cname\u003E.*)\u0022);\r\n                var pastedDlc = (from line in result.Split(new[] { \u0022\\n\u0022, \u0022\\r\\n\u0022 },\r\n                    StringSplitOptions.RemoveEmptyEntries)\r\n                                 select expression.Match(line) into match\r\n                                 where match.Success\r\n                                 select new DlcApp\r\n                                 {\r\n                                     AppId = Convert.ToInt32(match.Groups[\u0022id\u0022].Value),\r\n                                     Name = match.Groups[\u0022name\u0022].Value\r\n                                 }).ToList();\r\n                if (pastedDlc.Count \u003E 0)\r\n                {\r\n                    DLCs.Clear();\r\n                    DLCs = new ObservableCollection\u003CDlcApp\u003E(pastedDlc);\r\n                    //var empty = DLCs.Count == 1 ? \u0022\u0022 : \u0022s\u0022;\r\n                    //StatusText = $\u0022Successfully got {DLCs.Count} DLC{empty} from clipboard! Ready.\u0022;\r\n                    var statusTextCount = DLCs.Count == 1 ? \u0022one DLC\u0022 : $\u0022{DLCs.Count} DLCs\u0022;\r\n                    StatusText = $\u0022Successfully got {statusTextCount} from clipboard! Ready.\u0022;\r\n                }\r\n                else\r\n                {\r\n                    StatusText = \u0022No DLC found in clipboard! Ready.\u0022;\r\n                }\r\n            }",
+            "protectedSnippet": "T:System.Windows.TextDataFormat",
+            "label": "T:System.Windows.TextDataFormat",
+            "line": 511,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "39419ede-91c1-401e-964b-54c5b92c858b",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (!(Clipboard.ContainsText(TextDataFormat.UnicodeText) || Clipboard.ContainsText(TextDataFormat.Text)))\r\n            {\r\n                _log.Warn(\u0022Invalid DLC list!\u0022);\r\n            }\r\n            else\r\n            {\r\n                var result = Clipboard.GetText();\r\n                var expression = new Regex(@\u0022(?\u003Cid\u003E.*) *= *(?\u003Cname\u003E.*)\u0022);\r\n                var pastedDlc = (from line in result.Split(new[] { \u0022\\n\u0022, \u0022\\r\\n\u0022 },\r\n                    StringSplitOptions.RemoveEmptyEntries)\r\n                                 select expression.Match(line) into match\r\n                                 where match.Success\r\n                                 select new DlcApp\r\n                                 {\r\n                                     AppId = Convert.ToInt32(match.Groups[\u0022id\u0022].Value),\r\n                                     Name = match.Groups[\u0022name\u0022].Value\r\n                                 }).ToList();\r\n                if (pastedDlc.Count \u003E 0)\r\n                {\r\n                    DLCs.Clear();\r\n                    DLCs = new ObservableCollection\u003CDlcApp\u003E(pastedDlc);\r\n                    //var empty = DLCs.Count == 1 ? \u0022\u0022 : \u0022s\u0022;\r\n                    //StatusText = $\u0022Successfully got {DLCs.Count} DLC{empty} from clipboard! Ready.\u0022;\r\n                    var statusTextCount = DLCs.Count == 1 ? \u0022one DLC\u0022 : $\u0022{DLCs.Count} DLCs\u0022;\r\n                    StatusText = $\u0022Successfully got {statusTextCount} from clipboard! Ready.\u0022;\r\n                }\r\n                else\r\n                {\r\n                    StatusText = \u0022No DLC found in clipboard! Ready.\u0022;\r\n                }\r\n            }",
+              "protected": "T:System.Windows.TextDataFormat"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\ViewModels\\MainViewModel.cs",
+            "snippet": "if (!(Clipboard.ContainsText(TextDataFormat.UnicodeText) || Clipboard.ContainsText(TextDataFormat.Text)))\r\n            {\r\n                _log.Warn(\u0022Invalid DLC list!\u0022);\r\n            }\r\n            else\r\n            {\r\n                var result = Clipboard.GetText();\r\n                var expression = new Regex(@\u0022(?\u003Cid\u003E.*) *= *(?\u003Cname\u003E.*)\u0022);\r\n                var pastedDlc = (from line in result.Split(new[] { \u0022\\n\u0022, \u0022\\r\\n\u0022 },\r\n                    StringSplitOptions.RemoveEmptyEntries)\r\n                                 select expression.Match(line) into match\r\n                                 where match.Success\r\n                                 select new DlcApp\r\n                                 {\r\n                                     AppId = Convert.ToInt32(match.Groups[\u0022id\u0022].Value),\r\n                                     Name = match.Groups[\u0022name\u0022].Value\r\n                                 }).ToList();\r\n                if (pastedDlc.Count \u003E 0)\r\n                {\r\n                    DLCs.Clear();\r\n                    DLCs = new ObservableCollection\u003CDlcApp\u003E(pastedDlc);\r\n                    //var empty = DLCs.Count == 1 ? \u0022\u0022 : \u0022s\u0022;\r\n                    //StatusText = $\u0022Successfully got {DLCs.Count} DLC{empty} from clipboard! Ready.\u0022;\r\n                    var statusTextCount = DLCs.Count == 1 ? \u0022one DLC\u0022 : $\u0022{DLCs.Count} DLCs\u0022;\r\n                    StatusText = $\u0022Successfully got {statusTextCount} from clipboard! Ready.\u0022;\r\n                }\r\n                else\r\n                {\r\n                    StatusText = \u0022No DLC found in clipboard! Ready.\u0022;\r\n                }\r\n            }",
+            "protectedSnippet": "T:System.Windows.TextDataFormat",
+            "label": "T:System.Windows.TextDataFormat",
+            "line": 511,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "4b42e60e-a8cc-4897-a2dd-f8b0f3ddf52d",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (!(Clipboard.ContainsText(TextDataFormat.UnicodeText) || Clipboard.ContainsText(TextDataFormat.Text)))\r\n            {\r\n                _log.Warn(\u0022Invalid DLC list!\u0022);\r\n            }\r\n            else\r\n            {\r\n                var result = Clipboard.GetText();\r\n                var expression = new Regex(@\u0022(?\u003Cid\u003E.*) *= *(?\u003Cname\u003E.*)\u0022);\r\n                var pastedDlc = (from line in result.Split(new[] { \u0022\\n\u0022, \u0022\\r\\n\u0022 },\r\n                    StringSplitOptions.RemoveEmptyEntries)\r\n                                 select expression.Match(line) into match\r\n                                 where match.Success\r\n                                 select new DlcApp\r\n                                 {\r\n                                     AppId = Convert.ToInt32(match.Groups[\u0022id\u0022].Value),\r\n                                     Name = match.Groups[\u0022name\u0022].Value\r\n                                 }).ToList();\r\n                if (pastedDlc.Count \u003E 0)\r\n                {\r\n                    DLCs.Clear();\r\n                    DLCs = new ObservableCollection\u003CDlcApp\u003E(pastedDlc);\r\n                    //var empty = DLCs.Count == 1 ? \u0022\u0022 : \u0022s\u0022;\r\n                    //StatusText = $\u0022Successfully got {DLCs.Count} DLC{empty} from clipboard! Ready.\u0022;\r\n                    var statusTextCount = DLCs.Count == 1 ? \u0022one DLC\u0022 : $\u0022{DLCs.Count} DLCs\u0022;\r\n                    StatusText = $\u0022Successfully got {statusTextCount} from clipboard! Ready.\u0022;\r\n                }\r\n                else\r\n                {\r\n                    StatusText = \u0022No DLC found in clipboard! Ready.\u0022;\r\n                }\r\n            }",
+              "protected": "F:System.Windows.TextDataFormat.UnicodeText"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\ViewModels\\MainViewModel.cs",
+            "snippet": "if (!(Clipboard.ContainsText(TextDataFormat.UnicodeText) || Clipboard.ContainsText(TextDataFormat.Text)))\r\n            {\r\n                _log.Warn(\u0022Invalid DLC list!\u0022);\r\n            }\r\n            else\r\n            {\r\n                var result = Clipboard.GetText();\r\n                var expression = new Regex(@\u0022(?\u003Cid\u003E.*) *= *(?\u003Cname\u003E.*)\u0022);\r\n                var pastedDlc = (from line in result.Split(new[] { \u0022\\n\u0022, \u0022\\r\\n\u0022 },\r\n                    StringSplitOptions.RemoveEmptyEntries)\r\n                                 select expression.Match(line) into match\r\n                                 where match.Success\r\n                                 select new DlcApp\r\n                                 {\r\n                                     AppId = Convert.ToInt32(match.Groups[\u0022id\u0022].Value),\r\n                                     Name = match.Groups[\u0022name\u0022].Value\r\n                                 }).ToList();\r\n                if (pastedDlc.Count \u003E 0)\r\n                {\r\n                    DLCs.Clear();\r\n                    DLCs = new ObservableCollection\u003CDlcApp\u003E(pastedDlc);\r\n                    //var empty = DLCs.Count == 1 ? \u0022\u0022 : \u0022s\u0022;\r\n                    //StatusText = $\u0022Successfully got {DLCs.Count} DLC{empty} from clipboard! Ready.\u0022;\r\n                    var statusTextCount = DLCs.Count == 1 ? \u0022one DLC\u0022 : $\u0022{DLCs.Count} DLCs\u0022;\r\n                    StatusText = $\u0022Successfully got {statusTextCount} from clipboard! Ready.\u0022;\r\n                }\r\n                else\r\n                {\r\n                    StatusText = \u0022No DLC found in clipboard! Ready.\u0022;\r\n                }\r\n            }",
+            "protectedSnippet": "F:System.Windows.TextDataFormat.UnicodeText",
+            "label": "F:System.Windows.TextDataFormat.UnicodeText",
+            "line": 511,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "35a03bd3-0013-4f01-b3d4-a640148ea14d",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (!(Clipboard.ContainsText(TextDataFormat.UnicodeText) || Clipboard.ContainsText(TextDataFormat.Text)))\r\n            {\r\n                _log.Warn(\u0022Invalid DLC list!\u0022);\r\n            }\r\n            else\r\n            {\r\n                var result = Clipboard.GetText();\r\n                var expression = new Regex(@\u0022(?\u003Cid\u003E.*) *= *(?\u003Cname\u003E.*)\u0022);\r\n                var pastedDlc = (from line in result.Split(new[] { \u0022\\n\u0022, \u0022\\r\\n\u0022 },\r\n                    StringSplitOptions.RemoveEmptyEntries)\r\n                                 select expression.Match(line) into match\r\n                                 where match.Success\r\n                                 select new DlcApp\r\n                                 {\r\n                                     AppId = Convert.ToInt32(match.Groups[\u0022id\u0022].Value),\r\n                                     Name = match.Groups[\u0022name\u0022].Value\r\n                                 }).ToList();\r\n                if (pastedDlc.Count \u003E 0)\r\n                {\r\n                    DLCs.Clear();\r\n                    DLCs = new ObservableCollection\u003CDlcApp\u003E(pastedDlc);\r\n                    //var empty = DLCs.Count == 1 ? \u0022\u0022 : \u0022s\u0022;\r\n                    //StatusText = $\u0022Successfully got {DLCs.Count} DLC{empty} from clipboard! Ready.\u0022;\r\n                    var statusTextCount = DLCs.Count == 1 ? \u0022one DLC\u0022 : $\u0022{DLCs.Count} DLCs\u0022;\r\n                    StatusText = $\u0022Successfully got {statusTextCount} from clipboard! Ready.\u0022;\r\n                }\r\n                else\r\n                {\r\n                    StatusText = \u0022No DLC found in clipboard! Ready.\u0022;\r\n                }\r\n            }",
+              "protected": "T:System.Windows.Clipboard"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\ViewModels\\MainViewModel.cs",
+            "snippet": "if (!(Clipboard.ContainsText(TextDataFormat.UnicodeText) || Clipboard.ContainsText(TextDataFormat.Text)))\r\n            {\r\n                _log.Warn(\u0022Invalid DLC list!\u0022);\r\n            }\r\n            else\r\n            {\r\n                var result = Clipboard.GetText();\r\n                var expression = new Regex(@\u0022(?\u003Cid\u003E.*) *= *(?\u003Cname\u003E.*)\u0022);\r\n                var pastedDlc = (from line in result.Split(new[] { \u0022\\n\u0022, \u0022\\r\\n\u0022 },\r\n                    StringSplitOptions.RemoveEmptyEntries)\r\n                                 select expression.Match(line) into match\r\n                                 where match.Success\r\n                                 select new DlcApp\r\n                                 {\r\n                                     AppId = Convert.ToInt32(match.Groups[\u0022id\u0022].Value),\r\n                                     Name = match.Groups[\u0022name\u0022].Value\r\n                                 }).ToList();\r\n                if (pastedDlc.Count \u003E 0)\r\n                {\r\n                    DLCs.Clear();\r\n                    DLCs = new ObservableCollection\u003CDlcApp\u003E(pastedDlc);\r\n                    //var empty = DLCs.Count == 1 ? \u0022\u0022 : \u0022s\u0022;\r\n                    //StatusText = $\u0022Successfully got {DLCs.Count} DLC{empty} from clipboard! Ready.\u0022;\r\n                    var statusTextCount = DLCs.Count == 1 ? \u0022one DLC\u0022 : $\u0022{DLCs.Count} DLCs\u0022;\r\n                    StatusText = $\u0022Successfully got {statusTextCount} from clipboard! Ready.\u0022;\r\n                }\r\n                else\r\n                {\r\n                    StatusText = \u0022No DLC found in clipboard! Ready.\u0022;\r\n                }\r\n            }",
+            "protectedSnippet": "T:System.Windows.Clipboard",
+            "label": "T:System.Windows.Clipboard",
+            "line": 511,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "4e47f5ea-866f-4f3e-82e6-5892d3acb909",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (!(Clipboard.ContainsText(TextDataFormat.UnicodeText) || Clipboard.ContainsText(TextDataFormat.Text)))\r\n            {\r\n                _log.Warn(\u0022Invalid DLC list!\u0022);\r\n            }\r\n            else\r\n            {\r\n                var result = Clipboard.GetText();\r\n                var expression = new Regex(@\u0022(?\u003Cid\u003E.*) *= *(?\u003Cname\u003E.*)\u0022);\r\n                var pastedDlc = (from line in result.Split(new[] { \u0022\\n\u0022, \u0022\\r\\n\u0022 },\r\n                    StringSplitOptions.RemoveEmptyEntries)\r\n                                 select expression.Match(line) into match\r\n                                 where match.Success\r\n                                 select new DlcApp\r\n                                 {\r\n                                     AppId = Convert.ToInt32(match.Groups[\u0022id\u0022].Value),\r\n                                     Name = match.Groups[\u0022name\u0022].Value\r\n                                 }).ToList();\r\n                if (pastedDlc.Count \u003E 0)\r\n                {\r\n                    DLCs.Clear();\r\n                    DLCs = new ObservableCollection\u003CDlcApp\u003E(pastedDlc);\r\n                    //var empty = DLCs.Count == 1 ? \u0022\u0022 : \u0022s\u0022;\r\n                    //StatusText = $\u0022Successfully got {DLCs.Count} DLC{empty} from clipboard! Ready.\u0022;\r\n                    var statusTextCount = DLCs.Count == 1 ? \u0022one DLC\u0022 : $\u0022{DLCs.Count} DLCs\u0022;\r\n                    StatusText = $\u0022Successfully got {statusTextCount} from clipboard! Ready.\u0022;\r\n                }\r\n                else\r\n                {\r\n                    StatusText = \u0022No DLC found in clipboard! Ready.\u0022;\r\n                }\r\n            }",
+              "protected": "M:System.Windows.Clipboard.ContainsText(System.Windows.TextDataFormat)"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\ViewModels\\MainViewModel.cs",
+            "snippet": "if (!(Clipboard.ContainsText(TextDataFormat.UnicodeText) || Clipboard.ContainsText(TextDataFormat.Text)))\r\n            {\r\n                _log.Warn(\u0022Invalid DLC list!\u0022);\r\n            }\r\n            else\r\n            {\r\n                var result = Clipboard.GetText();\r\n                var expression = new Regex(@\u0022(?\u003Cid\u003E.*) *= *(?\u003Cname\u003E.*)\u0022);\r\n                var pastedDlc = (from line in result.Split(new[] { \u0022\\n\u0022, \u0022\\r\\n\u0022 },\r\n                    StringSplitOptions.RemoveEmptyEntries)\r\n                                 select expression.Match(line) into match\r\n                                 where match.Success\r\n                                 select new DlcApp\r\n                                 {\r\n                                     AppId = Convert.ToInt32(match.Groups[\u0022id\u0022].Value),\r\n                                     Name = match.Groups[\u0022name\u0022].Value\r\n                                 }).ToList();\r\n                if (pastedDlc.Count \u003E 0)\r\n                {\r\n                    DLCs.Clear();\r\n                    DLCs = new ObservableCollection\u003CDlcApp\u003E(pastedDlc);\r\n                    //var empty = DLCs.Count == 1 ? \u0022\u0022 : \u0022s\u0022;\r\n                    //StatusText = $\u0022Successfully got {DLCs.Count} DLC{empty} from clipboard! Ready.\u0022;\r\n                    var statusTextCount = DLCs.Count == 1 ? \u0022one DLC\u0022 : $\u0022{DLCs.Count} DLCs\u0022;\r\n                    StatusText = $\u0022Successfully got {statusTextCount} from clipboard! Ready.\u0022;\r\n                }\r\n                else\r\n                {\r\n                    StatusText = \u0022No DLC found in clipboard! Ready.\u0022;\r\n                }\r\n            }",
+            "protectedSnippet": "M:System.Windows.Clipboard.ContainsText(System.Windows.TextDataFormat)",
+            "label": "M:System.Windows.Clipboard.ContainsText(System.Windows.TextDataFormat)",
+            "line": 511,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "0f18b651-fd76-463f-843b-ffce5b134864",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "DllPath = dialog.FileName;",
+              "protected": "P:Microsoft.Win32.FileDialog.FileName"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\ViewModels\\MainViewModel.cs",
+            "snippet": "DllPath = dialog.FileName;",
+            "protectedSnippet": "P:Microsoft.Win32.FileDialog.FileName",
+            "label": "P:Microsoft.Win32.FileDialog.FileName",
+            "line": 303,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "82b3fbc2-ebae-49bc-9674-09c2ef690ea7",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (dialog.ShowDialog() != true)\r\n            {\r\n                MainWindowEnabled = true;\r\n                _log.Warn(\u0022File selection canceled.\u0022);\r\n                StatusText = \u0022No file selected! Ready.\u0022;\r\n                return;\r\n            }",
+              "protected": "M:Microsoft.Win32.CommonDialog.ShowDialog"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\ViewModels\\MainViewModel.cs",
+            "snippet": "if (dialog.ShowDialog() != true)\r\n            {\r\n                MainWindowEnabled = true;\r\n                _log.Warn(\u0022File selection canceled.\u0022);\r\n                StatusText = \u0022No file selected! Ready.\u0022;\r\n                return;\r\n            }",
+            "protectedSnippet": "M:Microsoft.Win32.CommonDialog.ShowDialog",
+            "label": "M:Microsoft.Win32.CommonDialog.ShowDialog",
+            "line": 295,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "36271772-7253-4f33-aea1-5d208281923a",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var dialog = new OpenFileDialog\r\n            {\r\n                Filter = \u0022SteamAPI DLL|steam_api.dll;steam_api64.dll|\u0022 \u002B\r\n                         \u0022All files (*.*)|*.*\u0022,\r\n                Multiselect = false,\r\n                Title = \u0022Select SteamAPI DLL...\u0022\r\n            };",
+              "protected": "P:Microsoft.Win32.FileDialog.Title"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\ViewModels\\MainViewModel.cs",
+            "snippet": "var dialog = new OpenFileDialog\r\n            {\r\n                Filter = \u0022SteamAPI DLL|steam_api.dll;steam_api64.dll|\u0022 \u002B\r\n                         \u0022All files (*.*)|*.*\u0022,\r\n                Multiselect = false,\r\n                Title = \u0022Select SteamAPI DLL...\u0022\r\n            };",
+            "protectedSnippet": "P:Microsoft.Win32.FileDialog.Title",
+            "label": "P:Microsoft.Win32.FileDialog.Title",
+            "line": 288,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "cfbde1f0-57e5-4e67-a5c7-9942d034baa0",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var dialog = new OpenFileDialog\r\n            {\r\n                Filter = \u0022SteamAPI DLL|steam_api.dll;steam_api64.dll|\u0022 \u002B\r\n                         \u0022All files (*.*)|*.*\u0022,\r\n                Multiselect = false,\r\n                Title = \u0022Select SteamAPI DLL...\u0022\r\n            };",
+              "protected": "P:Microsoft.Win32.OpenFileDialog.Multiselect"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\ViewModels\\MainViewModel.cs",
+            "snippet": "var dialog = new OpenFileDialog\r\n            {\r\n                Filter = \u0022SteamAPI DLL|steam_api.dll;steam_api64.dll|\u0022 \u002B\r\n                         \u0022All files (*.*)|*.*\u0022,\r\n                Multiselect = false,\r\n                Title = \u0022Select SteamAPI DLL...\u0022\r\n            };",
+            "protectedSnippet": "P:Microsoft.Win32.OpenFileDialog.Multiselect",
+            "label": "P:Microsoft.Win32.OpenFileDialog.Multiselect",
+            "line": 288,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "3352f725-502e-429a-8bbb-6d988a439882",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var dialog = new OpenFileDialog\r\n            {\r\n                Filter = \u0022SteamAPI DLL|steam_api.dll;steam_api64.dll|\u0022 \u002B\r\n                         \u0022All files (*.*)|*.*\u0022,\r\n                Multiselect = false,\r\n                Title = \u0022Select SteamAPI DLL...\u0022\r\n            };",
+              "protected": "P:Microsoft.Win32.FileDialog.Filter"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\ViewModels\\MainViewModel.cs",
+            "snippet": "var dialog = new OpenFileDialog\r\n            {\r\n                Filter = \u0022SteamAPI DLL|steam_api.dll;steam_api64.dll|\u0022 \u002B\r\n                         \u0022All files (*.*)|*.*\u0022,\r\n                Multiselect = false,\r\n                Title = \u0022Select SteamAPI DLL...\u0022\r\n            };",
+            "protectedSnippet": "P:Microsoft.Win32.FileDialog.Filter",
+            "label": "P:Microsoft.Win32.FileDialog.Filter",
+            "line": 288,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "50b369a2-ea1a-420a-a54b-1bba5d43de42",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var dialog = new OpenFileDialog\r\n            {\r\n                Filter = \u0022SteamAPI DLL|steam_api.dll;steam_api64.dll|\u0022 \u002B\r\n                         \u0022All files (*.*)|*.*\u0022,\r\n                Multiselect = false,\r\n                Title = \u0022Select SteamAPI DLL...\u0022\r\n            };",
+              "protected": "T:Microsoft.Win32.OpenFileDialog"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\ViewModels\\MainViewModel.cs",
+            "snippet": "var dialog = new OpenFileDialog\r\n            {\r\n                Filter = \u0022SteamAPI DLL|steam_api.dll;steam_api64.dll|\u0022 \u002B\r\n                         \u0022All files (*.*)|*.*\u0022,\r\n                Multiselect = false,\r\n                Title = \u0022Select SteamAPI DLL...\u0022\r\n            };",
+            "protectedSnippet": "T:Microsoft.Win32.OpenFileDialog",
+            "label": "T:Microsoft.Win32.OpenFileDialog",
+            "line": 288,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "2545ac19-8ac6-4e0b-b8b3-a5a63879a570",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var dialog = new OpenFileDialog\r\n            {\r\n                Filter = \u0022SteamAPI DLL|steam_api.dll;steam_api64.dll|\u0022 \u002B\r\n                         \u0022All files (*.*)|*.*\u0022,\r\n                Multiselect = false,\r\n                Title = \u0022Select SteamAPI DLL...\u0022\r\n            };",
+              "protected": "M:Microsoft.Win32.OpenFileDialog.#ctor"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\ViewModels\\MainViewModel.cs",
+            "snippet": "var dialog = new OpenFileDialog\r\n            {\r\n                Filter = \u0022SteamAPI DLL|steam_api.dll;steam_api64.dll|\u0022 \u002B\r\n                         \u0022All files (*.*)|*.*\u0022,\r\n                Multiselect = false,\r\n                Title = \u0022Select SteamAPI DLL...\u0022\r\n            };",
+            "protectedSnippet": "M:Microsoft.Win32.OpenFileDialog.#ctor",
+            "label": "M:Microsoft.Win32.OpenFileDialog.#ctor",
+            "line": 288,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "fc9ffce5-64d0-48e6-8536-5fee0a0678c5",
+          "ruleId": "Api.0003",
+          "description": "Breaking change - Streaming HTTP responses enabled by default in browser HTTP clients ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "await using var download = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);",
+              "protected": "T:System.Net.Http.HttpContent"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\Utils\\Extensions.cs",
+            "snippet": "await using var download = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);",
+            "protectedSnippet": "T:System.Net.Http.HttpContent",
+            "label": "T:System.Net.Http.HttpContent",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/default-http-streaming.md",
+                "isCustom": false
+              }
+            ],
+            "line": 14,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "0a8b247c-fb5f-4b0d-90bb-3cd110520333",
+          "ruleId": "Api.0003",
+          "description": "Breaking change - Streaming HTTP responses enabled by default in browser HTTP clients ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "await using var download = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);",
+              "protected": "M:System.Net.Http.HttpContent.ReadAsStreamAsync"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\Utils\\Extensions.cs",
+            "snippet": "await using var download = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);",
+            "protectedSnippet": "M:System.Net.Http.HttpContent.ReadAsStreamAsync",
+            "label": "M:System.Net.Http.HttpContent.ReadAsStreamAsync",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/default-http-streaming.md",
+                "isCustom": false
+              }
+            ],
+            "line": 14,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "5a4a1010-b058-4417-bb1e-65a5e13bfff6",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "await wc.DownloadFileTaskAsync(new Uri(imageUrl, UriKind.Absolute), targetPath);",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\Services\\GoldbergService.cs",
+            "snippet": "await wc.DownloadFileTaskAsync(new Uri(imageUrl, UriKind.Absolute), targetPath);",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 700,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "a16e2865-5374-430f-b1cb-799e2f12de3c",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "await wc.DownloadFileTaskAsync(new Uri(imageUrl, UriKind.Absolute), targetPath);",
+              "protected": "M:System.Uri.#ctor(System.String,System.UriKind)"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\Services\\GoldbergService.cs",
+            "snippet": "await wc.DownloadFileTaskAsync(new Uri(imageUrl, UriKind.Absolute), targetPath);",
+            "protectedSnippet": "M:System.Uri.#ctor(System.String,System.UriKind)",
+            "label": "M:System.Uri.#ctor(System.String,System.UriKind)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 700,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "a4e0780b-7aa3-4439-a2d9-aab912e8afa3",
+          "ruleId": "Api.0002",
+          "description": "WebRequest, HttpWebRequest, ServicePoint, and WebClient are obsolete. Use HttpClient instead. ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var wc = new System.Net.WebClient();",
+              "protected": "M:System.Net.WebClient.#ctor"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\Services\\GoldbergService.cs",
+            "snippet": "var wc = new System.Net.WebClient();",
+            "protectedSnippet": "M:System.Net.WebClient.#ctor",
+            "label": "M:System.Net.WebClient.#ctor",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://aka.ms/dotnet-warnings/SYSLIB0014",
+                "isCustom": false
+              }
+            ],
+            "line": 699,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "11c207d0-09e4-4780-9012-dfce9833306d",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "MessageBox.Show(\u0022Could not setup Goldberg Emulator!\\n\u0022 \u002B\r\n                            \u0022Please download it manually and extract its content into the \\\u0022goldberg\\\u0022 subfolder!\u0022);",
+              "protected": "T:System.Windows.MessageBox"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\Services\\GoldbergService.cs",
+            "snippet": "MessageBox.Show(\u0022Could not setup Goldberg Emulator!\\n\u0022 \u002B\r\n                            \u0022Please download it manually and extract its content into the \\\u0022goldberg\\\u0022 subfolder!\u0022);",
+            "protectedSnippet": "T:System.Windows.MessageBox",
+            "label": "T:System.Windows.MessageBox",
+            "line": 609,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "6c490cb9-f94a-4af5-a383-450f8872a155",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "MessageBox.Show(\u0022Could not setup Goldberg Emulator!\\n\u0022 \u002B\r\n                            \u0022Please download it manually and extract its content into the \\\u0022goldberg\\\u0022 subfolder!\u0022);",
+              "protected": "T:System.Windows.MessageBoxResult"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\Services\\GoldbergService.cs",
+            "snippet": "MessageBox.Show(\u0022Could not setup Goldberg Emulator!\\n\u0022 \u002B\r\n                            \u0022Please download it manually and extract its content into the \\\u0022goldberg\\\u0022 subfolder!\u0022);",
+            "protectedSnippet": "T:System.Windows.MessageBoxResult",
+            "label": "T:System.Windows.MessageBoxResult",
+            "line": 609,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "c60e2ffe-e6d1-40b8-b2d8-a8c0bf76b10a",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "MessageBox.Show(\u0022Could not setup Goldberg Emulator!\\n\u0022 \u002B\r\n                            \u0022Please download it manually and extract its content into the \\\u0022goldberg\\\u0022 subfolder!\u0022);",
+              "protected": "M:System.Windows.MessageBox.Show(System.String)"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\Services\\GoldbergService.cs",
+            "snippet": "MessageBox.Show(\u0022Could not setup Goldberg Emulator!\\n\u0022 \u002B\r\n                            \u0022Please download it manually and extract its content into the \\\u0022goldberg\\\u0022 subfolder!\u0022);",
+            "protectedSnippet": "M:System.Windows.MessageBox.Show(System.String)",
+            "label": "M:System.Windows.MessageBox.Show(System.String)",
+            "line": 609,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "00b78d2c-3710-49c6-bc72-9832b795fd23",
+          "ruleId": "Api.0003",
+          "description": "Breaking change - Streaming HTTP responses enabled by default in browser HTTP clients ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var contentLength = headResponse.Content.Headers.ContentLength;",
+              "protected": "T:System.Net.Http.HttpContent"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\Services\\GoldbergService.cs",
+            "snippet": "var contentLength = headResponse.Content.Headers.ContentLength;",
+            "protectedSnippet": "T:System.Net.Http.HttpContent",
+            "label": "T:System.Net.Http.HttpContent",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/default-http-streaming.md",
+                "isCustom": false
+              }
+            ],
+            "line": 532,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "aaeb41a1-76d7-410b-99d8-7546eabafe4b",
+          "ruleId": "Api.0003",
+          "description": "Breaking change - Streaming HTTP responses enabled by default in browser HTTP clients ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);",
+              "protected": "T:System.Net.Http.HttpContent"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\Services\\GoldbergService.cs",
+            "snippet": "var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);",
+            "protectedSnippet": "T:System.Net.Http.HttpContent",
+            "label": "T:System.Net.Http.HttpContent",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/default-http-streaming.md",
+                "isCustom": false
+              }
+            ],
+            "line": 492,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "24757499-66ec-4585-97c5-80a7b001f5eb",
+          "ruleId": "Api.0003",
+          "description": "Breaking change - Streaming HTTP responses enabled by default in browser HTTP clients ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var readAsStringAsync = response.Content.ReadAsStringAsync();",
+              "protected": "T:System.Net.Http.HttpContent"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\Services\\SteamService.cs",
+            "snippet": "var readAsStringAsync = response.Content.ReadAsStringAsync();",
+            "protectedSnippet": "T:System.Net.Http.HttpContent",
+            "label": "T:System.Net.Http.HttpContent",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/default-http-streaming.md",
+                "isCustom": false
+              }
+            ],
+            "line": 240,
+            "column": 24
+          }
+        },
+        {
+          "incidentId": "57042257-c354-4e9c-b84b-13fea5f9fc6b",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var steamDbUri = new Uri($\u0022https://steamdb.info/app/{steamApp.AppId}/dlc/\u0022);",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\Services\\SteamService.cs",
+            "snippet": "var steamDbUri = new Uri($\u0022https://steamdb.info/app/{steamApp.AppId}/dlc/\u0022);",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 229,
+            "column": 24
+          }
+        },
+        {
+          "incidentId": "437559d4-ea25-4aad-b041-5e171f3a8d45",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var steamDbUri = new Uri($\u0022https://steamdb.info/app/{steamApp.AppId}/dlc/\u0022);",
+              "protected": "M:System.Uri.#ctor(System.String)"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\Services\\SteamService.cs",
+            "snippet": "var steamDbUri = new Uri($\u0022https://steamdb.info/app/{steamApp.AppId}/dlc/\u0022);",
+            "protectedSnippet": "M:System.Uri.#ctor(System.String)",
+            "label": "M:System.Uri.#ctor(System.String)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 229,
+            "column": 24
+          }
+        },
+        {
+          "incidentId": "4e0a32b8-3695-4ded-b9f8-336002a44b30",
+          "ruleId": "Api.0003",
+          "description": "Nullable JsonDocument properties deserialize to JsonValueKind.Null ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var jsonResponse = JsonDocument.Parse(responseBody);",
+              "protected": "T:System.Text.Json.JsonDocument"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\Services\\SteamService.cs",
+            "snippet": "var jsonResponse = JsonDocument.Parse(responseBody);",
+            "protectedSnippet": "T:System.Text.Json.JsonDocument",
+            "label": "T:System.Text.Json.JsonDocument",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/serialization/9.0/jsondocument-props.md",
+                "isCustom": false
+              }
+            ],
+            "line": 189,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "53c40e2e-6525-492b-86da-6e79dccf1005",
+          "ruleId": "Api.0003",
+          "description": "Nullable JsonDocument properties deserialize to JsonValueKind.Null ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var jsonResponse = JsonDocument.Parse(responseBody);",
+              "protected": "T:System.Text.Json.JsonDocument"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\Services\\SteamService.cs",
+            "snippet": "var jsonResponse = JsonDocument.Parse(responseBody);",
+            "protectedSnippet": "T:System.Text.Json.JsonDocument",
+            "label": "T:System.Text.Json.JsonDocument",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/serialization/9.0/jsondocument-props.md",
+                "isCustom": false
+              }
+            ],
+            "line": 189,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "d61e6248-9234-4670-8b60-8f6d7a894b60",
+          "ruleId": "Api.0003",
+          "description": "Breaking change - Streaming HTTP responses enabled by default in browser HTTP clients ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);",
+              "protected": "T:System.Net.Http.HttpContent"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\Services\\SteamService.cs",
+            "snippet": "var responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);",
+            "protectedSnippet": "T:System.Net.Http.HttpContent",
+            "label": "T:System.Net.Http.HttpContent",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/default-http-streaming.md",
+                "isCustom": false
+              }
+            ],
+            "line": 187,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "ad9056cb-fdf1-4cdf-8c57-fb15f52daf6e",
+          "ruleId": "Api.0003",
+          "description": "Breaking change - Streaming HTTP responses enabled by default in browser HTTP clients ",
+          "projectPath": "GoldbergGUI.Core\\GoldbergGUI.Core.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);",
+              "protected": "T:System.Net.Http.HttpContent"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.Core\\Services\\SteamService.cs",
+            "snippet": "var responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);",
+            "protectedSnippet": "T:System.Net.Http.HttpContent",
+            "label": "T:System.Net.Http.HttpContent",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/default-http-streaming.md",
+                "isCustom": false
+              }
+            ],
+            "line": 122,
+            "column": 24
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "GoldbergGUI.WPF\\GoldbergGUI.WPF.csproj",
+      "startingProject": true,
+      "issues": 3,
+      "storyPoints": 23,
+      "properties": {
+        "appName": "GoldbergGUI.WPF",
+        "projectKind": "Wpf",
+        "frameworks": [
+          "net8.0-windows"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 6,
+        "numberOfCodeFiles": 6,
+        "linesTotal": 96,
+        "linesOfCode": 96,
+        "totalApiScanned": 146,
+        "minLinesOfCodeToChange": 22,
+        "maxLinesOfCodeToChange": 22
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "1daa3a5e-a0d1-40fc-95c0-bf1b3482a76c",
+          "ruleId": "Project.0002",
+          "projectPath": "GoldbergGUI.WPF\\GoldbergGUI.WPF.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net8.0-windows\nRecommended target framework: net10.0-windows",
+              "protected": "Current target framework: net8.0-windows\nRecommended target framework: net10.0-windows"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.WPF\\GoldbergGUI.WPF.csproj",
+            "snippet": "Current target framework: net8.0-windows\nRecommended target framework: net10.0-windows",
+            "protectedSnippet": "Current target framework: net8.0-windows\nRecommended target framework: net10.0-windows",
+            "properties": {
+              "CurrentTargetFramework": "net8.0-windows",
+              "RecommendedTargetFramework": "net10.0-windows"
+            }
+          }
+        },
+        {
+          "incidentId": "99ca19aa-0d66-4a1f-af32-bbc5571f3cb1",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.WPF\\GoldbergGUI.WPF.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "System.Windows.Application.LoadComponent(this, resourceLocater);",
+              "protected": "T:System.Windows.Application"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.WPF\\obj\\Debug\\net8.0-windows\\Views\\SearchResultView.g.i.cs",
+            "snippet": "System.Windows.Application.LoadComponent(this, resourceLocater);",
+            "protectedSnippet": "T:System.Windows.Application",
+            "label": "T:System.Windows.Application",
+            "line": 59,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "f6c36d0e-b03d-41b0-b4b6-0b4a4a379cc0",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.WPF\\GoldbergGUI.WPF.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "System.Windows.Application.LoadComponent(this, resourceLocater);",
+              "protected": "M:System.Windows.Application.LoadComponent(System.Object,System.Uri)"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.WPF\\obj\\Debug\\net8.0-windows\\Views\\SearchResultView.g.i.cs",
+            "snippet": "System.Windows.Application.LoadComponent(this, resourceLocater);",
+            "protectedSnippet": "M:System.Windows.Application.LoadComponent(System.Object,System.Uri)",
+            "label": "M:System.Windows.Application.LoadComponent(System.Object,System.Uri)",
+            "line": 59,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "8184c4c7-4bcd-4d1b-8a79-4afb4c0885f6",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "GoldbergGUI.WPF\\GoldbergGUI.WPF.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "System.Uri resourceLocater = new System.Uri(\u0022/GoldbergGUI.WPF;V1.0.0.0;component/views/searchresultview.xaml\u0022, System.UriKind.Relative);",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.WPF\\obj\\Debug\\net8.0-windows\\Views\\SearchResultView.g.i.cs",
+            "snippet": "System.Uri resourceLocater = new System.Uri(\u0022/GoldbergGUI.WPF;V1.0.0.0;component/views/searchresultview.xaml\u0022, System.UriKind.Relative);",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 56,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "f0cfc996-82b2-474a-852a-0cc0ce4863a5",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "GoldbergGUI.WPF\\GoldbergGUI.WPF.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "System.Uri resourceLocater = new System.Uri(\u0022/GoldbergGUI.WPF;V1.0.0.0;component/views/searchresultview.xaml\u0022, System.UriKind.Relative);",
+              "protected": "M:System.Uri.#ctor(System.String,System.UriKind)"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.WPF\\obj\\Debug\\net8.0-windows\\Views\\SearchResultView.g.i.cs",
+            "snippet": "System.Uri resourceLocater = new System.Uri(\u0022/GoldbergGUI.WPF;V1.0.0.0;component/views/searchresultview.xaml\u0022, System.UriKind.Relative);",
+            "protectedSnippet": "M:System.Uri.#ctor(System.String,System.UriKind)",
+            "label": "M:System.Uri.#ctor(System.String,System.UriKind)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 56,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "549b2565-9abe-47ef-9656-4fa72ae40b7c",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.WPF\\GoldbergGUI.WPF.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "IComponentConnector",
+              "protected": "T:System.Windows.Markup.IComponentConnector"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.WPF\\obj\\Debug\\net8.0-windows\\Views\\SearchResultView.g.i.cs",
+            "snippet": "IComponentConnector",
+            "protectedSnippet": "T:System.Windows.Markup.IComponentConnector",
+            "label": "T:System.Windows.Markup.IComponentConnector",
+            "line": 42,
+            "column": 107
+          }
+        },
+        {
+          "incidentId": "8db446ac-5eb8-4bce-86f5-9c697686f682",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.WPF\\GoldbergGUI.WPF.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "this.ShowOptionalDlcSettings = ((System.Windows.Controls.CheckBox)(target));",
+              "protected": "T:System.Windows.Controls.CheckBox"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.WPF\\obj\\Debug\\net8.0-windows\\Views\\MainView.g.i.cs",
+            "snippet": "this.ShowOptionalDlcSettings = ((System.Windows.Controls.CheckBox)(target));",
+            "protectedSnippet": "T:System.Windows.Controls.CheckBox",
+            "label": "T:System.Windows.Controls.CheckBox",
+            "line": 83,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "10a6fbc4-593b-4f8d-9658-ac5fe365d629",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.WPF\\GoldbergGUI.WPF.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "System.Windows.Application.LoadComponent(this, resourceLocater);",
+              "protected": "T:System.Windows.Application"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.WPF\\obj\\Debug\\net8.0-windows\\Views\\MainView.g.i.cs",
+            "snippet": "System.Windows.Application.LoadComponent(this, resourceLocater);",
+            "protectedSnippet": "T:System.Windows.Application",
+            "label": "T:System.Windows.Application",
+            "line": 67,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "fb97dd67-a64f-403d-a2bb-e0ebaacf83a7",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.WPF\\GoldbergGUI.WPF.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "System.Windows.Application.LoadComponent(this, resourceLocater);",
+              "protected": "M:System.Windows.Application.LoadComponent(System.Object,System.Uri)"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.WPF\\obj\\Debug\\net8.0-windows\\Views\\MainView.g.i.cs",
+            "snippet": "System.Windows.Application.LoadComponent(this, resourceLocater);",
+            "protectedSnippet": "M:System.Windows.Application.LoadComponent(System.Object,System.Uri)",
+            "label": "M:System.Windows.Application.LoadComponent(System.Object,System.Uri)",
+            "line": 67,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "5a940c06-013c-4392-8914-59623fa7b40d",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "GoldbergGUI.WPF\\GoldbergGUI.WPF.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "System.Uri resourceLocater = new System.Uri(\u0022/GoldbergGUI.WPF;V1.0.0.0;component/views/mainview.xaml\u0022, System.UriKind.Relative);",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.WPF\\obj\\Debug\\net8.0-windows\\Views\\MainView.g.i.cs",
+            "snippet": "System.Uri resourceLocater = new System.Uri(\u0022/GoldbergGUI.WPF;V1.0.0.0;component/views/mainview.xaml\u0022, System.UriKind.Relative);",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 64,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "bc017d9f-b11a-452c-bccd-48705064593d",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "GoldbergGUI.WPF\\GoldbergGUI.WPF.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "System.Uri resourceLocater = new System.Uri(\u0022/GoldbergGUI.WPF;V1.0.0.0;component/views/mainview.xaml\u0022, System.UriKind.Relative);",
+              "protected": "M:System.Uri.#ctor(System.String,System.UriKind)"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.WPF\\obj\\Debug\\net8.0-windows\\Views\\MainView.g.i.cs",
+            "snippet": "System.Uri resourceLocater = new System.Uri(\u0022/GoldbergGUI.WPF;V1.0.0.0;component/views/mainview.xaml\u0022, System.UriKind.Relative);",
+            "protectedSnippet": "M:System.Uri.#ctor(System.String,System.UriKind)",
+            "label": "M:System.Uri.#ctor(System.String,System.UriKind)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 64,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "c460b7cf-c533-4903-85bc-ffaf4d88b8ad",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.WPF\\GoldbergGUI.WPF.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "ShowOptionalDlcSettings",
+              "protected": "T:System.Windows.Controls.CheckBox"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.WPF\\obj\\Debug\\net8.0-windows\\Views\\MainView.g.i.cs",
+            "snippet": "ShowOptionalDlcSettings",
+            "protectedSnippet": "T:System.Windows.Controls.CheckBox",
+            "label": "T:System.Windows.Controls.CheckBox",
+            "line": 47,
+            "column": 50
+          }
+        },
+        {
+          "incidentId": "a10a7eb9-308b-4b03-8b23-481be458f13a",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.WPF\\GoldbergGUI.WPF.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "IComponentConnector",
+              "protected": "T:System.Windows.Markup.IComponentConnector"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.WPF\\obj\\Debug\\net8.0-windows\\Views\\MainView.g.i.cs",
+            "snippet": "IComponentConnector",
+            "protectedSnippet": "T:System.Windows.Markup.IComponentConnector",
+            "label": "T:System.Windows.Markup.IComponentConnector",
+            "line": 42,
+            "column": 100
+          }
+        },
+        {
+          "incidentId": "19e843c7-3044-471d-b622-bf7250a775bd",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.WPF\\GoldbergGUI.WPF.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "app.Run();",
+              "protected": "M:System.Windows.Application.Run"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.WPF\\obj\\Debug\\net8.0-windows\\App.g.i.cs",
+            "snippet": "app.Run();",
+            "protectedSnippet": "M:System.Windows.Application.Run",
+            "label": "M:System.Windows.Application.Run",
+            "line": 66,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "8145835c-3425-45e3-945a-bce4ae45ca34",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "GoldbergGUI.WPF\\GoldbergGUI.WPF.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "this.StartupUri = new System.Uri(\u0022MainWindow.xaml\u0022, System.UriKind.Relative);",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.WPF\\obj\\Debug\\net8.0-windows\\App.g.i.cs",
+            "snippet": "this.StartupUri = new System.Uri(\u0022MainWindow.xaml\u0022, System.UriKind.Relative);",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 51,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "656892ff-ed09-421a-9504-b30391e3f006",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "GoldbergGUI.WPF\\GoldbergGUI.WPF.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "this.StartupUri = new System.Uri(\u0022MainWindow.xaml\u0022, System.UriKind.Relative);",
+              "protected": "M:System.Uri.#ctor(System.String,System.UriKind)"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.WPF\\obj\\Debug\\net8.0-windows\\App.g.i.cs",
+            "snippet": "this.StartupUri = new System.Uri(\u0022MainWindow.xaml\u0022, System.UriKind.Relative);",
+            "protectedSnippet": "M:System.Uri.#ctor(System.String,System.UriKind)",
+            "label": "M:System.Uri.#ctor(System.String,System.UriKind)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 51,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "632f9015-8845-4432-93ff-5d092843e8fd",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "GoldbergGUI.WPF\\GoldbergGUI.WPF.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "this.StartupUri = new System.Uri(\u0022MainWindow.xaml\u0022, System.UriKind.Relative);",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.WPF\\obj\\Debug\\net8.0-windows\\App.g.i.cs",
+            "snippet": "this.StartupUri = new System.Uri(\u0022MainWindow.xaml\u0022, System.UriKind.Relative);",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 51,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "262972c0-8dcc-47b7-ad07-cb46cd86cf09",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.WPF\\GoldbergGUI.WPF.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "this.StartupUri = new System.Uri(\u0022MainWindow.xaml\u0022, System.UriKind.Relative);",
+              "protected": "P:System.Windows.Application.StartupUri"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.WPF\\obj\\Debug\\net8.0-windows\\App.g.i.cs",
+            "snippet": "this.StartupUri = new System.Uri(\u0022MainWindow.xaml\u0022, System.UriKind.Relative);",
+            "protectedSnippet": "P:System.Windows.Application.StartupUri",
+            "label": "P:System.Windows.Application.StartupUri",
+            "line": 51,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "17df83f9-4432-45d8-9b23-c0f3c3b5c5e6",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.WPF\\GoldbergGUI.WPF.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "System.Windows.Application.LoadComponent(this, resourceLocater);",
+              "protected": "T:System.Windows.Application"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.WPF\\obj\\Debug\\net8.0-windows\\MainWindow.g.i.cs",
+            "snippet": "System.Windows.Application.LoadComponent(this, resourceLocater);",
+            "protectedSnippet": "T:System.Windows.Application",
+            "label": "T:System.Windows.Application",
+            "line": 58,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "a98464f8-211d-42cd-9379-74495c4b5b79",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.WPF\\GoldbergGUI.WPF.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "System.Windows.Application.LoadComponent(this, resourceLocater);",
+              "protected": "M:System.Windows.Application.LoadComponent(System.Object,System.Uri)"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.WPF\\obj\\Debug\\net8.0-windows\\MainWindow.g.i.cs",
+            "snippet": "System.Windows.Application.LoadComponent(this, resourceLocater);",
+            "protectedSnippet": "M:System.Windows.Application.LoadComponent(System.Object,System.Uri)",
+            "label": "M:System.Windows.Application.LoadComponent(System.Object,System.Uri)",
+            "line": 58,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "122ba498-8be3-4827-b11a-8dc4b434bae3",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "GoldbergGUI.WPF\\GoldbergGUI.WPF.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "System.Uri resourceLocater = new System.Uri(\u0022/GoldbergGUI.WPF;V1.0.0.0;component/mainwindow.xaml\u0022, System.UriKind.Relative);",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.WPF\\obj\\Debug\\net8.0-windows\\MainWindow.g.i.cs",
+            "snippet": "System.Uri resourceLocater = new System.Uri(\u0022/GoldbergGUI.WPF;V1.0.0.0;component/mainwindow.xaml\u0022, System.UriKind.Relative);",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 55,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "9013a161-2134-4854-aab2-72461622706f",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "GoldbergGUI.WPF\\GoldbergGUI.WPF.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "System.Uri resourceLocater = new System.Uri(\u0022/GoldbergGUI.WPF;V1.0.0.0;component/mainwindow.xaml\u0022, System.UriKind.Relative);",
+              "protected": "M:System.Uri.#ctor(System.String,System.UriKind)"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.WPF\\obj\\Debug\\net8.0-windows\\MainWindow.g.i.cs",
+            "snippet": "System.Uri resourceLocater = new System.Uri(\u0022/GoldbergGUI.WPF;V1.0.0.0;component/mainwindow.xaml\u0022, System.UriKind.Relative);",
+            "protectedSnippet": "M:System.Uri.#ctor(System.String,System.UriKind)",
+            "label": "M:System.Uri.#ctor(System.String,System.UriKind)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 55,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "d1a147b0-125e-4308-916b-35f6809e1a8e",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "GoldbergGUI.WPF\\GoldbergGUI.WPF.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "IComponentConnector",
+              "protected": "T:System.Windows.Markup.IComponentConnector"
+            },
+            "kind": "File",
+            "path": "GoldbergGUI.WPF\\obj\\Debug\\net8.0-windows\\MainWindow.g.i.cs",
+            "snippet": "IComponentConnector",
+            "protectedSnippet": "T:System.Windows.Markup.IComponentConnector",
+            "label": "T:System.Windows.Markup.IComponentConnector",
+            "line": 41,
+            "column": 101
+          }
+        }
+      ],
+      "features": [
+        {
+          "featureId": "Wpf",
+          "incidents": [
+            "d1a147b0-125e-4308-916b-35f6809e1a8e",
+            "a10a7eb9-308b-4b03-8b23-481be458f13a",
+            "c460b7cf-c533-4903-85bc-ffaf4d88b8ad",
+            "8db446ac-5eb8-4bce-86f5-9c697686f682",
+            "549b2565-9abe-47ef-9656-4fa72ae40b7c"
+          ]
+        }
+      ]
+    }
+  ],
+  "rules": {
+    "Project.0002": {
+      "id": "Project.0002",
+      "isFeature": false,
+      "description": "Project\u0027s target framework(s) needs to be changed to the new target framework that you selected for this upgrade.\n\nDuring upgrade target framework will be adjusted to corresponding platform when applicable. In some cases project would result in multiple target frameworks after the upgrade if it was using features that now have their own platforms in modern .NET frameworks (windows, iOS, Android etc).",
+      "label": "Project\u0027s target framework(s) needs to be changed",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "title": "Overview of porting from .NET Framework to .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2265227",
+          "isCustom": false
+        },
+        {
+          "title": ".NET project SDKs",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2265226",
+          "isCustom": false
+        }
+      ]
+    },
+    "Api.0003": {
+      "id": "Api.0003",
+      "isFeature": false,
+      "description": "API has a behavioral change in selected .NET version: code and binaries may behave differently at runtime without needing recompilation, but the new behavior might be undesirable and require updates.",
+      "label": "Behavioral change in selected .NET version",
+      "severity": "Potential",
+      "effort": 1
+    },
+    "Api.0001": {
+      "id": "Api.0001",
+      "isFeature": false,
+      "description": "API is binary incompatible for selected .NET version: affects existing binaries, often requiring recompilation, because the API has changed in a way that prevents older binaries from loading or executing.",
+      "label": "Binary incompatible for selected .NET version",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "title": "Breaking changes in .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262679",
+          "isCustom": false
+        }
+      ]
+    },
+    "Api.0002": {
+      "id": "Api.0002",
+      "isFeature": false,
+      "description": "API is source incompatible for selected .NET version: requires code changes to compile successfully when targeting a new version, such as removing obsolete APIs or changing method signatures.",
+      "label": "Source incompatible for selected .NET version",
+      "severity": "Potential",
+      "effort": 1,
+      "links": [
+        {
+          "title": "Breaking changes in .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262679",
+          "isCustom": false
+        }
+      ]
+    },
+    "Wpf": {
+      "id": "Wpf",
+      "isFeature": false,
+      "description": "WPF APIs for building Windows desktop applications with XAML-based UI that are available in .NET on Windows. WPF provides rich desktop UI capabilities with data binding and styling. Enable Windows Desktop support: Option 1 (Recommended): Target net9.0-windows; Option 2: Add \u003CUseWindowsDesktop\u003Etrue\u003C/UseWindowsDesktop\u003E.",
+      "label": "WPF (Windows Presentation Foundation)",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "title": "WPF on .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2342008",
+          "isCustom": false
+        }
+      ]
+    }
+  }
+}
