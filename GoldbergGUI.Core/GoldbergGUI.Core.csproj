@@ -9,12 +9,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AngleSharp" Version="0.14.0" />
-		<PackageReference Include="MvvmCross" Version="7.1.2" />
-		<PackageReference Include="NinjaNye.SearchExtensions" Version="3.0.1" />
-		<PackageReference Include="SharpCompress" Version="0.35.0" />
-		<PackageReference Include="sqlite-net-pcl" Version="1.7.335" />
-		<PackageReference Include="SteamStorefrontAPI" Version="2.0.1.421" />
+		<PackageReference Include="AngleSharp" Version="1.4.0" />
+		<PackageReference Include="MvvmCross" Version="10.1.2" />
+		<PackageReference Include="NinjaNye.SearchExtensions" Version="4.0.1" />
+		<PackageReference Include="SharpCompress" Version="0.44.0" />
+		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
+		<PackageReference Include="SteamStorefrontAPI" Version="3.0.0.1471" />
 	</ItemGroup>
 
 </Project>

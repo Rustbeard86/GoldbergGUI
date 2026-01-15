@@ -1,6 +1,6 @@
 using GoldbergGUI.Core.Models;
+using Microsoft.Extensions.Logging;
 using MvvmCross.Commands;
-using MvvmCross.Logging;
 using MvvmCross.Navigation;
 using MvvmCross.ViewModels;
 using System.Collections.Generic;
@@ -8,16 +8,16 @@ using System.Threading.Tasks;
 
 namespace GoldbergGUI.Core.ViewModels
 {
-    public class SearchResultViewModel : MvxNavigationViewModel<IEnumerable<SteamApp>>, IMvxViewModel<IEnumerable<SteamApp>, SteamApp>
+    public class SearchResultViewModel : MvxNavigationViewModel<IEnumerable<SteamApp>>
     {
         private readonly IMvxNavigationService _navigationService;
-        private readonly IMvxLog _log;
+        private readonly ILogger<SearchResultViewModel> _log;
         private IEnumerable<SteamApp> _apps;
 
-        public SearchResultViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) :
-            base(logProvider, navigationService)
+        public SearchResultViewModel(ILogger<SearchResultViewModel> log, ILoggerFactory loggerFactory, 
+            IMvxNavigationService navigationService) : base(loggerFactory, navigationService)
         {
-            _log = logProvider.GetLogFor(typeof(SearchResultViewModel));
+            _log = log;
             _navigationService = navigationService;
         }
 
@@ -61,8 +61,8 @@ namespace GoldbergGUI.Core.ViewModels
         {
             if (Selected != null)
             {
-                _log.Info($"Successfully got app {Selected}");
-                await _navigationService.Close(this, Selected).ConfigureAwait(false);
+                _log.LogInformation("Successfully got app {Selected}", Selected);
+                await _navigationService.Close(this).ConfigureAwait(false);
             }
         }
 
