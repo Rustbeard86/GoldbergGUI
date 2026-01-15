@@ -13,17 +13,16 @@ public class SearchResultViewModel(
     : MvxNavigationViewModel<IEnumerable<SteamApp>>(loggerFactory, navigationService)
 {
     private readonly IMvxNavigationService _navigationService = navigationService;
-    private IEnumerable<SteamApp> _apps = [];
 
     public IEnumerable<SteamApp> Apps
     {
-        get => _apps;
+        get => field;
         set
         {
-            _apps = value;
+            field = value;
             RaisePropertyChanged(() => Apps);
         }
-    }
+    } = [];
 
     public SteamApp? Selected { get; set; }
 
@@ -40,8 +39,7 @@ public class SearchResultViewModel(
 
     public override void ViewDestroy(bool viewFinishing = true)
     {
-        if (viewFinishing && CloseCompletionSource != null && !CloseCompletionSource.Task.IsCompleted &&
-            !CloseCompletionSource.Task.IsFaulted)
+        if (viewFinishing && CloseCompletionSource is { Task.IsCompleted: false, Task.IsFaulted: false })
             CloseCompletionSource?.TrySetCanceled();
 
         base.ViewDestroy(viewFinishing);

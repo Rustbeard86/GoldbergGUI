@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using GoldbergGUI.Core.Models;
 using GoldbergGUI.Core.Services;
@@ -30,52 +25,37 @@ public partial class MainViewModel(
     : MvxNavigationViewModel(loggerFactory, navigationService)
 {
     private readonly IMvxNavigationService _navigationService = navigationService;
-    private string _accountName = string.Empty;
-    private ObservableCollection<Achievement> _achievements = [];
-    private int _appId;
-    private bool _disableNetworking;
-    private bool _disableOverlay;
-    private ObservableCollection<DlcApp> _dlcs = [];
-    private string _dllPath = "Path to game's steam_api(64).dll";
-    private string _gameName = "Game name...";
-    private bool _goldbergApplied;
-    private bool _mainWindowEnabled;
-    private bool _offline;
-    private string _selectedLanguage = string.Empty;
-    private string _statusText = string.Empty;
-    private long _steamId;
-    private ObservableCollection<string> _steamLanguages = [];
 
     // PROPERTIES //
 
     public string DllPath
     {
-        get => _dllPath;
+        get => field;
         private set
         {
-            _dllPath = value;
+            field = value;
             RaisePropertyChanged(() => DllPath);
             RaisePropertyChanged(() => DllSelected);
             RaisePropertyChanged(() => SteamInterfacesTxtExists);
         }
-    }
+    } = "Path to game's steam_api(64).dll";
 
     public string GameName
     {
-        get => _gameName;
+        get => field;
         set
         {
-            _gameName = value;
+            field = value;
             RaisePropertyChanged(() => GameName);
         }
-    }
+    } = "Game name...";
 
     public int AppId
     {
-        get => _appId;
+        get => field;
         set
         {
-            _appId = value;
+            field = value;
             RaisePropertyChanged(() => AppId);
             Task.Run(async () => await GetNameById().ConfigureAwait(false));
         }
@@ -84,92 +64,92 @@ public partial class MainViewModel(
     // ReSharper disable once InconsistentNaming
     public ObservableCollection<DlcApp> DLCs
     {
-        get => _dlcs;
+        get => field;
         set
         {
-            _dlcs = value;
+            field = value;
             RaisePropertyChanged(() => DLCs);
             /*RaisePropertyChanged(() => DllSelected);
             RaisePropertyChanged(() => SteamInterfacesTxtExists);*/
         }
-    }
+    } = [];
 
     public ObservableCollection<Achievement> Achievements
     {
-        get => _achievements;
+        get => field;
         set
         {
-            _achievements = value;
+            field = value;
             RaisePropertyChanged(() => Achievements);
         }
-    }
+    } = [];
 
     public string AccountName
     {
-        get => _accountName;
+        get => field;
         set
         {
-            _accountName = value;
+            field = value;
             RaisePropertyChanged(() => AccountName);
         }
-    }
+    } = string.Empty;
 
     public long SteamId
     {
-        get => _steamId;
+        get => field;
         set
         {
-            _steamId = value;
+            field = value;
             RaisePropertyChanged(() => SteamId);
         }
     }
 
     public bool Offline
     {
-        get => _offline;
+        get => field;
         set
         {
-            _offline = value;
+            field = value;
             RaisePropertyChanged(() => Offline);
         }
     }
 
     public bool DisableNetworking
     {
-        get => _disableNetworking;
+        get => field;
         set
         {
-            _disableNetworking = value;
+            field = value;
             RaisePropertyChanged(() => DisableNetworking);
         }
     }
 
     public bool DisableOverlay
     {
-        get => _disableOverlay;
+        get => field;
         set
         {
-            _disableOverlay = value;
+            field = value;
             RaisePropertyChanged(() => DisableOverlay);
         }
     }
 
     public bool MainWindowEnabled
     {
-        get => _mainWindowEnabled;
+        get => field;
         set
         {
-            _mainWindowEnabled = value;
+            field = value;
             RaisePropertyChanged(() => MainWindowEnabled);
         }
     }
 
     public bool GoldbergApplied
     {
-        get => _goldbergApplied;
+        get => field;
         set
         {
-            _goldbergApplied = value;
+            field = value;
             RaisePropertyChanged(() => GoldbergApplied);
         }
     }
@@ -179,7 +159,8 @@ public partial class MainViewModel(
         get
         {
             var dllPathDirExists = GetDllPathDir(out var dirPath);
-            return dllPathDirExists && dirPath is not null && !File.Exists(Path.Combine(dirPath, "steam_interfaces.txt"));
+            return dllPathDirExists && dirPath is not null &&
+                   !File.Exists(Path.Combine(dirPath, "steam_interfaces.txt"));
         }
     }
 
@@ -195,34 +176,34 @@ public partial class MainViewModel(
 
     public ObservableCollection<string> SteamLanguages
     {
-        get => _steamLanguages;
+        get => field;
         set
         {
-            _steamLanguages = value;
+            field = value;
             RaisePropertyChanged(() => SteamLanguages);
         }
-    }
+    } = [];
 
     public string SelectedLanguage
     {
-        get => _selectedLanguage;
+        get => field;
         set
         {
-            _selectedLanguage = value;
+            field = value;
             RaisePropertyChanged(() => SelectedLanguage);
             //MyLogger.Log.Debug($"Lang: {value}");
         }
-    }
+    } = string.Empty;
 
     public string StatusText
     {
-        get => _statusText;
+        get => field;
         set
         {
-            _statusText = value;
+            field = value;
             RaisePropertyChanged(() => StatusText);
         }
-    }
+    } = string.Empty;
 
     public static string AboutVersionText =>
         FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion ?? "Unknown";
@@ -366,7 +347,7 @@ public partial class MainViewModel(
 
         MainWindowEnabled = false;
         StatusText = "Trying to find AppID...";
-        var appByName = await steam.GetAppByName(_gameName).ConfigureAwait(false);
+        var appByName = await steam.GetAppByName(GameName).ConfigureAwait(false);
         if (appByName != null)
         {
             GameName = appByName.Name;
@@ -379,15 +360,8 @@ public partial class MainViewModel(
             if (steamApps.Length == 1)
             {
                 var steamApp = steamApps[0];
-                if (steamApp != null)
-                {
-                    GameName = steamApp.Name;
-                    AppId = steamApp.AppId;
-                }
-                else
-                {
-                    await FindIdInList(steamApps).ConfigureAwait(false);
-                }
+                GameName = steamApp.Name;
+                AppId = steamApp.AppId;
             }
             else
             {
@@ -541,7 +515,7 @@ public partial class MainViewModel(
         var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "Goldberg SteamEmu Saves", "settings");
         var start = Process.Start("explorer.exe", path);
-        start?.Dispose();
+        start.Dispose();
     }
 
     // OTHER METHODS //
@@ -595,6 +569,6 @@ public partial class MainViewModel(
         return false;
     }
 
-    [GeneratedRegex(@"(?<id>.*) *= *(?<name>.*)")]
+    [GeneratedRegex("(?<id>.*) *= *(?<name>.*)")]
     private static partial Regex PrecompDLCExpression();
 }

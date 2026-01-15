@@ -1,5 +1,4 @@
-using System;
-using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
 // ReSharper disable ClassNeverInstantiated.Global
@@ -81,7 +80,7 @@ public class DlcApp : SteamApp
     {
     }
 
-    [System.Diagnostics.CodeAnalysis.SetsRequiredMembers]
+    [SetsRequiredMembers]
     public DlcApp(SteamApp steamApp)
     {
         AppId = steamApp.AppId;
@@ -158,41 +157,29 @@ public sealed record Achievement
 
 public sealed record Item
 {
-    [JsonPropertyName("Timestamp")] 
-    public required DateTimeOffset Timestamp { get; init; }
+    [JsonPropertyName("Timestamp")] public required DateTimeOffset Timestamp { get; init; }
 
-    [JsonPropertyName("modified")] 
-    public required string Modified { get; init; }
+    [JsonPropertyName("modified")] public required string Modified { get; init; }
 
-    [JsonPropertyName("date_created")] 
-    public required string DateCreated { get; init; }
+    [JsonPropertyName("date_created")] public required string DateCreated { get; init; }
 
-    [JsonPropertyName("type")] 
-    public required string Type { get; init; }
+    [JsonPropertyName("type")] public required string Type { get; init; }
 
-    [JsonPropertyName("display_type")] 
-    public required string DisplayType { get; init; }
+    [JsonPropertyName("display_type")] public required string DisplayType { get; init; }
 
-    [JsonPropertyName("name")] 
-    public required string Name { get; init; }
+    [JsonPropertyName("name")] public required string Name { get; init; }
 
-    [JsonPropertyName("bundle")] 
-    public string? Bundle { get; init; }
+    [JsonPropertyName("bundle")] public string? Bundle { get; init; }
 
-    [JsonPropertyName("description")] 
-    public required string Description { get; init; }
+    [JsonPropertyName("description")] public required string Description { get; init; }
 
-    [JsonPropertyName("background_color")] 
-    public required string BackgroundColor { get; init; }
+    [JsonPropertyName("background_color")] public required string BackgroundColor { get; init; }
 
-    [JsonPropertyName("icon_url")] 
-    public required Uri IconUrl { get; init; }
+    [JsonPropertyName("icon_url")] public required Uri IconUrl { get; init; }
 
-    [JsonPropertyName("icon_url_large")] 
-    public required Uri IconUrlLarge { get; init; }
+    [JsonPropertyName("icon_url_large")] public required Uri IconUrlLarge { get; init; }
 
-    [JsonPropertyName("name_color")] 
-    public required string NameColor { get; init; }
+    [JsonPropertyName("name_color")] public required string NameColor { get; init; }
 
     [JsonPropertyName("tradable")]
     // [JsonConverter(typeof(PurpleParseStringConverter))]
@@ -227,33 +214,25 @@ public sealed record Item
     // [JsonConverter(typeof(FluffyParseStringConverter))]
     public required long ItemQuality { get; init; }
 
-    [JsonPropertyName("tw_price")] 
-    public string? TwPrice { get; init; }
+    [JsonPropertyName("tw_price")] public string? TwPrice { get; init; }
 
-    [JsonPropertyName("tw_type")] 
-    public string? TwType { get; init; }
+    [JsonPropertyName("tw_type")] public string? TwType { get; init; }
 
     [JsonPropertyName("tw_client_visible")]
     // [JsonConverter(typeof(FluffyParseStringConverter))]
     public required long TwClientVisible { get; init; }
 
-    [JsonPropertyName("tw_icon_small")] 
-    public string? TwIconSmall { get; init; }
+    [JsonPropertyName("tw_icon_small")] public string? TwIconSmall { get; init; }
 
-    [JsonPropertyName("tw_icon_large")] 
-    public string? TwIconLarge { get; init; }
+    [JsonPropertyName("tw_icon_large")] public string? TwIconLarge { get; init; }
 
-    [JsonPropertyName("tw_description")] 
-    public string? TwDescription { get; init; }
+    [JsonPropertyName("tw_description")] public string? TwDescription { get; init; }
 
-    [JsonPropertyName("tw_client_name")] 
-    public string? TwClientName { get; init; }
+    [JsonPropertyName("tw_client_name")] public string? TwClientName { get; init; }
 
-    [JsonPropertyName("tw_client_type")] 
-    public string? TwClientType { get; init; }
+    [JsonPropertyName("tw_client_type")] public string? TwClientType { get; init; }
 
-    [JsonPropertyName("tw_rarity")] 
-    public string? TwRarity { get; init; }
+    [JsonPropertyName("tw_rarity")] public string? TwRarity { get; init; }
 }
 
 public sealed record Leaderboard

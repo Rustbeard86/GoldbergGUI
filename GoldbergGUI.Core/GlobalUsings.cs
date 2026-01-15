@@ -1,4 +1,5 @@
 // Global usings for the project
+
 global using System;
 global using System.Collections.Generic;
 global using System.IO;

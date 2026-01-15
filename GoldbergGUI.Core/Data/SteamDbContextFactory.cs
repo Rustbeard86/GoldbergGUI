@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Design;
 namespace GoldbergGUI.Core.Data;
 
 /// <summary>
-/// Design-time factory for creating SteamDbContext instances for EF Core tools
+///     Design-time factory for creating SteamDbContext instances for EF Core tools
 /// </summary>
 public sealed class SteamDbContextFactory : IDesignTimeDbContextFactory<SteamDbContext>
 {

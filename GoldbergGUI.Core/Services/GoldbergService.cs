@@ -1,16 +1,15 @@
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+using System.Windows;
 using GoldbergGUI.Core.Models;
 using GoldbergGUI.Core.Utils;
 using Microsoft.Extensions.Logging;
 using SharpCompress.Archives.SevenZip;
 using SharpCompress.Common;
 using SharpCompress.Readers;
-using System.Text.Encodings.Web;
-using System.Text.Json;
-using System.Text.RegularExpressions;
-using System.Windows;
 
 namespace GoldbergGUI.Core.Services;
-
 
 // downloads and updates goldberg emu
 // sets up config files
@@ -109,7 +108,7 @@ public partial class GoldbergService(ILogger<GoldbergService> log) : IGoldbergSe
             if (File.Exists(_accountNamePath)) accountName = File.ReadLines(_accountNamePath).First().Trim();
             if (File.Exists(_userSteamIdPath) &&
                 !long.TryParse(File.ReadLines(_userSteamIdPath).First().Trim(), out steamId) &&
-                steamId < 76561197960265729 && steamId > 76561202255233023)
+                steamId is < 76561197960265729 or > 76561202255233023)
             {
                 log.LogError("Invalid User Steam ID! Using default Steam ID...");
                 steamId = DefaultSteamId;
@@ -154,7 +153,7 @@ public partial class GoldbergService(ILogger<GoldbergService> log) : IGoldbergSe
         }
 
         // User SteamID
-        if (userSteamId >= 76561197960265729 && userSteamId <= 76561202255233023)
+        if (userSteamId is >= 76561197960265729 and <= 76561202255233023)
         {
             log.LogInformation("Setting user Steam ID...");
             if (!File.Exists(_userSteamIdPath))
@@ -186,7 +185,7 @@ public partial class GoldbergService(ILogger<GoldbergService> log) : IGoldbergSe
         }
 
         // Custom Broadcast IPs
-        if (customBroadcastIps != null && customBroadcastIps.Count > 0)
+        if (customBroadcastIps is { Count: > 0 })
         {
             log.LogInformation("Setting custom broadcast IPs...");
             var result =
@@ -538,24 +537,22 @@ public partial class GoldbergService(ILogger<GoldbergService> log) : IGoldbergSe
             var headResponse = await client.SendAsync(httpRequestMessage).ConfigureAwait(false);
             var contentLength = headResponse.Content.Headers.ContentLength;
 
-            await client.GetFileAsync(downloadUrl, fileStream).ContinueWith(async t =>
-            {
-                // ReSharper disable once AccessToDisposedClosure
-                await fileStream.DisposeAsync().ConfigureAwait(false);
-                var fileLength = new FileInfo(_goldbergArchivePath).Length;
+            await client.GetFileAsync(downloadUrl, fileStream).ConfigureAwait(false);
+            await fileStream.DisposeAsync().ConfigureAwait(false);
 
-                if (contentLength == fileLength)
-                {
-                    log.LogInformation("Download finished!");
-                    // Save release tag for future comparison
-                    var releaseTagPath = Path.Combine(_goldbergPath, "release_tag");
-                    await File.WriteAllTextAsync(releaseTagPath, releaseTag).ConfigureAwait(false);
-                }
-                else
-                {
-                    throw new Exception("File size does not match!");
-                }
-            }).ConfigureAwait(false);
+            var fileLength = new FileInfo(_goldbergArchivePath).Length;
+
+            if (contentLength == fileLength)
+            {
+                log.LogInformation("Download finished!");
+                // Save release tag for future comparison
+                var releaseTagPath = Path.Combine(_goldbergPath, "release_tag");
+                await File.WriteAllTextAsync(releaseTagPath, releaseTag).ConfigureAwait(false);
+            }
+            else
+            {
+                throw new Exception("File size does not match!");
+            }
         }
         catch (Exception e)
         {
@@ -708,10 +705,10 @@ public partial class GoldbergService(ILogger<GoldbergService> log) : IGoldbergSe
         await File.WriteAllBytesAsync(targetPath, imageBytes);
     }
 
-    [GeneratedRegex(@"(?<id>.*) *= *(?<name>.*)")]
+    [GeneratedRegex("(?<id>.*) *= *(?<name>.*)")]
     private static partial Regex PrecompDLCExpression();
 
-    [GeneratedRegex(@"(?<id>.*) *= *(?<appPath>.*)")]
+    [GeneratedRegex("(?<id>.*) *= *(?<appPath>.*)")]
     private static partial Regex PrecompAppPathExpression();
 
     [GeneratedRegex(@"STEAMCONTROLLER_INTERFACE_VERSION\d{3}")]

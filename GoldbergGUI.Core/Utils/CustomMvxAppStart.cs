@@ -1,5 +1,3 @@
-using System;
-using System.Threading.Tasks;
 using MvvmCross.Exceptions;
 using MvvmCross.Navigation;
 using MvvmCross.ViewModels;
