@@ -7,7 +7,7 @@ namespace GoldbergGUI.Core.Utils;
 /// </summary>
 public sealed class IniFileWriter
 {
-    private readonly Dictionary<string, Dictionary<string, string>> _sections = new();
+    private readonly Dictionary<string, Dictionary<string, string>> _sections = [];
 
     /// <summary>
     ///     Adds or updates a section with key-value pairs
@@ -26,7 +26,7 @@ public sealed class IniFileWriter
     /// </summary>
     public void AddToSection(string sectionName, string key, string value)
     {
-        if (!_sections.ContainsKey(sectionName)) _sections[sectionName] = new Dictionary<string, string>();
+        if (!_sections.ContainsKey(sectionName)) _sections[sectionName] = [];
 
         _sections[sectionName][key] = value;
     }

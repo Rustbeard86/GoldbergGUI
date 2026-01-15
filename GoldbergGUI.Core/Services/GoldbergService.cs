@@ -35,31 +35,22 @@ public partial class GoldbergService(
     GoldbergConfigurationManager configManager,
     GoldbergConfigurationReader configReader) : IGoldbergService
 {
-    private const string DefaultAccountName = "Mr_Goldberg";
+    private const string DefaultAccountName = "Goldberg";
     private const long DefaultSteamId = 76561197960287930;
     private const string DefaultLanguage = "english";
     private const string GoldbergApiUrl = "https://api.github.com/repos/Detanup01/gbe_fork/releases/latest";
     private const string AssetName = "emu-win-release.7z";
 
-    private static readonly string GlobalSettingsPath =
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "Goldberg SteamEmu Saves");
-
-    private static readonly string AppSettingsPath =
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "GoldbergGUI");
-
-    private readonly string _accountNamePath = Path.Combine(GlobalSettingsPath, "settings/account_name.txt");
-
-    private readonly string _customBroadcastIpsPath =
-        Path.Combine(GlobalSettingsPath, "settings/custom_broadcasts.txt");
-
-    private readonly string _experimentalPath = Path.Combine(AppSettingsPath, "experimental.txt");
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        WriteIndented = true
+    };
 
     private readonly string _goldbergArchivePath = Path.Combine(Directory.GetCurrentDirectory(), "goldberg.7z");
     private readonly string _goldbergPath = Path.Combine(Directory.GetCurrentDirectory(), "goldberg");
-    private readonly string _languagePath = Path.Combine(GlobalSettingsPath, "settings/language.txt");
-    private readonly string _userSteamIdPath = Path.Combine(GlobalSettingsPath, "settings/user_steam_id.txt");
+
+    // Paths - adjacent to application
+    private readonly string _guiSettingsPath = Path.Combine(Directory.GetCurrentDirectory(), "gui_settings.json");
 
     // ReSharper disable StringLiteralTypo
     private readonly List<string> _interfaceNames =
@@ -137,128 +128,71 @@ public partial class GoldbergService(
     public async Task<GoldbergGlobalConfiguration> GetGlobalSettings()
     {
         log.LogInformation("Getting global settings...");
-        var accountName = DefaultAccountName;
-        var steamId = DefaultSteamId;
-        var language = DefaultLanguage;
-        var customBroadcastIps = new List<string>();
-        var useExperimental = false;
-        if (!File.Exists(GlobalSettingsPath)) Directory.CreateDirectory(Path.Join(GlobalSettingsPath, "settings"));
-        await Task.Run(() =>
-        {
-            if (File.Exists(_accountNamePath)) accountName = File.ReadLines(_accountNamePath).First().Trim();
-            if (File.Exists(_userSteamIdPath) &&
-                !long.TryParse(File.ReadLines(_userSteamIdPath).First().Trim(), out steamId) &&
-                steamId is < 76561197960265729 or > 76561202255233023)
-            {
-                log.LogError("Invalid User Steam ID! Using default Steam ID...");
-                steamId = DefaultSteamId;
-            }
 
-            if (File.Exists(_languagePath)) language = File.ReadLines(_languagePath).First().Trim();
-            if (File.Exists(_customBroadcastIpsPath))
-                customBroadcastIps.AddRange(
-                    File.ReadLines(_customBroadcastIpsPath).Select(line => line.Trim()));
-            if (File.Exists(_experimentalPath)) useExperimental = true;
-        }).ConfigureAwait(false);
+        GuiSettings settings;
+
+        if (File.Exists(_guiSettingsPath))
+        {
+            try
+            {
+                var json = await File.ReadAllTextAsync(_guiSettingsPath).ConfigureAwait(false);
+                settings = JsonSerializer.Deserialize<GuiSettings>(json, JsonOptions) ?? CreateDefaultSettings();
+                log.LogInformation("Loaded settings from gui_settings.json");
+            }
+            catch (Exception ex)
+            {
+                log.LogError(ex, "Failed to read gui_settings.json, using defaults");
+                settings = CreateDefaultSettings();
+            }
+        }
+        else
+        {
+            log.LogInformation("gui_settings.json not found, using defaults");
+            settings = CreateDefaultSettings();
+        }
+
         log.LogInformation("Got global settings.");
         return new GoldbergGlobalConfiguration
         {
-            AccountName = accountName,
-            UserSteamId = steamId,
-            Language = language,
-            CustomBroadcastIps = customBroadcastIps,
-            UseExperimental = useExperimental
+            AccountName = settings.DefaultAccountName,
+            UserSteamId = settings.DefaultUserSteamId,
+            Language = settings.DefaultLanguage,
+            CustomBroadcastIps = settings.DefaultCustomBroadcastIps ?? [],
+            UseExperimental = settings.UseExperimental
         };
     }
 
     public async Task SetGlobalSettings(GoldbergGlobalConfiguration c)
     {
-        var accountName = c.AccountName;
-        var userSteamId = c.UserSteamId;
-        var language = c.Language;
-        var customBroadcastIps = c.CustomBroadcastIps;
         log.LogInformation("Setting global settings...");
-        // Account Name
-        if (!string.IsNullOrEmpty(accountName))
-        {
-            log.LogInformation("Setting account name...");
-            if (!File.Exists(_accountNamePath))
-                await File.Create(_accountNamePath).DisposeAsync().ConfigureAwait(false);
-            await File.WriteAllTextAsync(_accountNamePath, accountName).ConfigureAwait(false);
-        }
-        else
-        {
-            log.LogInformation("Invalid account name! Skipping...");
-            if (!File.Exists(_accountNamePath))
-                await File.Create(_accountNamePath).DisposeAsync().ConfigureAwait(false);
-            await File.WriteAllTextAsync(_accountNamePath, DefaultAccountName).ConfigureAwait(false);
-        }
 
-        // User SteamID
-        if (userSteamId is >= 76561197960265729 and <= 76561202255233023)
-        {
-            log.LogInformation("Setting user Steam ID...");
-            if (!File.Exists(_userSteamIdPath))
-                await File.Create(_userSteamIdPath).DisposeAsync().ConfigureAwait(false);
-            await File.WriteAllTextAsync(_userSteamIdPath, userSteamId.ToString()).ConfigureAwait(false);
-        }
-        else
-        {
-            log.LogInformation("Invalid user Steam ID! Skipping...");
-            if (!File.Exists(_userSteamIdPath))
-                await File.Create(_userSteamIdPath).DisposeAsync().ConfigureAwait(false);
-            await File.WriteAllTextAsync(_userSteamIdPath, DefaultSteamId.ToString()).ConfigureAwait(false);
-        }
+        // Validate and use defaults if invalid
+        var accountName = string.IsNullOrWhiteSpace(c.AccountName) ? DefaultAccountName : c.AccountName;
+        var userSteamId = c.UserSteamId is >= 76561197960265729 and <= 76561202255233023
+            ? c.UserSteamId
+            : DefaultSteamId;
+        var language = string.IsNullOrWhiteSpace(c.Language) ? DefaultLanguage : c.Language;
 
-        // Language
-        if (!string.IsNullOrEmpty(language))
-        {
-            log.LogInformation("Setting language...");
-            if (!File.Exists(_languagePath))
-                await File.Create(_languagePath).DisposeAsync().ConfigureAwait(false);
-            await File.WriteAllTextAsync(_languagePath, language).ConfigureAwait(false);
-        }
-        else
-        {
-            log.LogInformation("Invalid language! Skipping...");
-            if (!File.Exists(_languagePath))
-                await File.Create(_languagePath).DisposeAsync().ConfigureAwait(false);
-            await File.WriteAllTextAsync(_languagePath, DefaultLanguage).ConfigureAwait(false);
-        }
+        if (string.IsNullOrWhiteSpace(c.AccountName))
+            log.LogWarning("Invalid account name provided, using default: {DefaultAccountName}", DefaultAccountName);
+        if (c.UserSteamId is < 76561197960265729 or > 76561202255233023)
+            log.LogWarning("Invalid Steam ID provided, using default: {DefaultSteamId}", DefaultSteamId);
+        if (string.IsNullOrWhiteSpace(c.Language))
+            log.LogWarning("Invalid language provided, using default: {DefaultLanguage}", DefaultLanguage);
 
-        // Custom Broadcast IPs
-        if (customBroadcastIps is { Count: > 0 })
+        var settings = new GuiSettings
         {
-            log.LogInformation("Setting custom broadcast IPs...");
-            var result =
-                customBroadcastIps.Aggregate("", (current, address) => $"{current}{address}\n");
-            if (!File.Exists(_customBroadcastIpsPath))
-                await File.Create(_customBroadcastIpsPath).DisposeAsync().ConfigureAwait(false);
-            await File.WriteAllTextAsync(_customBroadcastIpsPath, result).ConfigureAwait(false);
-        }
-        else
-        {
-            log.LogInformation("Empty list of custom broadcast IPs! Skipping...");
-            await Task.Run(() => File.Delete(_customBroadcastIpsPath)).ConfigureAwait(false);
-        }
+            DefaultAccountName = accountName,
+            DefaultUserSteamId = userSteamId,
+            DefaultLanguage = language,
+            DefaultCustomBroadcastIps = c.CustomBroadcastIps?.Count > 0 ? c.CustomBroadcastIps : null,
+            UseExperimental = c.UseExperimental
+        };
 
-        // Experimental (GoldbergGUI application setting)
-        if (c.UseExperimental)
-        {
-            log.LogInformation("Enabling experimental build (app setting stored in {AppSettingsPath})...",
-                AppSettingsPath);
-            Directory.CreateDirectory(AppSettingsPath);
-            if (!File.Exists(_experimentalPath))
-                await File.Create(_experimentalPath).DisposeAsync().ConfigureAwait(false);
-        }
-        else
-        {
-            log.LogInformation("Using regular build...");
-            if (File.Exists(_experimentalPath))
-                File.Delete(_experimentalPath);
-        }
+        var json = JsonSerializer.Serialize(settings, JsonOptions);
+        await File.WriteAllTextAsync(_guiSettingsPath, json).ConfigureAwait(false);
 
-        log.LogInformation("Setting global configuration finished.");
+        log.LogInformation("Global settings saved to gui_settings.json");
     }
 
     // Read modern configuration using the new format
@@ -304,14 +238,43 @@ public partial class GoldbergService(
         log.LogInformation("Configuration saved successfully!");
     }
 
+    private static GuiSettings CreateDefaultSettings()
+    {
+        return new GuiSettings
+        {
+            DefaultAccountName = DefaultAccountName,
+            DefaultUserSteamId = DefaultSteamId,
+            DefaultLanguage = DefaultLanguage,
+            DefaultCustomBroadcastIps = null,
+            UseExperimental = false
+        };
+    }
+
+    private async Task<GuiSettings> GetGuiSettings()
+    {
+        if (!File.Exists(_guiSettingsPath)) return CreateDefaultSettings();
+
+        try
+        {
+            var json = await File.ReadAllTextAsync(_guiSettingsPath).ConfigureAwait(false);
+            return JsonSerializer.Deserialize<GuiSettings>(json, JsonOptions) ?? CreateDefaultSettings();
+        }
+        catch (Exception ex)
+        {
+            log.LogError(ex, "Failed to read gui_settings.json");
+            return CreateDefaultSettings();
+        }
+    }
+
     private void CopyDllFiles(string path, string name)
     {
         var steamApiDll = Path.Combine(path, $"{name}.dll");
         var originalDll = Path.Combine(path, $"{name}_o.dll");
         var guiBackup = Path.Combine(path, $".{name}.dll.GOLDBERGGUIBACKUP");
 
-        // Determine build type (experimental or regular)
-        var buildType = File.Exists(_experimentalPath) ? "experimental" : "regular";
+        // Get experimental setting from GUI settings
+        var settings = GetGuiSettings().GetAwaiter().GetResult();
+        var buildType = settings.UseExperimental ? "experimental" : "regular";
 
         // Determine architecture (x32 or x64)
         var architecture = name.Contains("64") ? "x64" : "x32";
@@ -455,8 +418,19 @@ public partial class GoldbergService(
     {
         var errorOccured = false;
         log.LogDebug("Start extraction...");
+
+        // Preserve release_tag file before deletion
+        var releaseTagPath = Path.Combine(_goldbergPath, "release_tag");
+        string? releaseTagContent = null;
+        if (File.Exists(releaseTagPath))
+            releaseTagContent = await File.ReadAllTextAsync(releaseTagPath).ConfigureAwait(false);
+
         Directory.Delete(_goldbergPath, true);
         Directory.CreateDirectory(_goldbergPath);
+
+        // Restore release_tag file after directory recreation
+        if (releaseTagContent is not null)
+            await File.WriteAllTextAsync(releaseTagPath, releaseTagContent).ConfigureAwait(false);
 
         await Task.Run(() =>
         {

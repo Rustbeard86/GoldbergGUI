@@ -146,7 +146,7 @@ public sealed class GoldbergConfigurationReader(ILogger<GoldbergConfigurationRea
                 continue;
             }
 
-            if (trimmed.StartsWith("["))
+            if (trimmed.StartsWith('['))
             {
                 inDlcSection = false;
                 inPathsSection = false;
@@ -173,7 +173,7 @@ public sealed class GoldbergConfigurationReader(ILogger<GoldbergConfigurationRea
                 if (int.TryParse(parts[0], out var appId))
                 {
                     var dlc = dlcList.FirstOrDefault(d => d.AppId == appId);
-                    if (dlc != null) dlc.AppPath = parts[1];
+                    dlc?.AppPath = parts[1];
                 }
             }
         }

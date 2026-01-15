@@ -378,13 +378,16 @@ public sealed partial class SteamService(
                 if (steamStats == null) return [];
 
                 // Convert to Goldberg format
-                return steamStats.Select(s => new Stat
-                {
-                    Name = s.Name,
-                    Default = s.DefaultValue.ToString(CultureInfo.InvariantCulture),
-                    Global = "0",
-                    Type = InferStatType(s.DefaultValue)
-                }).ToList();
+                return
+                [
+                    .. steamStats.Select(s => new Stat
+                    {
+                        Name = s.Name,
+                        Default = s.DefaultValue.ToString(CultureInfo.InvariantCulture),
+                        Global = "0",
+                        Type = InferStatType(s.DefaultValue)
+                    })
+                ];
             }
         }
         catch (Exception ex)

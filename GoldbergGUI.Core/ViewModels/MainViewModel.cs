@@ -170,7 +170,7 @@ public partial class MainViewModel(
         get
         {
             var value = !DllPath.Contains("Path to game's steam_api(64).dll");
-            if (!value) log.LogWarning("No DLL selected! Skipping...");
+            if (!value) log.LogDebug("No DLL selected! Skipping...");
             return value;
         }
     }
@@ -464,7 +464,7 @@ public partial class MainViewModel(
     {
         if (AppId <= 0)
         {
-            log.LogError("Invalid Steam App!");
+            if (AppId != -1) log.LogError("Invalid Steam App!");
             return;
         }
 
@@ -476,7 +476,7 @@ public partial class MainViewModel(
     {
         if (AppId <= 0)
         {
-            log.LogError("Invalid Steam App!");
+            if (AppId != -1) log.LogError("Invalid Steam App!");
             return;
         }
 
@@ -501,7 +501,7 @@ public partial class MainViewModel(
     {
         if (AppId <= 0)
         {
-            log.LogError("Invalid Steam App!");
+            if (AppId != -1) log.LogError("Invalid Steam App!");
             return;
         }
 
