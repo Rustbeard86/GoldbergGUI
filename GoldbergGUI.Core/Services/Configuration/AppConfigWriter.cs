@@ -4,12 +4,12 @@ using GoldbergGUI.Core.Utils;
 namespace GoldbergGUI.Core.Services.Configuration;
 
 /// <summary>
-/// Writes configs.app.ini configuration file
+///     Writes configs.app.ini configuration file
 /// </summary>
 public sealed class AppConfigWriter
 {
     /// <summary>
-    /// Generates configs.app.ini content from configuration
+    ///     Generates configs.app.ini content from configuration
     /// </summary>
     public string Generate(GoldbergConfiguration config)
     {
@@ -29,10 +29,7 @@ public sealed class AppConfigWriter
         };
 
         // Add individual DLCs
-        foreach (var dlc in config.DlcList)
-        {
-            dlcSection[dlc.AppId.ToString()] = dlc.Name;
-        }
+        foreach (var dlc in config.DlcList) dlcSection[dlc.AppId.ToString()] = dlc.Name;
 
         writer.WriteSection("app::dlcs", dlcSection);
 
@@ -41,10 +38,7 @@ public sealed class AppConfigWriter
         if (dlcsWithPaths.Count > 0)
         {
             var pathsSection = new Dictionary<string, string>();
-            foreach (var dlc in dlcsWithPaths)
-            {
-                pathsSection[dlc.AppId.ToString()] = dlc.AppPath!;
-            }
+            foreach (var dlc in dlcsWithPaths) pathsSection[dlc.AppId.ToString()] = dlc.AppPath!;
             writer.WriteSection("app::paths", pathsSection);
         }
 

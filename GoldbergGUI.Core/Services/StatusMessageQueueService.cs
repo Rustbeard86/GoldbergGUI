@@ -4,55 +4,61 @@ using Microsoft.Extensions.Logging;
 namespace GoldbergGUI.Core.Services;
 
 /// <summary>
-/// Service for managing status messages with queue and automatic display timing
+///     Service for managing status messages with queue and automatic display timing
 /// </summary>
 public interface IStatusMessageQueue
 {
     /// <summary>
-    /// Adds a status message to the queue
-    /// </summary>
-    void Enqueue(string message, TimeSpan? displayDuration = null);
-    
-    /// <summary>
-    /// Gets the current status message to display
+    ///     Gets the current status message to display
     /// </summary>
     string CurrentMessage { get; }
-    
+
     /// <summary>
-    /// Event raised when the current message changes
+    ///     Adds a status message to the queue
+    /// </summary>
+    void Enqueue(string message, TimeSpan? displayDuration = null);
+
+    /// <summary>
+    ///     Event raised when the current message changes
     /// </summary>
     event EventHandler<string>? MessageChanged;
-    
+
     /// <summary>
-    /// Starts processing the message queue
+    ///     Starts processing the message queue
     /// </summary>
     void Start();
-    
+
     /// <summary>
-    /// Stops processing the message queue
+    ///     Stops processing the message queue
     /// </summary>
     void Stop();
 }
 
 public sealed class StatusMessageQueueService(ILogger<StatusMessageQueueService> log) : IStatusMessageQueue, IDisposable
 {
-    private readonly ConcurrentQueue<StatusMessage> _messageQueue = new();
+    private const int DefaultDisplayDurationMs = 3000;
     private readonly CancellationTokenSource _cts = new();
+    private readonly ConcurrentQueue<StatusMessage> _messageQueue = new();
     private readonly SemaphoreSlim _semaphore = new(0);
     private Task? _processingTask;
-    private string _currentMessage = "Ready.";
-    private const int DefaultDisplayDurationMs = 3000;
+
+    public void Dispose()
+    {
+        Stop();
+        _cts.Dispose();
+        _semaphore.Dispose();
+    }
 
     public string CurrentMessage
     {
-        get => _currentMessage;
+        get;
         private set
         {
-            if (_currentMessage == value) return;
-            _currentMessage = value;
+            if (field == value) return;
+            field = value;
             MessageChanged?.Invoke(this, value);
         }
-    }
+    } = "Ready.";
 
     public event EventHandler<string>? MessageChanged;
 
@@ -83,7 +89,6 @@ public sealed class StatusMessageQueueService(ILogger<StatusMessageQueueService>
     private async Task ProcessQueueAsync()
     {
         while (!_cts.Token.IsCancellationRequested)
-        {
             try
             {
                 // Wait for a message to be available
@@ -92,17 +97,14 @@ public sealed class StatusMessageQueueService(ILogger<StatusMessageQueueService>
                 if (_messageQueue.TryDequeue(out var statusMessage))
                 {
                     CurrentMessage = statusMessage.Message;
-                    log.LogDebug("Displaying status: {Message} for {Duration}ms", 
+                    log.LogDebug("Displaying status: {Message} for {Duration}ms",
                         statusMessage.Message, statusMessage.DisplayDuration.TotalMilliseconds);
 
                     // Display the message for the specified duration
                     await Task.Delay(statusMessage.DisplayDuration, _cts.Token).ConfigureAwait(false);
 
                     // If queue is empty, set back to "Ready."
-                    if (_messageQueue.IsEmpty)
-                    {
-                        CurrentMessage = "Ready.";
-                    }
+                    if (_messageQueue.IsEmpty) CurrentMessage = "Ready.";
                 }
             }
             catch (OperationCanceledException)
@@ -113,14 +115,6 @@ public sealed class StatusMessageQueueService(ILogger<StatusMessageQueueService>
             {
                 log.LogError(ex, "Error processing status message queue");
             }
-        }
-    }
-
-    public void Dispose()
-    {
-        Stop();
-        _cts.Dispose();
-        _semaphore.Dispose();
     }
 
     private sealed record StatusMessage(string Message, TimeSpan DisplayDuration);

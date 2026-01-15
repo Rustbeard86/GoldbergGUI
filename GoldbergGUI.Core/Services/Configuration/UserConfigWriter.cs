@@ -4,12 +4,12 @@ using GoldbergGUI.Core.Utils;
 namespace GoldbergGUI.Core.Services.Configuration;
 
 /// <summary>
-/// Writes configs.user.ini configuration file
+///     Writes configs.user.ini configuration file
 /// </summary>
 public sealed class UserConfigWriter
 {
     /// <summary>
-    /// Generates configs.user.ini content from global or overwritten configuration
+    ///     Generates configs.user.ini content from global or overwritten configuration
     /// </summary>
     public string Generate(GoldbergGlobalConfiguration globalConfig, GoldbergGlobalConfiguration? overwrittenConfig)
     {

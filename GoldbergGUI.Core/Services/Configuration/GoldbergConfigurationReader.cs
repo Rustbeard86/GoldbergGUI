@@ -1,34 +1,36 @@
+using System.Text.Json;
 using GoldbergGUI.Core.Models;
 using Microsoft.Extensions.Logging;
 
 namespace GoldbergGUI.Core.Services.Configuration;
 
 /// <summary>
-/// Reads Goldberg emulator modern configuration files (.ini format)
+///     Reads Goldberg emulator modern configuration files (.ini format)
 /// </summary>
 public sealed class GoldbergConfigurationReader(ILogger<GoldbergConfigurationReader> log)
 {
     /// <summary>
-    /// Reads complete Goldberg configuration from the specified game path
+    ///     Reads complete Goldberg configuration from the specified game path
     /// </summary>
     public async Task<GoldbergConfiguration> ReadConfiguration(string gamePath)
     {
         log.LogInformation("Reading configuration from {GamePath}", gamePath);
 
         var steamSettingsPath = Path.Combine(gamePath, "steam_settings");
-        
+
         // Read steam_appid.txt
         var appId = await ReadAppId(gamePath).ConfigureAwait(false);
-        
+
         // Read configs.main.ini
-        var (offline, disableNetworking, disableOverlay) = await ReadMainConfig(steamSettingsPath).ConfigureAwait(false);
-        
+        var (offline, disableNetworking, disableOverlay) =
+            await ReadMainConfig(steamSettingsPath).ConfigureAwait(false);
+
         // Read configs.app.ini
         var (unlockAllDlc, dlcList) = await ReadAppConfig(steamSettingsPath).ConfigureAwait(false);
-        
+
         // Read achievements.json
         var achievements = await ReadAchievements(steamSettingsPath).ConfigureAwait(false);
-        
+
         // Read stats.json
         var stats = await ReadStats(steamSettingsPath).ConfigureAwait(false);
 
@@ -52,20 +54,18 @@ public sealed class GoldbergConfigurationReader(ILogger<GoldbergConfigurationRea
         {
             log.LogInformation("Getting AppID...");
             var content = await File.ReadAllTextAsync(steamAppidTxt).ConfigureAwait(false);
-            if (int.TryParse(content.Trim(), out var appId))
-            {
-                return appId;
-            }
+            if (int.TryParse(content.Trim(), out var appId)) return appId;
         }
-        
+
         log.LogWarning("steam_appid.txt missing or invalid!");
         return -1;
     }
 
-    private async Task<(bool offline, bool disableNetworking, bool disableOverlay)> ReadMainConfig(string steamSettingsPath)
+    private async Task<(bool offline, bool disableNetworking, bool disableOverlay)> ReadMainConfig(
+        string steamSettingsPath)
     {
         var mainConfigPath = Path.Combine(steamSettingsPath, "configs.main.ini");
-        
+
         if (!File.Exists(mainConfigPath))
         {
             log.LogInformation("configs.main.ini not found, checking legacy files...");
@@ -111,7 +111,6 @@ public sealed class GoldbergConfigurationReader(ILogger<GoldbergConfigurationRea
                 {
                     var parts = line.Split('=', 2);
                     if (parts.Length == 2 && int.TryParse(parts[0].Trim(), out var appId))
-                    {
                         dlcList.Add(new DlcApp
                         {
                             AppId = appId,
@@ -119,9 +118,9 @@ public sealed class GoldbergConfigurationReader(ILogger<GoldbergConfigurationRea
                             ComparableName = parts[1].Trim().ToLowerInvariant(),
                             AppType = "dlc"
                         });
-                    }
                 }
             }
+
             return (unlockAll, dlcList);
         }
 
@@ -132,19 +131,21 @@ public sealed class GoldbergConfigurationReader(ILogger<GoldbergConfigurationRea
         foreach (var line in ini)
         {
             var trimmed = line.Trim();
-            
+
             if (trimmed.StartsWith("[app::dlcs]"))
             {
                 inDlcSection = true;
                 inPathsSection = false;
                 continue;
             }
+
             if (trimmed.StartsWith("[app::paths]"))
             {
                 inPathsSection = true;
                 inDlcSection = false;
                 continue;
             }
+
             if (trimmed.StartsWith("["))
             {
                 inDlcSection = false;
@@ -156,11 +157,8 @@ public sealed class GoldbergConfigurationReader(ILogger<GoldbergConfigurationRea
             {
                 var parts = trimmed.Split('=', 2);
                 if (parts[0] == "unlock_all")
-                {
                     unlockAll = parts[1] == "1";
-                }
                 else if (int.TryParse(parts[0], out var appId))
-                {
                     dlcList.Add(new DlcApp
                     {
                         AppId = appId,
@@ -168,7 +166,6 @@ public sealed class GoldbergConfigurationReader(ILogger<GoldbergConfigurationRea
                         ComparableName = parts[1].ToLowerInvariant(),
                         AppType = "dlc"
                     });
-                }
             }
             else if (inPathsSection && trimmed.Contains('='))
             {
@@ -176,10 +173,7 @@ public sealed class GoldbergConfigurationReader(ILogger<GoldbergConfigurationRea
                 if (int.TryParse(parts[0], out var appId))
                 {
                     var dlc = dlcList.FirstOrDefault(d => d.AppId == appId);
-                    if (dlc != null)
-                    {
-                        dlc.AppPath = parts[1];
-                    }
+                    if (dlc != null) dlc.AppPath = parts[1];
                 }
             }
         }
@@ -197,7 +191,7 @@ public sealed class GoldbergConfigurationReader(ILogger<GoldbergConfigurationRea
         }
 
         var json = await File.ReadAllTextAsync(achievementPath).ConfigureAwait(false);
-        return System.Text.Json.JsonSerializer.Deserialize<List<Achievement>>(json) ?? [];
+        return JsonSerializer.Deserialize<List<Achievement>>(json) ?? [];
     }
 
     private async Task<List<Stat>?> ReadStats(string steamSettingsPath)
@@ -210,6 +204,6 @@ public sealed class GoldbergConfigurationReader(ILogger<GoldbergConfigurationRea
         }
 
         var json = await File.ReadAllTextAsync(statsPath).ConfigureAwait(false);
-        return System.Text.Json.JsonSerializer.Deserialize<List<Stat>>(json);
+        return JsonSerializer.Deserialize<List<Stat>>(json);
     }
 }

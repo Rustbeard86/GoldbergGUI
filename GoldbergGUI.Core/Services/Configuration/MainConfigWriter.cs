@@ -4,12 +4,12 @@ using GoldbergGUI.Core.Utils;
 namespace GoldbergGUI.Core.Services.Configuration;
 
 /// <summary>
-/// Writes configs.main.ini configuration file
+///     Writes configs.main.ini configuration file
 /// </summary>
 public sealed class MainConfigWriter
 {
     /// <summary>
-    /// Generates configs.main.ini content from configuration
+    ///     Generates configs.main.ini content from configuration
     /// </summary>
     public string Generate(GoldbergConfiguration config)
     {

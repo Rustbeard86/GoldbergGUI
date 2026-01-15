@@ -31,7 +31,7 @@ public partial class MainViewModel(
 
     public string DllPath
     {
-        get => field;
+        get;
         private set
         {
             field = value;
@@ -43,7 +43,7 @@ public partial class MainViewModel(
 
     public string GameName
     {
-        get => field;
+        get;
         set
         {
             field = value;
@@ -53,7 +53,7 @@ public partial class MainViewModel(
 
     public int AppId
     {
-        get => field;
+        get;
         set
         {
             field = value;
@@ -65,7 +65,7 @@ public partial class MainViewModel(
     // ReSharper disable once InconsistentNaming
     public ObservableCollection<DlcApp> DLCs
     {
-        get => field;
+        get;
         set
         {
             field = value;
@@ -77,7 +77,7 @@ public partial class MainViewModel(
 
     public ObservableCollection<Achievement> Achievements
     {
-        get => field;
+        get;
         set
         {
             field = value;
@@ -87,7 +87,7 @@ public partial class MainViewModel(
 
     public string AccountName
     {
-        get => field;
+        get;
         set
         {
             field = value;
@@ -97,7 +97,7 @@ public partial class MainViewModel(
 
     public long SteamId
     {
-        get => field;
+        get;
         set
         {
             field = value;
@@ -107,7 +107,7 @@ public partial class MainViewModel(
 
     public bool Offline
     {
-        get => field;
+        get;
         set
         {
             field = value;
@@ -117,7 +117,7 @@ public partial class MainViewModel(
 
     public bool DisableNetworking
     {
-        get => field;
+        get;
         set
         {
             field = value;
@@ -127,7 +127,7 @@ public partial class MainViewModel(
 
     public bool DisableOverlay
     {
-        get => field;
+        get;
         set
         {
             field = value;
@@ -137,7 +137,7 @@ public partial class MainViewModel(
 
     public bool MainWindowEnabled
     {
-        get => field;
+        get;
         set
         {
             field = value;
@@ -147,7 +147,7 @@ public partial class MainViewModel(
 
     public bool GoldbergApplied
     {
-        get => field;
+        get;
         set
         {
             field = value;
@@ -177,7 +177,7 @@ public partial class MainViewModel(
 
     public ObservableCollection<string> SteamLanguages
     {
-        get => field;
+        get;
         set
         {
             field = value;
@@ -187,7 +187,7 @@ public partial class MainViewModel(
 
     public string SelectedLanguage
     {
-        get => field;
+        get;
         set
         {
             field = value;
@@ -198,7 +198,7 @@ public partial class MainViewModel(
 
     public bool UseExperimental
     {
-        get => field;
+        get;
         set
         {
             field = value;
@@ -208,7 +208,7 @@ public partial class MainViewModel(
 
     public string StatusText
     {
-        get => field;
+        get;
         set
         {
             field = value;
@@ -248,7 +248,7 @@ public partial class MainViewModel(
         else
         {
             var result = Clipboard.GetText();
-            var expression = PrecompDLCExpression();
+            var expression = PrecompDlcExpression();
             var pastedDlc = (from line in result.Split(["\n", "\r\n"],
                     StringSplitOptions.RemoveEmptyEntries)
                 select expression.Match(line)
@@ -280,15 +280,12 @@ public partial class MainViewModel(
     public override void Prepare()
     {
         base.Prepare();
-        
+
         // Start the status message queue
         statusQueue.Start();
-        
+
         // Subscribe to status message changes
-        statusQueue.MessageChanged += (_, message) =>
-        {
-            StatusText = message;
-        };
+        statusQueue.MessageChanged += (_, message) => { StatusText = message; };
 
         Task.Run(async () =>
         {
@@ -378,7 +375,8 @@ public partial class MainViewModel(
                 log.LogError(e, "Error during initialization");
                 MainWindowEnabled = true;
                 StatusText = "Initialization error! Check logs.";
-                statusQueue.Enqueue("Critical error during initialization. Some features may not work.", TimeSpan.FromSeconds(5));
+                statusQueue.Enqueue("Critical error during initialization. Some features may not work.",
+                    TimeSpan.FromSeconds(5));
             }
         });
     }
@@ -659,5 +657,5 @@ public partial class MainViewModel(
     }
 
     [GeneratedRegex("(?<id>.*) *= *(?<name>.*)")]
-    private static partial Regex PrecompDLCExpression();
+    private static partial Regex PrecompDlcExpression();
 }

@@ -1,8 +1,8 @@
-using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Windows;
 using GoldbergGUI.Core.Models;
+using GoldbergGUI.Core.Services.Configuration;
 using GoldbergGUI.Core.Utils;
 using Microsoft.Extensions.Logging;
 using SharpCompress.Archives.SevenZip;
@@ -32,20 +32,14 @@ public interface IGoldbergService
 // ReSharper disable once ClassNeverInstantiated.Global
 public partial class GoldbergService(
     ILogger<GoldbergService> log,
-    Configuration.GoldbergConfigurationManager configManager,
-    Configuration.GoldbergConfigurationReader configReader) : IGoldbergService
+    GoldbergConfigurationManager configManager,
+    GoldbergConfigurationReader configReader) : IGoldbergService
 {
     private const string DefaultAccountName = "Mr_Goldberg";
     private const long DefaultSteamId = 76561197960287930;
     private const string DefaultLanguage = "english";
     private const string GoldbergApiUrl = "https://api.github.com/repos/Detanup01/gbe_fork/releases/latest";
     private const string AssetName = "emu-win-release.7z";
-
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-        WriteIndented = true
-    };
 
     private static readonly string GlobalSettingsPath =
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -111,7 +105,7 @@ public partial class GoldbergService(
         // Check if Goldberg files exist
         var x64Exists = File.Exists(Path.Combine(_goldbergPath, "release", "regular", "x64", "steam_api64.dll"));
         var x32Exists = File.Exists(Path.Combine(_goldbergPath, "release", "regular", "x32", "steam_api.dll"));
-        
+
         return x64Exists || x32Exists;
     }
 
@@ -121,7 +115,7 @@ public partial class GoldbergService(
         {
             statusCallback("Checking for Goldberg updates...");
             var download = await Download().ConfigureAwait(false);
-            
+
             if (download)
             {
                 statusCallback("Extracting Goldberg emulator...");
@@ -277,7 +271,7 @@ public partial class GoldbergService(
     public async Task Save(string path, GoldbergConfiguration c, GoldbergGlobalConfiguration globalConfig)
     {
         log.LogInformation("Saving configuration...");
-        
+
         // DLL setup
         log.LogInformation("Running DLL setup...");
         const string x86Name = "steam_api";
@@ -306,7 +300,7 @@ public partial class GoldbergService(
 
         // Use the modern configuration manager to save
         await configManager.SaveConfiguration(path, c, globalConfig).ConfigureAwait(false);
-        
+
         log.LogInformation("Configuration saved successfully!");
     }
 
@@ -597,12 +591,6 @@ public partial class GoldbergService(
         var imageBytes = await httpClient.GetByteArrayAsync(new Uri(imageUrl, UriKind.Absolute));
         await File.WriteAllBytesAsync(targetPath, imageBytes);
     }
-
-    [GeneratedRegex("(?<id>.*) *= *(?<name>.*)")]
-    private static partial Regex PrecompDLCExpression();
-
-    [GeneratedRegex("(?<id>.*) *= *(?<appPath>.*)")]
-    private static partial Regex PrecompAppPathExpression();
 
     [GeneratedRegex(@"STEAMCONTROLLER_INTERFACE_VERSION\d{3}")]
     private static partial Regex PrecompSteamControllerVersionDigits();

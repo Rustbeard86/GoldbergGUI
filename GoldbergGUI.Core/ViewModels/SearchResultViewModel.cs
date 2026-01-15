@@ -16,7 +16,7 @@ public class SearchResultViewModel(
 
     public IEnumerable<SteamApp> Apps
     {
-        get => field;
+        get;
         set
         {
             field = value;

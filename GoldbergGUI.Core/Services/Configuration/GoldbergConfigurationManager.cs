@@ -1,3 +1,4 @@
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using GoldbergGUI.Core.Models;
 using Microsoft.Extensions.Logging;
@@ -5,7 +6,7 @@ using Microsoft.Extensions.Logging;
 namespace GoldbergGUI.Core.Services.Configuration;
 
 /// <summary>
-/// Manages saving and loading Goldberg emulator configuration files
+///     Manages saving and loading Goldberg emulator configuration files
 /// </summary>
 public sealed class GoldbergConfigurationManager(
     ILogger<GoldbergConfigurationManager> log,
@@ -15,12 +16,12 @@ public sealed class GoldbergConfigurationManager(
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
-        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
         WriteIndented = true
     };
 
     /// <summary>
-    /// Saves complete Goldberg configuration to the specified game path
+    ///     Saves complete Goldberg configuration to the specified game path
     /// </summary>
     public async Task SaveConfiguration(
         string gamePath,
@@ -37,7 +38,8 @@ public sealed class GoldbergConfigurationManager(
         await SaveMainConfig(steamSettingsPath, config).ConfigureAwait(false);
 
         // Save configs.user.ini (per-game overrides or global defaults)
-        await SaveUserConfig(steamSettingsPath, globalConfig, config.OverwrittenGlobalConfiguration).ConfigureAwait(false);
+        await SaveUserConfig(steamSettingsPath, globalConfig, config.OverwrittenGlobalConfiguration)
+            .ConfigureAwait(false);
 
         // Save configs.app.ini
         await SaveAppConfig(steamSettingsPath, config).ConfigureAwait(false);
@@ -46,17 +48,12 @@ public sealed class GoldbergConfigurationManager(
         await SaveAchievements(steamSettingsPath, config.Achievements).ConfigureAwait(false);
 
         // Save stats.json
-        if (config.Stats?.Count > 0)
-        {
-            await SaveStats(steamSettingsPath, config.Stats).ConfigureAwait(false);
-        }
+        if (config.Stats?.Count > 0) await SaveStats(steamSettingsPath, config.Stats).ConfigureAwait(false);
 
         // Save custom_broadcasts.txt (if overwritten or using global)
         var activeConfig = config.OverwrittenGlobalConfiguration ?? globalConfig;
         if (activeConfig.CustomBroadcastIps?.Count > 0)
-        {
             await SaveCustomBroadcasts(steamSettingsPath, activeConfig.CustomBroadcastIps).ConfigureAwait(false);
-        }
     }
 
     private async Task SaveAppId(string gamePath, int appId)

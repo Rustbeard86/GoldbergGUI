@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -33,18 +34,15 @@ public interface ISteamService
 internal sealed record SteamCache(string SteamUri, Type ApiVersion, string SteamAppType);
 
 /// <summary>
-/// Steam API stat format (for deserialization from GetSchemaForGame API)
+///     Steam API stat format (for deserialization from GetSchemaForGame API)
 /// </summary>
 internal sealed record SteamStat
 {
-    [JsonPropertyName("name")]
-    public required string Name { get; init; }
+    [JsonPropertyName("name")] public required string Name { get; init; }
 
-    [JsonPropertyName("defaultvalue")]
-    public double DefaultValue { get; init; }
+    [JsonPropertyName("defaultvalue")] public double DefaultValue { get; init; }
 
-    [JsonPropertyName("displayName")]
-    public string DisplayName { get; init; } = string.Empty;
+    [JsonPropertyName("displayName")] public string DisplayName { get; init; } = string.Empty;
 }
 
 /// <summary>
@@ -91,7 +89,7 @@ public sealed partial class SteamService(
             using var context = contextFactory.CreateDbContext();
             var count = context.SteamApps.Count();
             var dbPath = context.Database.GetDbConnection().DataSource;
-            
+
             // Check if database exists and has data
             return count > 0 && !string.IsNullOrEmpty(dbPath) && File.Exists(dbPath);
         }
@@ -383,7 +381,7 @@ public sealed partial class SteamService(
                 return steamStats.Select(s => new Stat
                 {
                     Name = s.Name,
-                    Default = s.DefaultValue.ToString(),
+                    Default = s.DefaultValue.ToString(CultureInfo.InvariantCulture),
                     Global = "0",
                     Type = InferStatType(s.DefaultValue)
                 }).ToList();
@@ -395,13 +393,6 @@ public sealed partial class SteamService(
         }
 
         return [];
-    }
-
-    private static string InferStatType(double value)
-    {
-        // If value has decimals, it's float; otherwise int
-        // avgrate type needs game-specific knowledge, default to float for decimals
-        return value % 1 == 0 ? "int" : "float";
     }
 
     public async Task<List<DlcApp>> GetListOfDlc(SteamApp? steamApp, bool useSteamDb)
@@ -462,6 +453,13 @@ public sealed partial class SteamService(
         }
 
         return dlcList;
+    }
+
+    private static string InferStatType(double value)
+    {
+        // If value has decimals, it's float; otherwise int
+        // avgrate type needs game-specific knowledge, default to float for decimals
+        return value % 1 == 0 ? "int" : "float";
     }
 
     private async Task GetDlcFromSteamStore(SteamApp steamApp, List<DlcApp> dlcList)

@@ -45,7 +45,7 @@ public sealed record GoldbergConfiguration
     ///     List of DLC
     /// </summary>
     public required List<DlcApp> DlcList { get; init; }
-    
+
     /// <summary>
     ///     Unlock all DLCs (true) or only report mentioned DLCs (false)
     /// </summary>
@@ -169,7 +169,7 @@ public sealed record Achievement
     [JsonPropertyOrder(6)]
     [JsonPropertyName("name")]
     public required string Name { get; init; }
-    
+
     /// <summary>
     ///     Gets the effective display name, falling back to Name if DisplayName is empty.
     /// </summary>
@@ -178,7 +178,7 @@ public sealed record Achievement
 }
 
 /// <summary>
-/// Statistic definition for Goldberg emulator
+///     Statistic definition for Goldberg emulator
 /// </summary>
 public sealed record Stat
 {
