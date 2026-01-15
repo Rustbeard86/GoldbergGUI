@@ -3,18 +3,17 @@ using GoldbergGUI.Core.ViewModels;
 using MvvmCross.IoC;
 using MvvmCross.ViewModels;
 
-namespace GoldbergGUI.Core
+namespace GoldbergGUI.Core;
+
+public class App : MvxApplication
 {
-    public class App : MvxApplication
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            CreatableTypes()
-                .EndingWith("Service")
-                .AsInterfaces()
-                .RegisterAsLazySingleton();
-            //RegisterAppStart<MainViewModel>();
-            RegisterCustomAppStart<CustomMvxAppStart<MainViewModel>>();
-        }
+        CreatableTypes()
+            .EndingWith("Service")
+            .AsInterfaces()
+            .RegisterAsLazySingleton();
+        //RegisterAppStart<MainViewModel>();
+        RegisterCustomAppStart<CustomMvxAppStart<MainViewModel>>();
     }
 }

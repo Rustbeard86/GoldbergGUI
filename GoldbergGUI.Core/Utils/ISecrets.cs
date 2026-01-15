@@ -14,10 +14,9 @@ namespace GoldbergGUI.Core.Utils
 }
  */
 
-namespace GoldbergGUI.Core.Utils
+namespace GoldbergGUI.Core.Utils;
+
+public interface ISecrets
 {
-    public interface ISecrets
-    {
-        public string SteamWebApiKey();
-    }
+    public string SteamWebApiKey();
 }

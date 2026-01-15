@@ -14,6 +14,8 @@ using NinjaNye.SearchExtensions;
 using SQLite;
 using SteamStorefrontAPI;
 
+#pragma warning disable CA1873
+
 namespace GoldbergGUI.Core.Services;
 
 // gets info from steam api
@@ -27,23 +29,16 @@ public interface ISteamService
     public Task<List<DlcApp>> GetListOfDlc(SteamApp steamApp, bool useSteamDb);
 }
 
-internal class SteamCache
+internal class SteamCache(string uri, Type apiVersion, string steamAppType)
 {
-    public SteamCache(string uri, Type apiVersion, string steamAppType)
-    {
-        SteamUri = uri;
-        ApiVersion = apiVersion;
-        SteamAppType = steamAppType;
-    }
-
-    public string SteamUri { get; }
-    public Type ApiVersion { get; }
-    public string SteamAppType { get; }
+    public string SteamUri { get; } = uri;
+    public Type ApiVersion { get; } = apiVersion;
+    public string SteamAppType { get; } = steamAppType;
 }
 
 // ReSharper disable once UnusedType.Global
 // ReSharper disable once ClassNeverInstantiated.Global
-public class SteamService : ISteamService
+public partial class SteamService(ILogger<SteamService> log) : ISteamService
 {
     // ReSharper disable StringLiteralTypo
     private readonly Dictionary<string, SteamCache> _caches =
@@ -85,14 +80,7 @@ public class SteamService : ISteamService
     private const string Database = "steamapps.cache";
     private const string GameSchemaUrl = "https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/";
 
-    private readonly ILogger<SteamService> _log;
-
     private SQLiteAsyncConnection _db;
-
-    public SteamService(ILogger<SteamService> log)
-    {
-        _log = log;
-    }
 
     public async Task Initialize()
     {
@@ -113,7 +101,7 @@ public class SteamService : ISteamService
         if (DateTime.Now.Subtract(File.GetLastWriteTimeUtc(Database)).TotalDays >= 1 || countAsync == 0)
             foreach (var (appType, steamCache) in _caches)
             {
-                _log.LogInformation("Updating cache ({AppType})...", appType);
+                log.LogInformation("Updating cache ({AppType})...", appType);
                 bool haveMoreResults;
                 long lastAppId = 0;
                 var client = new HttpClient();
@@ -155,21 +143,21 @@ public class SteamService : ISteamService
 
     public async Task<SteamApp> GetAppByName(string name)
     {
-        _log.LogInformation("Trying to get app {Name}", name);
+        log.LogInformation("Trying to get app {Name}", name);
         var comparableName = PrepareStringToCompare(name);
         var app = await _db.Table<SteamApp>()
             .FirstOrDefaultAsync(x => x.AppType == AppTypeGame && x.ComparableName.Equals(comparableName))
             .ConfigureAwait(false);
-        if (app != null) _log.LogInformation("Successfully got app {App}", app);
+        if (app != null) log.LogInformation("Successfully got app {App}", app);
         return app;
     }
 
     public async Task<SteamApp> GetAppById(int appid)
     {
-        _log.LogInformation("Trying to get app with ID {AppId}", appid);
+        log.LogInformation("Trying to get app with ID {AppId}", appid);
         var app = await _db.Table<SteamApp>().Where(x => x.AppType == AppTypeGame)
             .FirstOrDefaultAsync(x => x.AppId.Equals(appid)).ConfigureAwait(false);
-        if (app != null) _log.LogInformation("Successfully got app {App}", app);
+        if (app != null) log.LogInformation("Successfully got app {App}", app);
         return app;
     }
 
@@ -178,7 +166,7 @@ public class SteamService : ISteamService
         var achievementList = new List<Achievement>();
         if (steamApp == null) return achievementList;
 
-        _log.LogInformation("Getting achievements for App {SteamApp}", steamApp);
+        log.LogInformation("Getting achievements for App {SteamApp}", steamApp);
 
         var client = new HttpClient();
         client.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
@@ -201,7 +189,7 @@ public class SteamService : ISteamService
         var dlcList = new List<DlcApp>();
         if (steamApp != null)
         {
-            _log.LogInformation("Get DLC for App {SteamApp}", steamApp);
+            log.LogInformation("Get DLC for App {SteamApp}", steamApp);
             var task = AppDetails.GetAsync(steamApp.AppId);
             var steamAppDetails = await task.ConfigureAwait(true);
             if (steamAppDetails.Type == AppTypeGame)
@@ -216,10 +204,10 @@ public class SteamService : ISteamService
                                      AppType = AppTypeDlc
                                  };
                     dlcList.Add(new DlcApp(result));
-                    _log.LogDebug("{AppId}={Name}", result.AppId, result.Name);
+                    log.LogDebug("{AppId}={Name}", result.AppId, result.Name);
                 });
 
-                _log.LogInformation("Got DLC successfully...");
+                log.LogInformation("Got DLC successfully...");
 
                 // Get DLC from SteamDB
                 // Get Cloudflare cookie (not implemented)
@@ -236,15 +224,15 @@ public class SteamService : ISteamService
                     var client = new HttpClient();
                     client.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
 
-                    _log.LogInformation("Get SteamDB App {SteamApp}", steamApp);
+                    log.LogInformation("Get SteamDB App {SteamApp}", steamApp);
                     var httpCall = client.GetAsync(steamDbUri);
                     var response = await httpCall.ConfigureAwait(false);
-                    _log.LogDebug("{Status}", httpCall.Status.ToString());
-                    _log.LogDebug("{Response}", response.EnsureSuccessStatusCode().ToString());
+                    log.LogDebug("{Status}", httpCall.Status.ToString());
+                    log.LogDebug("{Response}", response.EnsureSuccessStatusCode().ToString());
 
                     var readAsStringAsync = response.Content.ReadAsStringAsync();
                     var responseBody = await readAsStringAsync.ConfigureAwait(false);
-                    _log.LogDebug("{Status}", readAsStringAsync.Status.ToString());
+                    log.LogDebug("{Status}", readAsStringAsync.Status.ToString());
 
                     var parser = new HtmlParser();
                     var doc = parser.ParseDocument(responseBody);
@@ -252,7 +240,7 @@ public class SteamService : ISteamService
                     var query1 = doc.QuerySelector("#dlc");
                     if (query1 != null)
                     {
-                        _log.LogInformation("Got list of DLC from SteamDB.");
+                        log.LogInformation("Got list of DLC from SteamDB.");
                         var query2 = query1.QuerySelectorAll(".app");
                         foreach (var element in query2)
                         {
@@ -273,27 +261,27 @@ public class SteamService : ISteamService
                             }
                         }
 
-                        dlcList.ForEach(x => _log.LogDebug("{AppId}={Name}", x.AppId, x.Name));
-                        _log.LogInformation("Got DLC from SteamDB successfully...");
+                        dlcList.ForEach(x => log.LogDebug("{AppId}={Name}", x.AppId, x.Name));
+                        log.LogInformation("Got DLC from SteamDB successfully...");
                     }
                     else
                     {
-                        _log.LogError("Could not get DLC from SteamDB!");
+                        log.LogError("Could not get DLC from SteamDB!");
                     }
                 }
                 catch (Exception e)
                 {
-                    _log.LogError(e, "Could not get DLC from SteamDB! Skipping...");
+                    log.LogError(e, "Could not get DLC from SteamDB! Skipping...");
                 }
             }
             else
             {
-                _log.LogError("Could not get DLC: Steam App is not of type \"game\"");
+                log.LogError("Could not get DLC: Steam App is not of type \"game\"");
             }
         }
         else
         {
-            _log.LogError("Could not get DLC: Invalid Steam App");
+            log.LogError("Could not get DLC: Invalid Steam App");
         }
 
         return dlcList;
@@ -301,6 +289,9 @@ public class SteamService : ISteamService
 
     private static string PrepareStringToCompare(string name)
     {
-        return Regex.Replace(name, Misc.AlphaNumOnlyRegex, "").ToLower();
+        return PrecompPrepareStringToCompare().Replace(name, "").ToLower();
     }
+
+    [GeneratedRegex(Misc.AlphaNumOnlyRegex)]
+    private static partial Regex PrecompPrepareStringToCompare();
 }
