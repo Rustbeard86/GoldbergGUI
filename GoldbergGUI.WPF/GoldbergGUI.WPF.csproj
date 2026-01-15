@@ -7,6 +7,12 @@
     <FileVersion>0.3.0</FileVersion>
     <Company>Jeddunk</Company>
     <Platforms>AnyCPU;x86;x64</Platforms>
+    <Nullable>enable</Nullable>
+    <LangVersion>14.0</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,3 +44,4 @@
   </ItemGroup>
 
 </Project>
+

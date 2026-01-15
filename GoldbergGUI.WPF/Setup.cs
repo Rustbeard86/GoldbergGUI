@@ -20,7 +20,7 @@ public class Setup : MvxWpfSetup<Core.App>
         return new SerilogLoggerFactory(Log.Logger);
     }
 
-    protected override ILoggerProvider CreateLogProvider()
+    protected override ILoggerProvider? CreateLogProvider()
     {
         // Return null since we're using ILoggerFactory
         return null;
