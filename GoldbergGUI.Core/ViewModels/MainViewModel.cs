@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Windows;
 using GoldbergGUI.Core.Models;
@@ -206,6 +207,26 @@ public partial class MainViewModel(
         }
     }
 
+    public int GoldbergUpdateCheckHours
+    {
+        get;
+        set
+        {
+            field = value;
+            RaisePropertyChanged(() => GoldbergUpdateCheckHours);
+        }
+    } = 24;
+
+    public int DatabaseUpdateCheckHours
+    {
+        get;
+        set
+        {
+            field = value;
+            RaisePropertyChanged(() => DatabaseUpdateCheckHours);
+        }
+    } = 24;
+
     public string StatusText
     {
         get;
@@ -319,6 +340,7 @@ public partial class MainViewModel(
                         SteamId = globalConfiguration.UserSteamId;
                         SelectedLanguage = globalConfiguration.Language;
                         UseExperimental = globalConfiguration.UseExperimental;
+                        // Note: Update check hours are loaded separately since they're GUI-only settings
                     }
                     else
                     {
@@ -327,6 +349,7 @@ public partial class MainViewModel(
                         SteamId = globalConfiguration.UserSteamId;
                         SelectedLanguage = globalConfiguration.Language;
                         UseExperimental = globalConfiguration.UseExperimental;
+                        // Note: Update check hours are loaded separately since they're GUI-only settings
                     }
 
                     MainWindowEnabled = true;
@@ -346,6 +369,8 @@ public partial class MainViewModel(
                     SteamId = globalConfiguration.UserSteamId;
                     SelectedLanguage = globalConfiguration.Language;
                     UseExperimental = globalConfiguration.UseExperimental;
+
+                    LoadGuiOnlySettings();
 
                     // Run updates in background
                     _ = Task.Run(async () =>
@@ -533,6 +558,10 @@ public partial class MainViewModel(
             UseExperimental = UseExperimental
         };
         await goldberg.SetGlobalSettings(globalConfiguration).ConfigureAwait(false);
+
+        // Save GUI-only settings (update check frequencies)
+        await goldberg.SetGuiOnlySettings(GoldbergUpdateCheckHours, DatabaseUpdateCheckHours).ConfigureAwait(false);
+
         if (!DllSelected) return;
 
         log.LogInformation("Saving Goldberg settings...");
@@ -553,6 +582,27 @@ public partial class MainViewModel(
         GoldbergApplied = goldberg.GoldbergApplied(dirPath);
         MainWindowEnabled = true;
         StatusText = "Ready.";
+    }
+
+    private void LoadGuiOnlySettings()
+    {
+        var appConfigPath = Path.Combine(Directory.GetCurrentDirectory(), "app_config.json");
+        if (!File.Exists(appConfigPath)) return;
+
+        try
+        {
+            var json = File.ReadAllText(appConfigPath);
+            var config = JsonSerializer.Deserialize<AppConfiguration>(json);
+            if (config?.GuiDefaults is not null)
+            {
+                GoldbergUpdateCheckHours = config.GuiDefaults.GoldbergUpdateCheckHours;
+                DatabaseUpdateCheckHours = config.GuiDefaults.DatabaseUpdateCheckHours;
+            }
+        }
+        catch (Exception ex)
+        {
+            log.LogError(ex, "Failed to load GUI-only settings");
+        }
     }
 
     private async Task ResetConfig()
@@ -599,8 +649,7 @@ public partial class MainViewModel(
             return;
         }
 
-        var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "Goldberg SteamEmu Saves", "settings");
+        var path = Directory.GetCurrentDirectory();
         var start = Process.Start("explorer.exe", path);
         start.Dispose();
     }

@@ -23,6 +23,7 @@ public interface IGoldbergService
     public Task Save(string path, GoldbergConfiguration configuration, GoldbergGlobalConfiguration globalConfiguration);
     public Task<GoldbergGlobalConfiguration> GetGlobalSettings();
     public Task SetGlobalSettings(GoldbergGlobalConfiguration configuration);
+    public Task SetGuiOnlySettings(int goldbergUpdateCheckHours, int databaseUpdateCheckHours);
     public bool GoldbergApplied(string path);
     public Task GenerateInterfacesFile(string filePath);
     public List<string> Languages();
@@ -46,11 +47,11 @@ public partial class GoldbergService(
         WriteIndented = true
     };
 
+    // Paths - adjacent to application
+    private readonly string _appConfigPath = Path.Combine(Directory.GetCurrentDirectory(), "app_config.json");
+
     private readonly string _goldbergArchivePath = Path.Combine(Directory.GetCurrentDirectory(), "goldberg.7z");
     private readonly string _goldbergPath = Path.Combine(Directory.GetCurrentDirectory(), "goldberg");
-
-    // Paths - adjacent to application
-    private readonly string _guiSettingsPath = Path.Combine(Directory.GetCurrentDirectory(), "gui_settings.json");
 
     // ReSharper disable StringLiteralTypo
     private readonly List<string> _interfaceNames =
@@ -129,42 +130,25 @@ public partial class GoldbergService(
     {
         log.LogInformation("Getting global settings...");
 
-        GuiSettings settings;
-
-        if (File.Exists(_guiSettingsPath))
-        {
-            try
-            {
-                var json = await File.ReadAllTextAsync(_guiSettingsPath).ConfigureAwait(false);
-                settings = JsonSerializer.Deserialize<GuiSettings>(json, JsonOptions) ?? CreateDefaultSettings();
-                log.LogInformation("Loaded settings from gui_settings.json");
-            }
-            catch (Exception ex)
-            {
-                log.LogError(ex, "Failed to read gui_settings.json, using defaults");
-                settings = CreateDefaultSettings();
-            }
-        }
-        else
-        {
-            log.LogInformation("gui_settings.json not found, using defaults");
-            settings = CreateDefaultSettings();
-        }
+        var config = await GetAppConfiguration().ConfigureAwait(false);
 
         log.LogInformation("Got global settings.");
         return new GoldbergGlobalConfiguration
         {
-            AccountName = settings.DefaultAccountName,
-            UserSteamId = settings.DefaultUserSteamId,
-            Language = settings.DefaultLanguage,
-            CustomBroadcastIps = settings.DefaultCustomBroadcastIps ?? [],
-            UseExperimental = settings.UseExperimental
+            AccountName = config.GuiDefaults.AccountName,
+            UserSteamId = config.GuiDefaults.SteamId,
+            Language = config.GuiDefaults.Language,
+            CustomBroadcastIps = config.GuiDefaults.CustomBroadcastIps ?? [],
+            UseExperimental = config.GuiDefaults.UseExperimental
         };
     }
 
     public async Task SetGlobalSettings(GoldbergGlobalConfiguration c)
     {
         log.LogInformation("Setting global settings...");
+
+        // Load existing configuration to preserve state
+        var existingConfig = await GetAppConfiguration().ConfigureAwait(false);
 
         // Validate and use defaults if invalid
         var accountName = string.IsNullOrWhiteSpace(c.AccountName) ? DefaultAccountName : c.AccountName;
@@ -180,19 +164,45 @@ public partial class GoldbergService(
         if (string.IsNullOrWhiteSpace(c.Language))
             log.LogWarning("Invalid language provided, using default: {DefaultLanguage}", DefaultLanguage);
 
-        var settings = new GuiSettings
+        var updatedConfig = existingConfig with
         {
-            DefaultAccountName = accountName,
-            DefaultUserSteamId = userSteamId,
-            DefaultLanguage = language,
-            DefaultCustomBroadcastIps = c.CustomBroadcastIps?.Count > 0 ? c.CustomBroadcastIps : null,
-            UseExperimental = c.UseExperimental
+            GuiDefaults = existingConfig.GuiDefaults with
+            {
+                AccountName = accountName,
+                SteamId = userSteamId,
+                Language = language,
+                CustomBroadcastIps = c.CustomBroadcastIps?.Count > 0 ? c.CustomBroadcastIps : null,
+                UseExperimental = c.UseExperimental
+            }
         };
 
-        var json = JsonSerializer.Serialize(settings, JsonOptions);
-        await File.WriteAllTextAsync(_guiSettingsPath, json).ConfigureAwait(false);
+        await SaveAppConfiguration(updatedConfig).ConfigureAwait(false);
 
-        log.LogInformation("Global settings saved to gui_settings.json");
+        log.LogInformation("Global settings saved to app_config.json");
+    }
+
+    /// <summary>
+    ///     Updates only the GUI-specific settings (update frequencies)
+    /// </summary>
+    public async Task SetGuiOnlySettings(int goldbergUpdateCheckHours, int databaseUpdateCheckHours)
+    {
+        log.LogInformation("Setting GUI-only settings...");
+
+        // Load existing configuration to preserve other values
+        var existingConfig = await GetAppConfiguration().ConfigureAwait(false);
+
+        var updatedConfig = existingConfig with
+        {
+            GuiDefaults = existingConfig.GuiDefaults with
+            {
+                GoldbergUpdateCheckHours = goldbergUpdateCheckHours,
+                DatabaseUpdateCheckHours = databaseUpdateCheckHours
+            }
+        };
+
+        await SaveAppConfiguration(updatedConfig).ConfigureAwait(false);
+
+        log.LogInformation("GUI-only settings saved to app_config.json");
     }
 
     // Read modern configuration using the new format
@@ -238,32 +248,45 @@ public partial class GoldbergService(
         log.LogInformation("Configuration saved successfully!");
     }
 
-    private static GuiSettings CreateDefaultSettings()
+    private static AppConfiguration CreateDefaultConfiguration()
     {
-        return new GuiSettings
+        return new AppConfiguration
         {
-            DefaultAccountName = DefaultAccountName,
-            DefaultUserSteamId = DefaultSteamId,
-            DefaultLanguage = DefaultLanguage,
-            DefaultCustomBroadcastIps = null,
-            UseExperimental = false
+            GuiDefaults = new GuiDefaults
+            {
+                AccountName = DefaultAccountName,
+                SteamId = DefaultSteamId,
+                Language = DefaultLanguage,
+                CustomBroadcastIps = null,
+                UseExperimental = false,
+                GoldbergUpdateCheckHours = 24,
+                DatabaseUpdateCheckHours = 24
+            },
+            GoldbergState = new GoldbergState(),
+            DatabaseState = new DatabaseState()
         };
     }
 
-    private async Task<GuiSettings> GetGuiSettings()
+    private async Task<AppConfiguration> GetAppConfiguration()
     {
-        if (!File.Exists(_guiSettingsPath)) return CreateDefaultSettings();
+        if (!File.Exists(_appConfigPath)) return CreateDefaultConfiguration();
 
         try
         {
-            var json = await File.ReadAllTextAsync(_guiSettingsPath).ConfigureAwait(false);
-            return JsonSerializer.Deserialize<GuiSettings>(json, JsonOptions) ?? CreateDefaultSettings();
+            var json = await File.ReadAllTextAsync(_appConfigPath).ConfigureAwait(false);
+            return JsonSerializer.Deserialize<AppConfiguration>(json, JsonOptions) ?? CreateDefaultConfiguration();
         }
         catch (Exception ex)
         {
-            log.LogError(ex, "Failed to read gui_settings.json");
-            return CreateDefaultSettings();
+            log.LogError(ex, "Failed to read app_config.json");
+            return CreateDefaultConfiguration();
         }
+    }
+
+    private async Task SaveAppConfiguration(AppConfiguration config)
+    {
+        var json = JsonSerializer.Serialize(config, JsonOptions);
+        await File.WriteAllTextAsync(_appConfigPath, json).ConfigureAwait(false);
     }
 
     private void CopyDllFiles(string path, string name)
@@ -272,9 +295,9 @@ public partial class GoldbergService(
         var originalDll = Path.Combine(path, $"{name}_o.dll");
         var guiBackup = Path.Combine(path, $".{name}.dll.GOLDBERGGUIBACKUP");
 
-        // Get experimental setting from GUI settings
-        var settings = GetGuiSettings().GetAwaiter().GetResult();
-        var buildType = settings.UseExperimental ? "experimental" : "regular";
+        // Get experimental setting from app configuration
+        var config = GetAppConfiguration().GetAwaiter().GetResult();
+        var buildType = config.GuiDefaults.UseExperimental ? "experimental" : "regular";
 
         // Determine architecture (x32 or x64)
         var architecture = name.Contains("64") ? "x64" : "x32";
@@ -313,11 +336,34 @@ public partial class GoldbergService(
 
     private async Task<bool> Download()
     {
+        // Get configuration
+        var config = await GetAppConfiguration().ConfigureAwait(false);
+
+        if (config.GuiDefaults.GoldbergUpdateCheckHours == -1)
+        {
+            log.LogInformation("Goldberg update checks are disabled");
+            return false;
+        }
+
         // Get latest release from GitHub API
         // Compare release tag with local version
         // Download if update is available
         log.LogInformation("Initializing download...");
         if (!Directory.Exists(_goldbergPath)) Directory.CreateDirectory(_goldbergPath);
+
+        // Check if we should skip based on time since last check
+        if (config.GuiDefaults.GoldbergUpdateCheckHours > 0 && config.GoldbergState.LastUpdateCheck.HasValue)
+        {
+            var hoursSinceLastCheck = (DateTime.UtcNow - config.GoldbergState.LastUpdateCheck.Value).TotalHours;
+
+            if (hoursSinceLastCheck < config.GuiDefaults.GoldbergUpdateCheckHours)
+            {
+                log.LogInformation(
+                    "Skipping update check (last checked {Hours:F1} hours ago, frequency set to {Frequency} hours)",
+                    hoursSinceLastCheck, config.GuiDefaults.GoldbergUpdateCheckHours);
+                return false;
+            }
+        }
 
         var client = new HttpClient();
         client.DefaultRequestHeaders.Add("User-Agent", "GoldbergGUI");
@@ -348,24 +394,22 @@ public partial class GoldbergService(
             return false;
         }
 
-        var releaseTagPath = Path.Combine(_goldbergPath, "release_tag");
-        if (File.Exists(releaseTagPath))
-            try
+        // Save last check time
+        var updatedConfig = config with
+        {
+            GoldbergState = config.GoldbergState with
             {
-                log.LogInformation("Check if update is needed...");
-                var releaseTagLocal = File.ReadLines(releaseTagPath).First().Trim();
-                log.LogDebug("release_tag: local {ReleaseTagLocal}; remote {ReleaseTagRemote}", releaseTagLocal,
-                    releaseTag);
-                if (releaseTagLocal.Equals(releaseTag))
-                {
-                    log.LogInformation("Latest Goldberg emulator is already available! Skipping...");
-                    return false;
-                }
+                LastUpdateCheck = DateTime.UtcNow
             }
-            catch (Exception)
-            {
-                log.LogError("An error occured, local Goldberg setup might be broken!");
-            }
+        };
+        await SaveAppConfiguration(updatedConfig).ConfigureAwait(false);
+
+        // Check if we already have this version
+        if (config.GoldbergState.InstalledVersion == releaseTag)
+        {
+            log.LogInformation("Latest Goldberg emulator is already available! Skipping...");
+            return false;
+        }
 
         log.LogInformation("Starting download of release {ReleaseTag}...", releaseTag);
         await StartDownload(downloadUrl, releaseTag).ConfigureAwait(false);
@@ -395,9 +439,16 @@ public partial class GoldbergService(
             if (contentLength == fileLength)
             {
                 log.LogInformation("Download finished!");
-                // Save release tag for future comparison
-                var releaseTagPath = Path.Combine(_goldbergPath, "release_tag");
-                await File.WriteAllTextAsync(releaseTagPath, releaseTag).ConfigureAwait(false);
+                // Save installed version to config
+                var config = await GetAppConfiguration().ConfigureAwait(false);
+                var updatedConfig = config with
+                {
+                    GoldbergState = config.GoldbergState with
+                    {
+                        InstalledVersion = releaseTag
+                    }
+                };
+                await SaveAppConfiguration(updatedConfig).ConfigureAwait(false);
             }
             else
             {
@@ -419,18 +470,9 @@ public partial class GoldbergService(
         var errorOccured = false;
         log.LogDebug("Start extraction...");
 
-        // Preserve release_tag file before deletion
-        var releaseTagPath = Path.Combine(_goldbergPath, "release_tag");
-        string? releaseTagContent = null;
-        if (File.Exists(releaseTagPath))
-            releaseTagContent = await File.ReadAllTextAsync(releaseTagPath).ConfigureAwait(false);
-
+        // No need to preserve release_tag anymore - it's in app_config.json
         Directory.Delete(_goldbergPath, true);
         Directory.CreateDirectory(_goldbergPath);
-
-        // Restore release_tag file after directory recreation
-        if (releaseTagContent is not null)
-            await File.WriteAllTextAsync(releaseTagPath, releaseTagContent).ConfigureAwait(false);
 
         await Task.Run(() =>
         {

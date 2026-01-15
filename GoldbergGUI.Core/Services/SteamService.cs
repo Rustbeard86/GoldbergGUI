@@ -104,10 +104,38 @@ public sealed partial class SteamService(
         await using var context = await contextFactory.CreateDbContextAsync().ConfigureAwait(false);
 
         var count = await context.SteamApps.CountAsync().ConfigureAwait(false);
-        var dbPath = context.Database.GetDbConnection().DataSource;
+
+        // Load app configuration
+        var appConfigPath = Path.Combine(Directory.GetCurrentDirectory(), "app_config.json");
+        var updateCheckHours = 24; // Default
+        DateTime? lastUpdate = null;
+
+        if (File.Exists(appConfigPath))
+            try
+            {
+                var json = await File.ReadAllTextAsync(appConfigPath).ConfigureAwait(false);
+                var config = JsonSerializer.Deserialize<AppConfiguration>(json);
+                if (config is not null)
+                {
+                    updateCheckHours = config.GuiDefaults.DatabaseUpdateCheckHours;
+                    lastUpdate = config.DatabaseState.LastUpdate;
+                }
+            }
+            catch (Exception ex)
+            {
+                log.LogWarning(ex, "Failed to read app configuration for database update frequency");
+            }
+
+        if (updateCheckHours == -1)
+        {
+            log.LogInformation("Database update checks are disabled");
+            statusCallback("Database update checks disabled.");
+            return;
+        }
+
         var needsUpdate = count == 0 ||
-                          (!string.IsNullOrEmpty(dbPath) && File.Exists(dbPath) &&
-                           DateTime.Now.Subtract(File.GetLastWriteTimeUtc(dbPath)).TotalDays >= 1);
+                          !lastUpdate.HasValue ||
+                          (DateTime.UtcNow - lastUpdate.Value).TotalHours >= updateCheckHours;
 
         if (!needsUpdate)
         {
@@ -170,6 +198,9 @@ public sealed partial class SteamService(
             statusCallback($"Updated {appType}: {cache.Count} entries");
             log.LogInformation("Cache updated for {AppType}: {Count} entries", appType, cache.Count);
         }
+
+        // Save the database update timestamp
+        await SaveDatabaseUpdateTimestamp().ConfigureAwait(false);
     }
 
     public async Task Initialize()
@@ -180,10 +211,37 @@ public sealed partial class SteamService(
         await context.Database.MigrateAsync().ConfigureAwait(false);
 
         var count = await context.SteamApps.CountAsync().ConfigureAwait(false);
-        var dbPath = context.Database.GetDbConnection().DataSource;
+
+        // Load app configuration
+        var appConfigPath = Path.Combine(Directory.GetCurrentDirectory(), "app_config.json");
+        var updateCheckHours = 24; // Default
+        DateTime? lastUpdate = null;
+
+        if (File.Exists(appConfigPath))
+            try
+            {
+                var json = await File.ReadAllTextAsync(appConfigPath).ConfigureAwait(false);
+                var config = JsonSerializer.Deserialize<AppConfiguration>(json);
+                if (config is not null)
+                {
+                    updateCheckHours = config.GuiDefaults.DatabaseUpdateCheckHours;
+                    lastUpdate = config.DatabaseState.LastUpdate;
+                }
+            }
+            catch (Exception ex)
+            {
+                log.LogWarning(ex, "Failed to read app configuration for database update frequency");
+            }
+
+        if (updateCheckHours == -1)
+        {
+            log.LogInformation("Database update checks are disabled");
+            return;
+        }
+
         var needsUpdate = count == 0 ||
-                          (!string.IsNullOrEmpty(dbPath) && File.Exists(dbPath) &&
-                           DateTime.Now.Subtract(File.GetLastWriteTimeUtc(dbPath)).TotalDays >= 1);
+                          !lastUpdate.HasValue ||
+                          (DateTime.UtcNow - lastUpdate.Value).TotalHours >= updateCheckHours;
 
         if (!needsUpdate) return;
 
@@ -240,6 +298,9 @@ public sealed partial class SteamService(
 
             log.LogInformation("Cache updated for {AppType}: {Count} entries", appType, cache.Count);
         }
+
+        // Save the database update timestamp
+        await SaveDatabaseUpdateTimestamp().ConfigureAwait(false);
     }
 
     /// <summary>
@@ -456,6 +517,46 @@ public sealed partial class SteamService(
         }
 
         return dlcList;
+    }
+
+    /// <summary>
+    ///     Saves the current UTC time as the database last update timestamp
+    /// </summary>
+    private async Task SaveDatabaseUpdateTimestamp()
+    {
+        var appConfigPath = Path.Combine(Directory.GetCurrentDirectory(), "app_config.json");
+
+        try
+        {
+            AppConfiguration config;
+            if (File.Exists(appConfigPath))
+            {
+                var json = await File.ReadAllTextAsync(appConfigPath).ConfigureAwait(false);
+                config = JsonSerializer.Deserialize<AppConfiguration>(json) ?? new AppConfiguration();
+            }
+            else
+            {
+                config = new AppConfiguration();
+            }
+
+            var updatedConfig = config with
+            {
+                DatabaseState = config.DatabaseState with
+                {
+                    LastUpdate = DateTime.UtcNow
+                }
+            };
+
+            var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
+            var updatedJson = JsonSerializer.Serialize(updatedConfig, jsonOptions);
+            await File.WriteAllTextAsync(appConfigPath, updatedJson).ConfigureAwait(false);
+
+            log.LogInformation("Saved database update timestamp to app_config.json");
+        }
+        catch (Exception ex)
+        {
+            log.LogWarning(ex, "Failed to save database update timestamp");
+        }
     }
 
     private static string InferStatType(double value)

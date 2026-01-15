@@ -176,13 +176,14 @@
                 <!-- Settings -->
                 <TabItem Header="Global Settings">
                     <StackPanel Margin="10,20,10,10">
-                        <Grid Margin="0,0,0,5">
+                        <Grid Margin="0,0,0,5" MaxWidth="600" HorizontalAlignment="Left">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="300" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
@@ -193,50 +194,38 @@
                             </Grid.RowDefinitions>
                             <Label Content="Account name" HorizontalAlignment="Left" Margin="0,0,10,0" />
                             <TextBox Text="{Binding AccountName, Mode=TwoWay}" Height="20" Grid.Row="0" Grid.Column="1" />
-                            <CheckBox Content="Global" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right"
-                                      Margin="10,0,5,0" VerticalAlignment="Center" IsChecked="True"
-                                      IsEnabled="False" />
-                            <!--
-                                      IsEnabled="{Binding DllSelected, UpdateSourceTrigger=PropertyChanged}"/>
-                                      -->
                             <Label Content="Steam64ID" HorizontalAlignment="Left" Grid.Row="1"
                                    Grid.Column="0" Margin="0,0,10,0" />
                             <TextBox Text="{Binding SteamId, Mode=TwoWay}" Grid.Column="1" Height="20" Grid.Row="1" />
-                            <CheckBox Content="Global" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right"
-                                      Margin="10,0,5,0" VerticalAlignment="Center" IsChecked="True"
-                                      IsEnabled="False" />
-                            <!--
-                                      IsEnabled="{Binding DllSelected, UpdateSourceTrigger=PropertyChanged}"/>
-                                      -->
                             <Label Content="Language" HorizontalAlignment="Left" Grid.Row="2"
                                    Grid.Column="0" Margin="0,0,10,0" />
                             <ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding SteamLanguages}"
                                       SelectedItem="{Binding SelectedLanguage}" VerticalAlignment="Center" />
-                            <CheckBox Content="Global" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Right"
-                                      Margin="10,0,5,0" VerticalAlignment="Center" IsChecked="True"
-                                      IsEnabled="False" />
-                            <!--
-                                      IsEnabled="{Binding DllSelected, UpdateSourceTrigger=PropertyChanged}"/>
-                                      -->
                             <Label Content="Use Experimental Build" HorizontalAlignment="Left" Grid.Row="3"
                                    Grid.Column="0" Margin="0,0,10,0" />
                             <CheckBox IsChecked="{Binding UseExperimental, Mode=TwoWay}" Grid.Row="3" Grid.Column="1"
                                       VerticalAlignment="Center" HorizontalAlignment="Left" Height="20"
                                       ToolTip="Use experimental Goldberg emulator build instead of regular" />
-                            <CheckBox Content="Global" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Right"
-                                      Margin="10,0,5,0" VerticalAlignment="Center" IsChecked="True"
-                                      IsEnabled="False" />
+                            <Label Content="Goldberg Update Check (hours)" HorizontalAlignment="Left" Grid.Row="4"
+                                   Grid.Column="0" Margin="0,0,10,0" />
+                            <TextBox Text="{Binding GoldbergUpdateCheckHours, Mode=TwoWay}" Grid.Row="4"
+                                     Grid.Column="1"
+                                     Height="20" VerticalAlignment="Center"
+                                     ToolTip="How often to check for Goldberg updates in hours. -1 = disabled, 0 = always check" />
+                            <Label Content="Database Update Check (hours)" HorizontalAlignment="Left" Grid.Row="5"
+                                   Grid.Column="0" Margin="0,0,10,0" />
+                            <TextBox Text="{Binding DatabaseUpdateCheckHours, Mode=TwoWay}" Grid.Row="5"
+                                     Grid.Column="1"
+                                     Height="20" VerticalAlignment="Center"
+                                     ToolTip="How often to check for database updates in hours. -1 = disabled, 0 = always check" />
                             <Label Content="Custom Broadcast Addresses:" HorizontalAlignment="Left"
-                                   Grid.ColumnSpan="2" Grid.Row="4" Grid.Column="0" Margin="0,0,10,0" />
-                            <CheckBox Content="Global" Grid.Row="4" Grid.Column="2" HorizontalAlignment="Right"
-                                      Margin="10,0,5,0" VerticalAlignment="Center" IsChecked="True"
-                                      IsEnabled="False" />
-                            <TextBox Grid.Row="5" Grid.ColumnSpan="3" Grid.Column="0" HorizontalAlignment="Stretch"
+                                   Grid.ColumnSpan="2" Grid.Row="6" Grid.Column="0" Margin="0,0,10,0" />
+                            <TextBox Grid.Row="7" Grid.ColumnSpan="2" Grid.Column="0" HorizontalAlignment="Stretch"
                                      VerticalAlignment="Stretch"
                                      TextWrapping="Wrap"
                                      AcceptsReturn="True"
                                      VerticalScrollBarVisibility="Auto" MaxHeight="120" MinHeight="120" />
-                            <TextBlock TextWrapping="Wrap" Grid.ColumnSpan="3" Grid.Column="0" Grid.Row="6"
+                            <TextBlock TextWrapping="Wrap" Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="8"
                                        Margin="5,10,5,5">
                                 <Run Text="{Binding G.Header, Mode=OneTime}" FontWeight="Bold" />
                                 <!--
