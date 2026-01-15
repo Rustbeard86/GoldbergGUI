@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using AngleSharp.Html.Parser;
 using GoldbergGUI.Core.Data;
@@ -25,10 +26,26 @@ public interface ISteamService
     Task<SteamApp?> GetAppByName(string name);
     Task<SteamApp?> GetAppById(int appid);
     Task<List<Achievement>> GetListOfAchievements(SteamApp? steamApp);
+    Task<List<Stat>> GetListOfStats(SteamApp? steamApp);
     Task<List<DlcApp>> GetListOfDlc(SteamApp? steamApp, bool useSteamDb);
 }
 
 internal sealed record SteamCache(string SteamUri, Type ApiVersion, string SteamAppType);
+
+/// <summary>
+/// Steam API stat format (for deserialization from GetSchemaForGame API)
+/// </summary>
+internal sealed record SteamStat
+{
+    [JsonPropertyName("name")]
+    public required string Name { get; init; }
+
+    [JsonPropertyName("defaultvalue")]
+    public double DefaultValue { get; init; }
+
+    [JsonPropertyName("displayName")]
+    public string DisplayName { get; init; } = string.Empty;
+}
 
 /// <summary>
 ///     Implementation of Steam service using Entity Framework Core for caching
@@ -334,6 +351,57 @@ public sealed partial class SteamService(
         }
 
         return [];
+    }
+
+    public async Task<List<Stat>> GetListOfStats(SteamApp? steamApp)
+    {
+        if (steamApp is null) return [];
+
+        log.LogInformation("Getting stats for App {SteamApp}", steamApp);
+
+        using var client = new HttpClient();
+        client.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
+        var apiUrl = $"{GameSchemaUrl}?key={Secrets.SteamWebApiKey()}&appid={steamApp.AppId}&l=en";
+
+        try
+        {
+            var response = await client.GetAsync(apiUrl).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+
+            var responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            using var jsonResponse = JsonDocument.Parse(responseBody);
+
+            if (jsonResponse.RootElement.TryGetProperty("game", out var game) &&
+                game.TryGetProperty("availableGameStats", out var stats) &&
+                stats.TryGetProperty("stats", out var statsData))
+            {
+                // Deserialize Steam API stats format
+                var steamStats = JsonSerializer.Deserialize<List<SteamStat>>(statsData.GetRawText());
+                if (steamStats == null) return [];
+
+                // Convert to Goldberg format
+                return steamStats.Select(s => new Stat
+                {
+                    Name = s.Name,
+                    Default = s.DefaultValue.ToString(),
+                    Global = "0",
+                    Type = InferStatType(s.DefaultValue)
+                }).ToList();
+            }
+        }
+        catch (Exception ex)
+        {
+            log.LogError(ex, "Failed to get stats for app {AppId}", steamApp.AppId);
+        }
+
+        return [];
+    }
+
+    private static string InferStatType(double value)
+    {
+        // If value has decimals, it's float; otherwise int
+        // avgrate type needs game-specific knowledge, default to float for decimals
+        return value % 1 == 0 ? "int" : "float";
     }
 
     public async Task<List<DlcApp>> GetListOfDlc(SteamApp? steamApp, bool useSteamDb)

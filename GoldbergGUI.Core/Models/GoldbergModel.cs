@@ -45,6 +45,11 @@ public sealed record GoldbergConfiguration
     ///     List of DLC
     /// </summary>
     public required List<DlcApp> DlcList { get; init; }
+    
+    /// <summary>
+    ///     Unlock all DLCs (true) or only report mentioned DLCs (false)
+    /// </summary>
+    public bool UnlockAllDlc { get; init; } = true;
 
     public List<int>? Depots { get; init; }
 
@@ -125,24 +130,28 @@ public sealed record Achievement
     /// <summary>
     ///     Achievement description (optional, some achievements don't have descriptions).
     /// </summary>
+    [JsonPropertyOrder(1)]
     [JsonPropertyName("description")]
     public string Description { get; set; } = string.Empty;
 
     /// <summary>
     ///     Human readable name, as shown on webpage, game library, overlay, etc.
     /// </summary>
+    [JsonPropertyOrder(2)]
     [JsonPropertyName("displayName")]
     public required string DisplayName { get; set; }
 
     /// <summary>
     ///     Is achievement hidden? 0 = false, else true.
     /// </summary>
+    [JsonPropertyOrder(3)]
     [JsonPropertyName("hidden")]
     public required int Hidden { get; init; }
 
     /// <summary>
     ///     Path to icon when unlocked (colored).
     /// </summary>
+    [JsonPropertyOrder(4)]
     [JsonPropertyName("icon")]
     public required string Icon { get; set; }
 
@@ -150,14 +159,56 @@ public sealed record Achievement
     ///     Path to icon when locked (grayed out).
     /// </summary>
     // ReSharper disable once StringLiteralTypo
+    [JsonPropertyOrder(5)]
     [JsonPropertyName("icongray")]
     public required string IconGray { get; set; }
 
     /// <summary>
     ///     Internal name.
     /// </summary>
+    [JsonPropertyOrder(6)]
     [JsonPropertyName("name")]
     public required string Name { get; init; }
+    
+    /// <summary>
+    ///     Gets the effective display name, falling back to Name if DisplayName is empty.
+    /// </summary>
+    [JsonIgnore]
+    public string EffectiveDisplayName => string.IsNullOrEmpty(DisplayName) ? Name : DisplayName;
+}
+
+/// <summary>
+/// Statistic definition for Goldberg emulator
+/// </summary>
+public sealed record Stat
+{
+    /// <summary>
+    ///     Default value for the stat.
+    /// </summary>
+    [JsonPropertyOrder(1)]
+    [JsonPropertyName("default")]
+    public required string Default { get; init; }
+
+    /// <summary>
+    ///     Global stat value.
+    /// </summary>
+    [JsonPropertyOrder(2)]
+    [JsonPropertyName("global")]
+    public required string Global { get; init; }
+
+    /// <summary>
+    ///     Internal stat name.
+    /// </summary>
+    [JsonPropertyOrder(3)]
+    [JsonPropertyName("name")]
+    public required string Name { get; init; }
+
+    /// <summary>
+    ///     Stat type: int, float, or avgrate.
+    /// </summary>
+    [JsonPropertyOrder(4)]
+    [JsonPropertyName("type")]
+    public required string Type { get; init; }
 }
 
 public sealed record Item
@@ -260,18 +311,4 @@ public sealed record Leaderboard
     public required string Name { get; init; }
     public required SortMethod SortMethodSetting { get; init; }
     public required DisplayType DisplayTypeSetting { get; init; }
-}
-
-public sealed record Stat
-{
-    public enum StatType
-    {
-        Int,
-        Float,
-        AvgRate
-    }
-
-    public required string Name { get; init; }
-    public required StatType StatTypeSetting { get; init; }
-    public required string Value { get; init; }
 }

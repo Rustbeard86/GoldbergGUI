@@ -1,6 +1,6 @@
 ﻿using GoldbergGUI.Core.Data;
 using GoldbergGUI.Core.Extensions;
-using GoldbergGUI.Core.Services;
+using GoldbergGUI.Core.Services.Configuration;
 using GoldbergGUI.Core.Utils;
 using GoldbergGUI.Core.ViewModels;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +37,13 @@ public sealed class App : MvxApplication
 
         Mvx.IoCProvider.RegisterSingleton(
             provider.GetRequiredService<IMemoryCache>());
+
+        // Register configuration writers (SOLID)
+        Mvx.IoCProvider.RegisterType<MainConfigWriter>();
+        Mvx.IoCProvider.RegisterType<UserConfigWriter>();
+        Mvx.IoCProvider.RegisterType<AppConfigWriter>();
+        Mvx.IoCProvider.RegisterType<GoldbergConfigurationReader>();
+        Mvx.IoCProvider.RegisterType<GoldbergConfigurationManager>();
 
         // Register services
         CreatableTypes()

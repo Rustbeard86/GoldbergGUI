@@ -549,7 +549,8 @@ public partial class MainViewModel(
                 Offline = Offline,
                 DisableNetworking = DisableNetworking,
                 DisableOverlay = DisableOverlay
-            }
+            },
+            globalConfiguration
         ).ConfigureAwait(false);
         GoldbergApplied = goldberg.GoldbergApplied(dirPath);
         MainWindowEnabled = true;

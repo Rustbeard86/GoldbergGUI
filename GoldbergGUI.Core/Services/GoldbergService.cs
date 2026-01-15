@@ -20,7 +20,7 @@ public interface IGoldbergService
     public bool IsInitialized();
     public Task InitializeInBackground(Action<string> statusCallback);
     public Task<GoldbergConfiguration> Read(string path);
-    public Task Save(string path, GoldbergConfiguration configuration);
+    public Task Save(string path, GoldbergConfiguration configuration, GoldbergGlobalConfiguration globalConfiguration);
     public Task<GoldbergGlobalConfiguration> GetGlobalSettings();
     public Task SetGlobalSettings(GoldbergGlobalConfiguration configuration);
     public bool GoldbergApplied(string path);
@@ -30,7 +30,10 @@ public interface IGoldbergService
 
 // ReSharper disable once UnusedType.Global
 // ReSharper disable once ClassNeverInstantiated.Global
-public partial class GoldbergService(ILogger<GoldbergService> log) : IGoldbergService
+public partial class GoldbergService(
+    ILogger<GoldbergService> log,
+    Configuration.GoldbergConfigurationManager configManager,
+    Configuration.GoldbergConfigurationReader configReader) : IGoldbergService
 {
     private const string DefaultAccountName = "Mr_Goldberg";
     private const long DefaultSteamId = 76561197960287930;
@@ -264,234 +267,47 @@ public partial class GoldbergService(ILogger<GoldbergService> log) : IGoldbergSe
         log.LogInformation("Setting global configuration finished.");
     }
 
-    // If first time, call GenerateInterfaces
-    // else try to read config
+    // Read modern configuration using the new format
     public async Task<GoldbergConfiguration> Read(string path)
     {
-        log.LogInformation("Reading configuration...");
-        var appId = -1;
-        var achievementList = new List<Achievement>();
-        var dlcList = new List<DlcApp>();
-        var steamAppidTxt = Path.Combine(path, "steam_appid.txt");
-        if (File.Exists(steamAppidTxt))
-        {
-            log.LogInformation("Getting AppID...");
-            await Task.Run(() => int.TryParse(File.ReadLines(steamAppidTxt).First().Trim(), out appId))
-                .ConfigureAwait(false);
-        }
-        else
-        {
-            log.LogInformation(@"""steam_appid.txt"" missing! Skipping...");
-        }
-
-        var achievementJson = Path.Combine(path, "steam_settings", "achievements.json");
-        if (File.Exists(achievementJson))
-        {
-            log.LogInformation("Getting achievements...");
-            var json = await File.ReadAllTextAsync(achievementJson)
-                .ConfigureAwait(false);
-            achievementList = JsonSerializer.Deserialize<List<Achievement>>(json);
-        }
-        else
-        {
-            log.LogInformation(@"""steam_settings/achievements.json"" missing! Skipping...");
-        }
-
-        var dlcTxt = Path.Combine(path, "steam_settings", "DLC.txt");
-        var appPathTxt = Path.Combine(path, "steam_settings", "app_paths.txt");
-        if (File.Exists(dlcTxt))
-        {
-            log.LogInformation("Getting DLCs...");
-            var readAllLinesAsync = await File.ReadAllLinesAsync(dlcTxt).ConfigureAwait(false);
-            var expression = PrecompDLCExpression();
-            // ReSharper disable once LoopCanBeConvertedToQuery
-            foreach (var line in readAllLinesAsync)
-            {
-                var match = expression.Match(line);
-                if (match.Success)
-                    dlcList.Add(new DlcApp
-                    {
-                        AppId = Convert.ToInt32(match.Groups["id"].Value),
-                        Name = match.Groups["name"].Value
-                    });
-            }
-
-            // ReSharper disable once InvertIf
-            if (File.Exists(appPathTxt))
-            {
-                var appPathAllLinesAsync = await File.ReadAllLinesAsync(appPathTxt).ConfigureAwait(false);
-                var appPathExpression = PrecompAppPathExpression();
-                foreach (var line in appPathAllLinesAsync)
-                {
-                    var match = appPathExpression.Match(line);
-                    if (!match.Success) continue;
-                    var i = dlcList.FindIndex(x =>
-                        x.AppId.Equals(Convert.ToInt32(match.Groups["id"].Value)));
-                    dlcList[i].AppPath = match.Groups["appPath"].Value;
-                }
-            }
-        }
-        else
-        {
-            log.LogInformation(@"""steam_settings/DLC.txt"" missing! Skipping...");
-        }
-
-        return new GoldbergConfiguration
-        {
-            AppId = appId,
-            Achievements = achievementList ?? [],
-            DlcList = dlcList,
-            Offline = File.Exists(Path.Combine(path, "steam_settings", "offline.txt")),
-            DisableNetworking = File.Exists(Path.Combine(path, "steam_settings", "disable_networking.txt")),
-            DisableOverlay = File.Exists(Path.Combine(path, "steam_settings", "disable_overlay.txt"))
-        };
+        return await configReader.ReadConfiguration(path).ConfigureAwait(false);
     }
 
-    // If first time, rename original SteamAPI DLL to steam_api(64)_o.dll
-    // If not, rename current SteamAPI DLL to steam_api(64).dll.backup
-    // Copy Goldberg DLL to path
-    // Save configuration files
-    public async Task Save(string path, GoldbergConfiguration c)
+    // Save modern configuration using the new format
+    public async Task Save(string path, GoldbergConfiguration c, GoldbergGlobalConfiguration globalConfig)
     {
         log.LogInformation("Saving configuration...");
+        
         // DLL setup
         log.LogInformation("Running DLL setup...");
         const string x86Name = "steam_api";
         const string x64Name = "steam_api64";
         if (File.Exists(Path.Combine(path, $"{x86Name}.dll"))) CopyDllFiles(path, x86Name);
-
         if (File.Exists(Path.Combine(path, $"{x64Name}.dll"))) CopyDllFiles(path, x64Name);
         log.LogInformation("DLL setup finished!");
 
-        // Create steam_settings folder if missing
-        log.LogInformation("Saving settings...");
-        if (!Directory.Exists(Path.Combine(path, "steam_settings")))
-            Directory.CreateDirectory(Path.Combine(path, "steam_settings"));
-
-        // create steam_appid.txt
-        await File.WriteAllTextAsync(Path.Combine(path, "steam_appid.txt"), c.AppId.ToString())
-            .ConfigureAwait(false);
-
-        // Achievements + Images
+        // Download achievement images if needed
         if (c.Achievements.Count > 0)
         {
-            log.LogInformation("Downloading images...");
+            log.LogInformation("Downloading achievement images...");
             var imagePath = Path.Combine(path, "steam_settings", "images");
             Directory.CreateDirectory(imagePath);
 
             foreach (var achievement in c.Achievements)
             {
-                await DownloadImageAsync(imagePath, achievement.Icon);
-                await DownloadImageAsync(imagePath, achievement.IconGray);
+                await DownloadImageAsync(imagePath, achievement.Icon).ConfigureAwait(false);
+                await DownloadImageAsync(imagePath, achievement.IconGray).ConfigureAwait(false);
 
-                // Update achievement list to point to local images instead
+                // Update achievement list to point to local images
                 achievement.Icon = $"images/{Path.GetFileName(achievement.Icon)}";
                 achievement.IconGray = $"images/{Path.GetFileName(achievement.IconGray)}";
             }
-
-            log.LogInformation("Saving achievements...");
-
-            var achievementJson = JsonSerializer.Serialize(c.Achievements, JsonOptions);
-            await File.WriteAllTextAsync(Path.Combine(path, "steam_settings", "achievements.json"), achievementJson)
-                .ConfigureAwait(false);
-
-            log.LogInformation("Finished saving achievements.");
-        }
-        else
-        {
-            log.LogInformation("No achievements set! Removing achievement files...");
-            var imagePath = Path.Combine(path, "steam_settings", "images");
-            if (Directory.Exists(imagePath)) Directory.Delete(imagePath);
-            var achievementPath = Path.Combine(path, "steam_settings", "achievements");
-            if (File.Exists(achievementPath)) File.Delete(achievementPath);
-            log.LogInformation("Removed achievement files.");
         }
 
-        // DLC + App path
-        if (c.DlcList.Count > 0)
-        {
-            log.LogInformation("Saving DLC settings...");
-            var dlcContent = "";
-            //var depotContent = "";
-            var appPathContent = "";
-            c.DlcList.ForEach(x =>
-            {
-                dlcContent += $"{x}\n";
-                //depotContent += $"{x.DepotId}\n";
-                if (!string.IsNullOrEmpty(x.AppPath))
-                    appPathContent += $"{x.AppId}={x.AppPath}\n";
-            });
-            await File.WriteAllTextAsync(Path.Combine(path, "steam_settings", "DLC.txt"), dlcContent)
-                .ConfigureAwait(false);
-
-            /*if (!string.IsNullOrEmpty(depotContent))
-            {
-                await File.WriteAllTextAsync(Path.Combine(path, "steam_settings", "depots.txt"), depotContent)
-                    .ConfigureAwait(false);
-            }*/
-
-
-            if (!string.IsNullOrEmpty(appPathContent))
-            {
-                await File.WriteAllTextAsync(Path.Combine(path, "steam_settings", "app_paths.txt"), appPathContent)
-                    .ConfigureAwait(false);
-            }
-            else
-            {
-                if (File.Exists(Path.Combine(path, "steam_settings", "app_paths.txt")))
-                    File.Delete(Path.Combine(path, "steam_settings", "app_paths.txt"));
-            }
-
-            log.LogInformation("Saved DLC settings.");
-        }
-        else
-        {
-            log.LogInformation("No DLC set! Removing DLC configuration files...");
-            if (File.Exists(Path.Combine(path, "steam_settings", "DLC.txt")))
-                File.Delete(Path.Combine(path, "steam_settings", "DLC.txt"));
-            if (File.Exists(Path.Combine(path, "steam_settings", "app_paths.txt")))
-                File.Delete(Path.Combine(path, "steam_settings", "app_paths.txt"));
-            log.LogInformation("Removed DLC configuration files.");
-        }
-
-        // Offline
-        if (c.Offline)
-        {
-            log.LogInformation("Create offline.txt");
-            await File.Create(Path.Combine(path, "steam_settings", "offline.txt")).DisposeAsync()
-                .ConfigureAwait(false);
-        }
-        else
-        {
-            log.LogInformation("Delete offline.txt if it exists");
-            File.Delete(Path.Combine(path, "steam_settings", "offline.txt"));
-        }
-
-        // Disable Networking
-        if (c.DisableNetworking)
-        {
-            log.LogInformation("Create disable_networking.txt");
-            await File.Create(Path.Combine(path, "steam_settings", "disable_networking.txt")).DisposeAsync()
-                .ConfigureAwait(false);
-        }
-        else
-        {
-            log.LogInformation("Delete disable_networking.txt if it exists");
-            File.Delete(Path.Combine(path, "steam_settings", "disable_networking.txt"));
-        }
-
-        // Disable Overlay
-        if (c.DisableOverlay)
-        {
-            log.LogInformation("Create disable_overlay.txt");
-            await File.Create(Path.Combine(path, "steam_settings", "disable_overlay.txt")).DisposeAsync()
-                .ConfigureAwait(false);
-        }
-        else
-        {
-            log.LogInformation("Delete disable_overlay.txt if it exists");
-            File.Delete(Path.Combine(path, "steam_settings", "disable_overlay.txt"));
-        }
+        // Use the modern configuration manager to save
+        await configManager.SaveConfiguration(path, c, globalConfig).ConfigureAwait(false);
+        
+        log.LogInformation("Configuration saved successfully!");
     }
 
     private void CopyDllFiles(string path, string name)
