@@ -195,6 +195,16 @@ public partial class MainViewModel(
         }
     } = string.Empty;
 
+    public bool UseExperimental
+    {
+        get => field;
+        set
+        {
+            field = value;
+            RaisePropertyChanged(() => UseExperimental);
+        }
+    }
+
     public string StatusText
     {
         get => field;
@@ -284,6 +294,7 @@ public partial class MainViewModel(
                 AccountName = globalConfiguration.AccountName;
                 SteamId = globalConfiguration.UserSteamId;
                 SelectedLanguage = globalConfiguration.Language;
+                UseExperimental = globalConfiguration.UseExperimental;
             }
             catch (Exception e)
             {
@@ -445,7 +456,8 @@ public partial class MainViewModel(
         {
             AccountName = AccountName,
             UserSteamId = SteamId,
-            Language = SelectedLanguage
+            Language = SelectedLanguage,
+            UseExperimental = UseExperimental
         };
         await goldberg.SetGlobalSettings(globalConfiguration).ConfigureAwait(false);
         if (!DllSelected) return;
@@ -475,6 +487,7 @@ public partial class MainViewModel(
         AccountName = globalConfiguration.AccountName;
         SteamId = globalConfiguration.UserSteamId;
         SelectedLanguage = globalConfiguration.Language;
+        UseExperimental = globalConfiguration.UseExperimental;
         if (!DllSelected) return;
 
         log.LogInformation("Reset form...");

@@ -183,6 +183,7 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
@@ -213,17 +214,25 @@
                             <!--
                                       IsEnabled="{Binding DllSelected, UpdateSourceTrigger=PropertyChanged}"/>
                                       -->
-                            <Label Content="Custom Broadcast Addresses:" HorizontalAlignment="Left"
-                                   Grid.ColumnSpan="2" Grid.Row="3" Grid.Column="0" Margin="0,0,10,0" />
+                            <Label Content="Use Experimental Build" HorizontalAlignment="Left" Grid.Row="3"
+                                   Grid.Column="0" Margin="0,0,10,0" />
+                            <CheckBox IsChecked="{Binding UseExperimental, Mode=TwoWay}" Grid.Row="3" Grid.Column="1"
+                                      VerticalAlignment="Center" HorizontalAlignment="Left" Height="20"
+                                      ToolTip="Use experimental Goldberg emulator build instead of regular" />
                             <CheckBox Content="Global" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Right"
                                       Margin="10,0,5,0" VerticalAlignment="Center" IsChecked="True"
                                       IsEnabled="False" />
-                            <TextBox Grid.Row="4" Grid.ColumnSpan="3" Grid.Column="0" HorizontalAlignment="Stretch"
+                            <Label Content="Custom Broadcast Addresses:" HorizontalAlignment="Left"
+                                   Grid.ColumnSpan="2" Grid.Row="4" Grid.Column="0" Margin="0,0,10,0" />
+                            <CheckBox Content="Global" Grid.Row="4" Grid.Column="2" HorizontalAlignment="Right"
+                                      Margin="10,0,5,0" VerticalAlignment="Center" IsChecked="True"
+                                      IsEnabled="False" />
+                            <TextBox Grid.Row="5" Grid.ColumnSpan="3" Grid.Column="0" HorizontalAlignment="Stretch"
                                      VerticalAlignment="Stretch"
                                      TextWrapping="Wrap"
                                      AcceptsReturn="True"
                                      VerticalScrollBarVisibility="Auto" MaxHeight="120" MinHeight="120" />
-                            <TextBlock TextWrapping="Wrap" Grid.ColumnSpan="3" Grid.Column="0" Grid.Row="5"
+                            <TextBlock TextWrapping="Wrap" Grid.ColumnSpan="3" Grid.Column="0" Grid.Row="6"
                                        Margin="5,10,5,5">
                                 <Run Text="{Binding G.Header, Mode=OneTime}" FontWeight="Bold" />
                                 <!--

@@ -27,6 +27,11 @@ public sealed record GoldbergGlobalConfiguration
     ///     Custom broadcast addresses (IPv4 or domain addresses)
     /// </summary>
     public List<string>? CustomBroadcastIps { get; init; }
+
+    /// <summary>
+    ///     Use experimental build of Goldberg emulator (GoldbergGUI application setting, not a Goldberg setting)
+    /// </summary>
+    public bool UseExperimental { get; init; }
 }
 
 public sealed record GoldbergConfiguration

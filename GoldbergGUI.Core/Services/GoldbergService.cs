@@ -46,10 +46,16 @@ public partial class GoldbergService(ILogger<GoldbergService> log) : IGoldbergSe
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "Goldberg SteamEmu Saves");
 
+    private static readonly string AppSettingsPath =
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "GoldbergGUI");
+
     private readonly string _accountNamePath = Path.Combine(GlobalSettingsPath, "settings/account_name.txt");
 
     private readonly string _customBroadcastIpsPath =
         Path.Combine(GlobalSettingsPath, "settings/custom_broadcasts.txt");
+
+    private readonly string _experimentalPath = Path.Combine(AppSettingsPath, "experimental.txt");
 
     private readonly string _goldbergArchivePath = Path.Combine(Directory.GetCurrentDirectory(), "goldberg.7z");
     private readonly string _goldbergPath = Path.Combine(Directory.GetCurrentDirectory(), "goldberg");
@@ -102,6 +108,7 @@ public partial class GoldbergService(ILogger<GoldbergService> log) : IGoldbergSe
         var steamId = DefaultSteamId;
         var language = DefaultLanguage;
         var customBroadcastIps = new List<string>();
+        var useExperimental = false;
         if (!File.Exists(GlobalSettingsPath)) Directory.CreateDirectory(Path.Join(GlobalSettingsPath, "settings"));
         await Task.Run(() =>
         {
@@ -118,6 +125,7 @@ public partial class GoldbergService(ILogger<GoldbergService> log) : IGoldbergSe
             if (File.Exists(_customBroadcastIpsPath))
                 customBroadcastIps.AddRange(
                     File.ReadLines(_customBroadcastIpsPath).Select(line => line.Trim()));
+            if (File.Exists(_experimentalPath)) useExperimental = true;
         }).ConfigureAwait(false);
         log.LogInformation("Got global settings.");
         return new GoldbergGlobalConfiguration
@@ -125,7 +133,8 @@ public partial class GoldbergService(ILogger<GoldbergService> log) : IGoldbergSe
             AccountName = accountName,
             UserSteamId = steamId,
             Language = language,
-            CustomBroadcastIps = customBroadcastIps
+            CustomBroadcastIps = customBroadcastIps,
+            UseExperimental = useExperimental
         };
     }
 
@@ -198,6 +207,22 @@ public partial class GoldbergService(ILogger<GoldbergService> log) : IGoldbergSe
         {
             log.LogInformation("Empty list of custom broadcast IPs! Skipping...");
             await Task.Run(() => File.Delete(_customBroadcastIpsPath)).ConfigureAwait(false);
+        }
+
+        // Experimental (GoldbergGUI application setting)
+        if (c.UseExperimental)
+        {
+            log.LogInformation("Enabling experimental build (app setting stored in {AppSettingsPath})...",
+                AppSettingsPath);
+            Directory.CreateDirectory(AppSettingsPath);
+            if (!File.Exists(_experimentalPath))
+                await File.Create(_experimentalPath).DisposeAsync().ConfigureAwait(false);
+        }
+        else
+        {
+            log.LogInformation("Using regular build...");
+            if (File.Exists(_experimentalPath))
+                File.Delete(_experimentalPath);
         }
 
         log.LogInformation("Setting global configuration finished.");
@@ -438,7 +463,21 @@ public partial class GoldbergService(ILogger<GoldbergService> log) : IGoldbergSe
         var steamApiDll = Path.Combine(path, $"{name}.dll");
         var originalDll = Path.Combine(path, $"{name}_o.dll");
         var guiBackup = Path.Combine(path, $".{name}.dll.GOLDBERGGUIBACKUP");
-        var goldbergDll = Path.Combine(_goldbergPath, $"{name}.dll");
+
+        // Determine build type (experimental or regular)
+        var buildType = File.Exists(_experimentalPath) ? "experimental" : "regular";
+
+        // Determine architecture (x32 or x64)
+        var architecture = name.Contains("64") ? "x64" : "x32";
+
+        var goldbergDll = Path.Combine(_goldbergPath, "release", buildType, architecture, $"{name}.dll");
+
+        if (!File.Exists(goldbergDll))
+        {
+            log.LogError("Goldberg DLL not found at {GoldbergDll}! Make sure Goldberg is properly downloaded.",
+                goldbergDll);
+            throw new FileNotFoundException($"Goldberg DLL not found: {goldbergDll}");
+        }
 
         if (!File.Exists(originalDll))
         {
@@ -451,7 +490,7 @@ public partial class GoldbergService(ILogger<GoldbergService> log) : IGoldbergSe
             File.SetAttributes(guiBackup, FileAttributes.Hidden);
         }
 
-        log.LogInformation("Copy Goldberg DLL to target path...");
+        log.LogInformation("Copy Goldberg DLL ({BuildType}/{Architecture}) to target path...", buildType, architecture);
         File.Copy(goldbergDll, steamApiDll);
     }
 
@@ -531,14 +570,16 @@ public partial class GoldbergService(ILogger<GoldbergService> log) : IGoldbergSe
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("User-Agent", "GoldbergGUI");
             log.LogDebug("Download URL: {DownloadUrl}", downloadUrl);
-            await using var fileStream = File.OpenWrite(_goldbergArchivePath);
 
             var httpRequestMessage = new HttpRequestMessage(HttpMethod.Head, downloadUrl);
             var headResponse = await client.SendAsync(httpRequestMessage).ConfigureAwait(false);
             var contentLength = headResponse.Content.Headers.ContentLength;
 
-            await client.GetFileAsync(downloadUrl, fileStream).ConfigureAwait(false);
-            await fileStream.DisposeAsync().ConfigureAwait(false);
+            await using (var fileStream = File.OpenWrite(_goldbergArchivePath))
+            {
+                await client.GetFileAsync(downloadUrl, fileStream).ConfigureAwait(false);
+                await fileStream.FlushAsync().ConfigureAwait(false);
+            } // Stream is disposed here
 
             var fileLength = new FileInfo(_goldbergArchivePath).Length;
 
