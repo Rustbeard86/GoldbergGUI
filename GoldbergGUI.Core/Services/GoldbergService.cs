@@ -1,23 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Text.Encodings.Web;
-using System.Text.Json;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows;
 using GoldbergGUI.Core.Models;
 using GoldbergGUI.Core.Utils;
 using Microsoft.Extensions.Logging;
 using SharpCompress.Archives.SevenZip;
 using SharpCompress.Common;
 using SharpCompress.Readers;
-
-#pragma warning disable CA1873
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+using System.Windows;
 
 namespace GoldbergGUI.Core.Services;
+
 
 // downloads and updates goldberg emu
 // sets up config files
@@ -286,7 +279,7 @@ public partial class GoldbergService(ILogger<GoldbergService> log) : IGoldbergSe
         return new GoldbergConfiguration
         {
             AppId = appId,
-            Achievements = achievementList,
+            Achievements = achievementList ?? [],
             DlcList = dlcList,
             Offline = File.Exists(Path.Combine(path, "steam_settings", "offline.txt")),
             DisableNetworking = File.Exists(Path.Combine(path, "steam_settings", "disable_networking.txt")),
@@ -491,7 +484,7 @@ public partial class GoldbergService(ILogger<GoldbergService> log) : IGoldbergSe
         var releaseTag = root.GetProperty("tag_name").GetString();
         var assets = root.GetProperty("assets");
 
-        string downloadUrl = null;
+        string? downloadUrl = null;
         foreach (var asset in assets.EnumerateArray())
         {
             var assetName = asset.GetProperty("name").GetString();
@@ -502,9 +495,9 @@ public partial class GoldbergService(ILogger<GoldbergService> log) : IGoldbergSe
             }
         }
 
-        if (string.IsNullOrEmpty(downloadUrl))
+        if (string.IsNullOrEmpty(downloadUrl) || string.IsNullOrEmpty(releaseTag))
         {
-            log.LogError("Could not find {AssetName} in latest release!", AssetName);
+            log.LogError("Could not find {AssetName} in latest release or release tag is missing!", AssetName);
             return false;
         }
 

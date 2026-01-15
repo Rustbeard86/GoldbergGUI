@@ -11,9 +11,8 @@ public class CustomMvxAppStart<TViewModel>(IMvxApplication application, IMvxNavi
     : MvxAppStart<TViewModel>(application, navigationService)
     where TViewModel : IMvxViewModel
 {
-    protected override async Task NavigateToFirstViewModel(object hint = null)
+    protected override async Task NavigateToFirstViewModel(object? hint = null)
     {
-        //return base.NavigateToFirstViewModel(hint);
         try
         {
             await NavigationService.Navigate<TViewModel>().ConfigureAwait(false);

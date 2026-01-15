@@ -1,73 +1,68 @@
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using SQLite;
 
-// ReSharper disable UnusedMember.Global
-// ReSharper disable ClassNeverInstantiated.Global
-// ReSharper disable CollectionNeverUpdated.Global
-// ReSharper disable UnusedAutoPropertyAccessor.Global
-// ReSharper disable StringLiteralTypo
-// ReSharper disable InconsistentNaming
 namespace GoldbergGUI.Core.Models;
 
-[Table("steamapp")]
+/// <summary>
+/// Represents a Steam application (game or DLC)
+/// </summary>
 public class SteamApp
 {
     [JsonPropertyName("appid")]
-    [Column("appid")]
-    [PrimaryKey]
-    public int AppId { get; set; }
+    public int AppId { get; init; }
 
-    /// <summary>
-    ///     Name of Steam app
-    /// </summary>
     [JsonPropertyName("name")]
-    [Column("name")]
-    public string Name { get; set; }
+    public required string Name { get; set; }
 
-    [Column("comparable_name")] public string ComparableName { get; set; }
+    public string ComparableName { get; set; } = string.Empty;
 
-    /// <summary>
-    ///     App type (Game, DLC, ...)
-    /// </summary>
-    [Column("type")]
-    public string AppType { get; set; }
+    public string AppType { get; set; } = string.Empty;
 
     [JsonPropertyName("last_modified")]
-    [Ignore]
-    public long LastModified { get; set; }
+    public long LastModified { get; init; }
 
     [JsonPropertyName("price_change_number")]
-    [Ignore]
-    public long PriceChangeNumber { get; set; }
+    public long PriceChangeNumber { get; init; }
 
-    public override string ToString()
-    {
-        return $"{AppId}={Name}";
-    }
+    public override string ToString() => $"{AppId}={Name}";
 }
 
-public class AppList
+/// <summary>
+/// Response container for paginated Steam app list
+/// </summary>
+public sealed record AppList
 {
-    [JsonPropertyName("apps")] public List<SteamApp> Apps { get; set; }
+    [JsonPropertyName("apps")] 
+    public required List<SteamApp> Apps { get; init; }
 
     [JsonPropertyName("have_more_results")]
-    public bool HaveMoreResults { get; set; }
+    public bool HaveMoreResults { get; init; }
 
-    [JsonPropertyName("last_appid")] public long LastAppid { get; set; }
+    [JsonPropertyName("last_appid")] 
+    public long LastAppid { get; init; }
 }
 
-public class SteamApps
+/// <summary>
+/// Base class for Steam API response wrapper
+/// </summary>
+public abstract class SteamApps
 {
-    public virtual AppList AppList { get; set; }
+    public abstract AppList? AppList { get; init; }
 }
 
-public class SteamAppsV2 : SteamApps
+/// <summary>
+/// Steam API v2 response format
+/// </summary>
+public sealed class SteamAppsV2 : SteamApps
 {
-    [JsonPropertyName("applist")] public override AppList AppList { get; set; }
+    [JsonPropertyName("applist")] 
+    public required override AppList? AppList { get; init; }
 }
 
-public class SteamAppsV1 : SteamApps
+/// <summary>
+/// Steam API v1 response format
+/// </summary>
+public sealed class SteamAppsV1 : SteamApps
 {
-    [JsonPropertyName("response")] public override AppList AppList { get; set; }
+    [JsonPropertyName("response")] 
+    public required override AppList? AppList { get; init; }
 }

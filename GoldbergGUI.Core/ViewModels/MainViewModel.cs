@@ -30,26 +30,21 @@ public partial class MainViewModel(
     : MvxNavigationViewModel(loggerFactory, navigationService)
 {
     private readonly IMvxNavigationService _navigationService = navigationService;
-    private string _accountName;
-
-    //private SteamApp _currentGame;
-    private ObservableCollection<Achievement> _achievements;
-
+    private string _accountName = string.Empty;
+    private ObservableCollection<Achievement> _achievements = [];
     private int _appId;
     private bool _disableNetworking;
     private bool _disableOverlay;
-    private ObservableCollection<DlcApp> _dlcs;
-    private string _dllPath;
-    private string _gameName;
+    private ObservableCollection<DlcApp> _dlcs = [];
+    private string _dllPath = "Path to game's steam_api(64).dll";
+    private string _gameName = "Game name...";
     private bool _goldbergApplied;
-
     private bool _mainWindowEnabled;
     private bool _offline;
-    private string _selectedLanguage;
-
-    private string _statusText;
+    private string _selectedLanguage = string.Empty;
+    private string _statusText = string.Empty;
     private long _steamId;
-    private ObservableCollection<string> _steamLanguages;
+    private ObservableCollection<string> _steamLanguages = [];
 
     // PROPERTIES //
 
@@ -184,7 +179,7 @@ public partial class MainViewModel(
         get
         {
             var dllPathDirExists = GetDllPathDir(out var dirPath);
-            return dllPathDirExists && !File.Exists(Path.Combine(dirPath, "steam_interfaces.txt"));
+            return dllPathDirExists && dirPath is not null && !File.Exists(Path.Combine(dirPath, "steam_interfaces.txt"));
         }
     }
 
@@ -230,7 +225,7 @@ public partial class MainViewModel(
     }
 
     public static string AboutVersionText =>
-        FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
+        FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion ?? "Unknown";
 
     public static GlobalHelp G => new();
 
@@ -482,7 +477,7 @@ public partial class MainViewModel(
         if (!DllSelected) return;
 
         log.LogInformation("Saving Goldberg settings...");
-        if (!GetDllPathDir(out var dirPath)) return;
+        if (!GetDllPathDir(out var dirPath) || dirPath is null) return;
         MainWindowEnabled = false;
         StatusText = "Saving...";
         await goldberg.Save(dirPath, new GoldbergConfiguration
@@ -523,7 +518,7 @@ public partial class MainViewModel(
         log.LogInformation("Generate steam_interfaces.txt...");
         MainWindowEnabled = false;
         StatusText = @"Generating ""steam_interfaces.txt"".";
-        GetDllPathDir(out var dirPath);
+        if (!GetDllPathDir(out var dirPath) || dirPath is null) return;
         if (File.Exists(Path.Combine(dirPath, "steam_api_o.dll")))
             await goldberg.GenerateInterfacesFile(Path.Combine(dirPath, "steam_api_o.dll")).ConfigureAwait(false);
         else if (File.Exists(Path.Combine(dirPath, "steam_api64_o.dll")))
@@ -567,7 +562,7 @@ public partial class MainViewModel(
 
     private async Task ReadConfig()
     {
-        if (!GetDllPathDir(out var dirPath)) return;
+        if (!GetDllPathDir(out var dirPath) || dirPath is null) return;
         var config = await goldberg.Read(dirPath).ConfigureAwait(false);
         SetFormFromConfig(config);
         GoldbergApplied = goldberg.GoldbergApplied(dirPath);
@@ -584,7 +579,7 @@ public partial class MainViewModel(
         DisableOverlay = config.DisableOverlay;
     }
 
-    private bool GetDllPathDir(out string dirPath)
+    private bool GetDllPathDir(out string? dirPath)
     {
         if (!DllSelected)
         {
@@ -593,9 +588,10 @@ public partial class MainViewModel(
         }
 
         dirPath = Path.GetDirectoryName(DllPath);
-        if (dirPath != null) return true;
+        if (dirPath is not null) return true;
 
         log.LogError("Invalid directory for {DllPath}.", DllPath);
+        dirPath = null;
         return false;
     }
 
