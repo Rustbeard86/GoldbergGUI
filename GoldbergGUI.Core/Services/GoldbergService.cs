@@ -17,6 +17,8 @@ namespace GoldbergGUI.Core.Services;
 public interface IGoldbergService
 {
     public Task<GoldbergGlobalConfiguration> Initialize();
+    public bool IsInitialized();
+    public Task InitializeInBackground(Action<string> statusCallback);
     public Task<GoldbergConfiguration> Read(string path);
     public Task Save(string path, GoldbergConfiguration configuration);
     public Task<GoldbergGlobalConfiguration> GetGlobalSettings();
@@ -99,6 +101,40 @@ public partial class GoldbergService(ILogger<GoldbergService> log) : IGoldbergSe
         if (download) await Extract(_goldbergArchivePath).ConfigureAwait(false);
 
         return await GetGlobalSettings().ConfigureAwait(false);
+    }
+
+    public bool IsInitialized()
+    {
+        // Check if Goldberg files exist
+        var x64Exists = File.Exists(Path.Combine(_goldbergPath, "release", "regular", "x64", "steam_api64.dll"));
+        var x32Exists = File.Exists(Path.Combine(_goldbergPath, "release", "regular", "x32", "steam_api.dll"));
+        
+        return x64Exists || x32Exists;
+    }
+
+    public async Task InitializeInBackground(Action<string> statusCallback)
+    {
+        try
+        {
+            statusCallback("Checking for Goldberg updates...");
+            var download = await Download().ConfigureAwait(false);
+            
+            if (download)
+            {
+                statusCallback("Extracting Goldberg emulator...");
+                await Extract(_goldbergArchivePath).ConfigureAwait(false);
+                statusCallback("Goldberg emulator updated successfully");
+            }
+            else
+            {
+                statusCallback("Goldberg emulator is up to date");
+            }
+        }
+        catch (Exception ex)
+        {
+            log.LogError(ex, "Error during background initialization");
+            statusCallback("Failed to update Goldberg emulator");
+        }
     }
 
     public async Task<GoldbergGlobalConfiguration> GetGlobalSettings()

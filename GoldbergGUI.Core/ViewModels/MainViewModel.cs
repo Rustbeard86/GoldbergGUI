@@ -19,6 +19,7 @@ namespace GoldbergGUI.Core.ViewModels;
 public partial class MainViewModel(
     ISteamService steam,
     IGoldbergService goldberg,
+    IStatusMessageQueue statusQueue,
     ILogger<MainViewModel> log,
     ILoggerFactory loggerFactory,
     IMvxNavigationService navigationService)
@@ -279,32 +280,106 @@ public partial class MainViewModel(
     public override void Prepare()
     {
         base.Prepare();
+        
+        // Start the status message queue
+        statusQueue.Start();
+        
+        // Subscribe to status message changes
+        statusQueue.MessageChanged += (_, message) =>
+        {
+            StatusText = message;
+        };
+
         Task.Run(async () =>
         {
-            //var errorDuringInit = false;
-            MainWindowEnabled = false;
-            StatusText = "Initializing! Please wait...";
             try
             {
                 SteamLanguages = new ObservableCollection<string>(goldberg.Languages());
                 ResetForm();
-                await steam.Initialize().ConfigureAwait(false);
-                var globalConfiguration =
-                    await goldberg.Initialize().ConfigureAwait(false);
-                AccountName = globalConfiguration.AccountName;
-                SteamId = globalConfiguration.UserSteamId;
-                SelectedLanguage = globalConfiguration.Language;
-                UseExperimental = globalConfiguration.UseExperimental;
+
+                // Check if critical files exist
+                var steamInitialized = steam.IsInitialized();
+                var goldbergInitialized = goldberg.IsInitialized();
+
+                if (!steamInitialized || !goldbergInitialized)
+                {
+                    // First run - block UI and initialize
+                    MainWindowEnabled = false;
+                    StatusText = "First run detected. Initializing required files...";
+                    log.LogInformation("First run: Initializing required files...");
+
+                    if (!steamInitialized)
+                    {
+                        StatusText = "Downloading Steam app database...";
+                        await steam.Initialize().ConfigureAwait(false);
+                    }
+
+                    if (!goldbergInitialized)
+                    {
+                        StatusText = "Downloading Goldberg emulator...";
+                        var globalConfiguration = await goldberg.Initialize().ConfigureAwait(false);
+                        AccountName = globalConfiguration.AccountName;
+                        SteamId = globalConfiguration.UserSteamId;
+                        SelectedLanguage = globalConfiguration.Language;
+                        UseExperimental = globalConfiguration.UseExperimental;
+                    }
+                    else
+                    {
+                        var globalConfiguration = await goldberg.GetGlobalSettings().ConfigureAwait(false);
+                        AccountName = globalConfiguration.AccountName;
+                        SteamId = globalConfiguration.UserSteamId;
+                        SelectedLanguage = globalConfiguration.Language;
+                        UseExperimental = globalConfiguration.UseExperimental;
+                    }
+
+                    MainWindowEnabled = true;
+                    StatusText = "Initialization complete!";
+                    statusQueue.Enqueue("Initialization complete! Ready.", TimeSpan.FromSeconds(2));
+                }
+                else
+                {
+                    // Files exist - don't block UI
+                    MainWindowEnabled = true;
+                    StatusText = "Ready.";
+                    log.LogInformation("Files exist. Loading in background...");
+
+                    // Load global configuration
+                    var globalConfiguration = await goldberg.GetGlobalSettings().ConfigureAwait(false);
+                    AccountName = globalConfiguration.AccountName;
+                    SteamId = globalConfiguration.UserSteamId;
+                    SelectedLanguage = globalConfiguration.Language;
+                    UseExperimental = globalConfiguration.UseExperimental;
+
+                    // Run updates in background
+                    _ = Task.Run(async () =>
+                    {
+                        try
+                        {
+                            await steam.InitializeInBackground(msg =>
+                            {
+                                statusQueue.Enqueue(msg, TimeSpan.FromSeconds(3));
+                            }).ConfigureAwait(false);
+
+                            await goldberg.InitializeInBackground(msg =>
+                            {
+                                statusQueue.Enqueue(msg, TimeSpan.FromSeconds(3));
+                            }).ConfigureAwait(false);
+                        }
+                        catch (Exception ex)
+                        {
+                            log.LogError(ex, "Error during background update");
+                            statusQueue.Enqueue("Background update failed. Check logs.", TimeSpan.FromSeconds(5));
+                        }
+                    });
+                }
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
                 log.LogError(e, "Error during initialization");
-                throw;
+                MainWindowEnabled = true;
+                StatusText = "Initialization error! Check logs.";
+                statusQueue.Enqueue("Critical error during initialization. Some features may not work.", TimeSpan.FromSeconds(5));
             }
-
-            MainWindowEnabled = true;
-            StatusText = "Ready.";
         });
     }
 

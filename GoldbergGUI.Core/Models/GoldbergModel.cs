@@ -123,10 +123,10 @@ public sealed record Group
 public sealed record Achievement
 {
     /// <summary>
-    ///     Achievement description.
+    ///     Achievement description (optional, some achievements don't have descriptions).
     /// </summary>
     [JsonPropertyName("description")]
-    public required string Description { get; set; }
+    public string Description { get; set; } = string.Empty;
 
     /// <summary>
     ///     Human readable name, as shown on webpage, game library, overlay, etc.

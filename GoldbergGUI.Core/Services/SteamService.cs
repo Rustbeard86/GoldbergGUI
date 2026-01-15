@@ -18,6 +18,8 @@ namespace GoldbergGUI.Core.Services;
 public interface ISteamService
 {
     Task Initialize();
+    bool IsInitialized();
+    Task InitializeInBackground(Action<string> statusCallback);
     IAsyncEnumerable<SteamApp> StreamAppsByName(string name, CancellationToken cancellationToken = default);
     Task<IEnumerable<SteamApp>> GetListOfAppsByName(string name);
     Task<SteamApp?> GetAppByName(string name);
@@ -64,6 +66,96 @@ public sealed partial class SteamService(
             )
         }
     };
+
+    public bool IsInitialized()
+    {
+        try
+        {
+            using var context = contextFactory.CreateDbContext();
+            var count = context.SteamApps.Count();
+            var dbPath = context.Database.GetDbConnection().DataSource;
+            
+            // Check if database exists and has data
+            return count > 0 && !string.IsNullOrEmpty(dbPath) && File.Exists(dbPath);
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task InitializeInBackground(Action<string> statusCallback)
+    {
+        await using var context = await contextFactory.CreateDbContextAsync().ConfigureAwait(false);
+
+        var count = await context.SteamApps.CountAsync().ConfigureAwait(false);
+        var dbPath = context.Database.GetDbConnection().DataSource;
+        var needsUpdate = count == 0 ||
+                          (!string.IsNullOrEmpty(dbPath) && File.Exists(dbPath) &&
+                           DateTime.Now.Subtract(File.GetLastWriteTimeUtc(dbPath)).TotalDays >= 1);
+
+        if (!needsUpdate)
+        {
+            statusCallback("Database is up to date.");
+            return;
+        }
+
+        foreach (var (appType, steamCache) in _caches)
+        {
+            statusCallback($"Updating {appType} cache in background...");
+            log.LogInformation("Updating cache ({AppType}) in background...", appType);
+
+            using var client = new HttpClient();
+            var cacheRaw = new HashSet<SteamApp>();
+            bool haveMoreResults;
+            var lastAppId = 0L;
+
+            do
+            {
+                var uri = lastAppId > 0
+                    ? $"{steamCache.SteamUri}&last_appid={lastAppId}"
+                    : steamCache.SteamUri;
+
+                var response = await client.GetAsync(uri).ConfigureAwait(false);
+                var responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var steamApps = DeserializeSteamApps(steamCache.ApiVersion, responseBody);
+
+                if (steamApps?.AppList?.Apps is not null)
+                {
+                    foreach (var app in steamApps.AppList.Apps) cacheRaw.Add(app);
+                    haveMoreResults = steamApps.AppList.HaveMoreResults;
+                    lastAppId = steamApps.AppList.LastAppid;
+                }
+                else
+                {
+                    break;
+                }
+            } while (haveMoreResults);
+
+            // Prepare apps for insertion
+            var cache = cacheRaw.Select(app => new SteamApp
+            {
+                AppId = app.AppId,
+                Name = app.Name,
+                ComparableName = PrepareStringToCompare(app.Name),
+                AppType = steamCache.SteamAppType,
+                LastModified = app.LastModified,
+                PriceChangeNumber = app.PriceChangeNumber
+            }).ToList();
+
+            // Clear existing entries and add new ones
+            await context.SteamApps
+                .Where(x => x.AppType == steamCache.SteamAppType)
+                .ExecuteDeleteAsync()
+                .ConfigureAwait(false);
+
+            await context.SteamApps.AddRangeAsync(cache).ConfigureAwait(false);
+            await context.SaveChangesAsync().ConfigureAwait(false);
+
+            statusCallback($"Updated {appType}: {cache.Count} entries");
+            log.LogInformation("Cache updated for {AppType}: {Count} entries", appType, cache.Count);
+        }
+    }
 
     public async Task Initialize()
     {
@@ -304,8 +396,75 @@ public sealed partial class SteamService(
         return dlcList;
     }
 
+    private async Task GetDlcFromSteamStore(SteamApp steamApp, List<DlcApp> dlcList)
+    {
+        log.LogInformation("Getting DLC from Steam Store API for {SteamApp}", steamApp);
+
+        using var client = new HttpClient();
+        client.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
+
+        var steamStoreUrl = $"https://store.steampowered.com/dlc/{steamApp.AppId}/ajaxgetdlclist";
+        var response = await client.GetAsync(steamStoreUrl).ConfigureAwait(false);
+        response.EnsureSuccessStatusCode();
+
+        var responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+        using var jsonDoc = JsonDocument.Parse(responseBody);
+
+        if (!jsonDoc.RootElement.TryGetProperty("data", out var data) ||
+            !data.TryGetProperty("dlcs", out var dlcs))
+        {
+            log.LogWarning("No DLC data found in Steam Store API response");
+            return;
+        }
+
+        foreach (var dlc in dlcs.EnumerateArray())
+        {
+            if (!dlc.TryGetProperty("id", out var idElement) ||
+                !int.TryParse(idElement.GetString(), out var dlcId))
+                continue;
+
+            var dlcName = dlc.TryGetProperty("name", out var nameElement)
+                ? nameElement.GetString() ?? $"Unknown DLC {dlcId}"
+                : $"Unknown DLC {dlcId}";
+
+            var dlcApp = new DlcApp
+            {
+                AppId = dlcId,
+                Name = dlcName,
+                ComparableName = PrepareStringToCompare(dlcName),
+                AppType = AppTypeDlc
+            };
+
+            var existingIndex = dlcList.FindIndex(x => x.AppId == dlcApp.AppId);
+            if (existingIndex > -1)
+            {
+                if (dlcList[existingIndex].Name.Contains("Unknown DLC"))
+                    dlcList[existingIndex] = dlcApp;
+            }
+            else
+            {
+                dlcList.Add(dlcApp);
+            }
+        }
+
+        dlcList.ForEach(x => log.LogDebug("{AppId}={Name}", x.AppId, x.Name));
+        log.LogInformation("Got {Count} DLC from Steam Store API successfully", dlcs.GetArrayLength());
+    }
+
     private async Task GetDlcFromSteamDb(SteamApp steamApp, List<DlcApp> dlcList)
     {
+        // Try Steam Store API first (more reliable)
+        try
+        {
+            await GetDlcFromSteamStore(steamApp, dlcList).ConfigureAwait(false);
+            return; // If successful, we're done
+        }
+        catch (Exception ex)
+        {
+            log.LogWarning(ex, "Could not get DLC from Steam Store API, falling back to SteamDB scraping...");
+        }
+
+        // Fallback to SteamDB scraping
         try
         {
             var steamDbUri = new Uri($"https://steamdb.info/app/{steamApp.AppId}/dlc/");
