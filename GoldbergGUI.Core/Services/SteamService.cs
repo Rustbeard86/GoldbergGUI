@@ -584,7 +584,7 @@ public sealed partial class SteamService(
         if (!jsonDoc.RootElement.TryGetProperty("data", out var data) ||
             !data.TryGetProperty("dlcs", out var dlcs))
         {
-            log.LogWarning("No DLC data found in Steam Store API response");
+            log.LogInformation("No DLC data found in Steam Store API response (game may not have DLC)");
             return;
         }
 

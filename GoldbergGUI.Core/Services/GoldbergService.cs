@@ -105,19 +105,20 @@ public partial class GoldbergService(
     {
         try
         {
-            statusCallback("Checking for Goldberg updates...");
-            var download = await Download().ConfigureAwait(false);
+            var (downloaded, skipped) = await DownloadWithStatus().ConfigureAwait(false);
 
-            if (download)
+            if (downloaded)
             {
                 statusCallback("Extracting Goldberg emulator...");
                 await Extract(_goldbergArchivePath).ConfigureAwait(false);
                 statusCallback("Goldberg emulator updated successfully");
             }
-            else
+            else if (!skipped)
             {
+                // Only show "up to date" if we actually checked (not skipped)
                 statusCallback("Goldberg emulator is up to date");
             }
+            // If skipped, don't show any message (silent)
         }
         catch (Exception ex)
         {
@@ -336,13 +337,19 @@ public partial class GoldbergService(
 
     private async Task<bool> Download()
     {
+        var (downloaded, _) = await DownloadWithStatus().ConfigureAwait(false);
+        return downloaded;
+    }
+
+    private async Task<(bool Downloaded, bool Skipped)> DownloadWithStatus()
+    {
         // Get configuration
         var config = await GetAppConfiguration().ConfigureAwait(false);
 
         if (config.GuiDefaults.GoldbergUpdateCheckHours == -1)
         {
-            log.LogInformation("Goldberg update checks are disabled");
-            return false;
+            log.LogDebug("Goldberg update checks are disabled");
+            return (false, true); // Skipped
         }
 
         // Get latest release from GitHub API
@@ -358,13 +365,14 @@ public partial class GoldbergService(
 
             if (hoursSinceLastCheck < config.GuiDefaults.GoldbergUpdateCheckHours)
             {
-                log.LogInformation(
+                log.LogDebug(
                     "Skipping update check (last checked {Hours:F1} hours ago, frequency set to {Frequency} hours)",
                     hoursSinceLastCheck, config.GuiDefaults.GoldbergUpdateCheckHours);
-                return false;
+                return (false, true); // Skipped
             }
         }
 
+        log.LogInformation("Checking for Goldberg updates...");
         var client = new HttpClient();
         client.DefaultRequestHeaders.Add("User-Agent", "GoldbergGUI");
 
@@ -391,7 +399,7 @@ public partial class GoldbergService(
         if (string.IsNullOrEmpty(downloadUrl) || string.IsNullOrEmpty(releaseTag))
         {
             log.LogError("Could not find {AssetName} in latest release or release tag is missing!", AssetName);
-            return false;
+            return (false, false); // Not downloaded, not skipped (error)
         }
 
         // Save last check time
@@ -408,12 +416,12 @@ public partial class GoldbergService(
         if (config.GoldbergState.InstalledVersion == releaseTag)
         {
             log.LogInformation("Latest Goldberg emulator is already available! Skipping...");
-            return false;
+            return (false, false); // Not downloaded, but checked
         }
 
         log.LogInformation("Starting download of release {ReleaseTag}...", releaseTag);
         await StartDownload(downloadUrl, releaseTag).ConfigureAwait(false);
-        return true;
+        return (true, false); // Downloaded
     }
 
     private async Task StartDownload(string downloadUrl, string releaseTag)

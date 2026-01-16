@@ -47,9 +47,10 @@ public sealed record GoldbergConfiguration
     public required List<DlcApp> DlcList { get; init; }
 
     /// <summary>
-    ///     Unlock all DLCs (true) or only report mentioned DLCs (false)
+    ///     Unlock all DLCs (true) or only report mentioned DLCs (false).
+    ///     Default is false - we always specify individual DLCs.
     /// </summary>
-    public bool UnlockAllDlc { get; init; } = true;
+    public bool UnlockAllDlc { get; init; } = false;
 
     public List<int>? Depots { get; init; }
 

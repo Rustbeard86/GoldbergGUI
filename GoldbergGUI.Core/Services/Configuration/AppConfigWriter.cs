@@ -22,13 +22,10 @@ public sealed class AppConfigWriter
             ["branch_name"] = "public"
         });
 
-        // DLC settings
-        var dlcSection = new Dictionary<string, string>
-        {
-            ["unlock_all"] = config.UnlockAllDlc ? "1" : "0"
-        };
+        // DLC settings - only list individual DLCs
+        var dlcSection = new Dictionary<string, string>();
 
-        // Add individual DLCs
+        // Add individual DLCs (never use unlock_all)
         foreach (var dlc in config.DlcList) dlcSection[dlc.AppId.ToString()] = dlc.Name;
 
         writer.WriteSection("app::dlcs", dlcSection);
