@@ -62,6 +62,8 @@ public sealed partial class SteamService(
 
     private static readonly Secrets Secrets = new();
 
+    private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
+
     private readonly Dictionary<string, SteamCache> _caches = new()
     {
         {
@@ -81,8 +83,6 @@ public sealed partial class SteamService(
             )
         }
     };
-
-    private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
 
     public bool IsInitialized()
     {

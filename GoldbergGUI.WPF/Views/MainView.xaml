@@ -40,12 +40,13 @@
                         <TextBox Text="{Binding DllPath, Mode=OneWay}" TextWrapping="Wrap" Margin="0,0,85,5"
                                  VerticalAlignment="Center" Padding="1,0,0,0" Height="20" IsEnabled="False" />
                         <Button Content="Select... (_O)" Command="{Binding OpenFileCommand}"
-                                HorizontalAlignment="Right" Width="80" Height="20" Grid.Row="0" Margin="0,0,0,5" />
+                                HorizontalAlignment="Right" Width="80" Height="20" Grid.Row="0" Margin="0,0,0,5"
+                                ToolTip="Select the game folder" />
                         <Button Content="_Generate steam__interfaces.txt"
                                 IsEnabled="{Binding SteamInterfacesTxtExists, UpdateSourceTrigger=PropertyChanged}"
                                 Command="{Binding GenerateSteamInterfacesCommand}" Height="20" Grid.Row="1"
                                 Margin="0,5,0,5" />
-                        <ComboBox Text="{Binding GameName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                        <ComboBox Text="{Binding GameName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                   ItemsSource="{Binding SuggestedGames}"
                                   SelectedItem="{Binding SelectedSuggestedGame, Mode=TwoWay}"
                                   IsEditable="True"
@@ -55,9 +56,9 @@
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="0,0,5,0"/>
-                                        <TextBlock Text="{Binding AppId, StringFormat='(AppID: {0})'}" 
-                                                   Foreground="Gray" FontSize="10" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="0,0,5,0" />
+                                        <TextBlock Text="{Binding AppId, StringFormat='(AppID: {0})'}"
+                                                   Foreground="Gray" FontSize="10" VerticalAlignment="Center" />
                                     </StackPanel>
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>

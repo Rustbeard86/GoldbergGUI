@@ -441,29 +441,87 @@ public partial class MainViewModel(
     private async Task OpenFile()
     {
         MainWindowEnabled = false;
-        StatusText = "Please choose a file...";
-        var dialog = new OpenFileDialog
+        StatusText = "Please choose a folder...";
+
+        // Use OpenFolderDialog (available in .NET 8+)
+        var dialog = new OpenFolderDialog
         {
-            Filter = "SteamAPI DLL|steam_api.dll;steam_api64.dll|" +
-                     "All files (*.*)|*.*",
-            Multiselect = false,
-            Title = "Select SteamAPI DLL..."
+            Title = "Select the game folder",
+            Multiselect = false
         };
+
         if (dialog.ShowDialog() != true)
         {
             MainWindowEnabled = true;
-            log.LogWarning("File selection canceled.");
-            StatusText = "No file selected! Ready.";
+            log.LogWarning("Folder selection canceled.");
+            StatusText = "No folder selected! Ready.";
             return;
         }
 
-        DllPath = dialog.FileName;
+        var rootFolder = dialog.FolderName;
+        log.LogInformation("Searching for steam_api DLL in: {RootFolder}", rootFolder);
+        StatusText = "Searching for Steam API DLL...";
+
+        // Recursively search for steam_api DLL files
+        string? foundDllPath;
+        try
+        {
+            var searchPatterns = new[] { "steam_api.dll", "steam_api64.dll" };
+            var foundDlls = new List<string>();
+
+            foreach (var pattern in searchPatterns)
+            {
+                var dlls = Directory.GetFiles(rootFolder, pattern, SearchOption.AllDirectories);
+                foundDlls.AddRange(dlls);
+            }
+
+            if (foundDlls.Count == 0)
+            {
+                MainWindowEnabled = true;
+                StatusText = "No steam_api DLL found in selected folder!";
+                log.LogWarning("No steam_api DLL found in {RootFolder}", rootFolder);
+                MessageBox.Show(
+                    $"Could not find steam_api.dll or steam_api64.dll in the selected folder.\n\nSearched in: {rootFolder}",
+                    "DLL Not Found",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+                return;
+            }
+
+            // If multiple DLLs found, prefer 64-bit and shortest path (closest to root)
+            // TODO: Improve selection logic to better handle games with multiple API dlls and cases of nested game server apps.
+            foundDllPath = foundDlls
+                .OrderBy(dll => dll.Contains("64") ? 0 : 1) // Prefer 64-bit
+                .ThenBy(dll => dll.Length) // Prefer shorter paths (closer to root)
+                .First();
+
+            log.LogInformation("Found DLL: {DllPath} ({Count} total found)", foundDllPath, foundDlls.Count);
+            if (foundDlls.Count > 1)
+            {
+                log.LogInformation("Multiple DLLs found, using: {DllPath}", foundDllPath);
+                StatusText = $"Found {foundDlls.Count} DLLs, using: {Path.GetFileName(foundDllPath)}";
+            }
+        }
+        catch (Exception ex)
+        {
+            MainWindowEnabled = true;
+            log.LogError(ex, "Error searching for steam_api DLL");
+            StatusText = "Error searching for DLL! Ready.";
+            MessageBox.Show(
+                $"Error searching for steam_api DLL:\n{ex.Message}",
+                "Search Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+            return;
+        }
+
+        DllPath = foundDllPath;
         await ReadConfig().ConfigureAwait(false);
 
-        // Auto-detect game if not already configured
+        // Auto-detect game using ROOT FOLDER context (not the DLL folder)
         if (!GoldbergApplied)
         {
-            await AutoDetectGame().ConfigureAwait(false);
+            await AutoDetectGame(rootFolder).ConfigureAwait(false);
             await GetListOfDlc().ConfigureAwait(false);
         }
 
@@ -472,33 +530,29 @@ public partial class MainViewModel(
     }
 
     /// <summary>
-    ///     Attempts to automatically detect and set the game's AppID based on folder name and executables
+    ///     Attempts to automatically detect and set the game's AppID based on root folder name and executables
     /// </summary>
-    private async Task AutoDetectGame()
+    /// <param name="rootFolder">The game's root folder</param>
+    private async Task AutoDetectGame(string rootFolder)
     {
-        if (!GetDllPathDir(out var dirPath) || dirPath is null)
-        {
-            log.LogWarning("Cannot auto-detect game: invalid DLL path");
-            return;
-        }
-
         StatusText = "Auto-detecting game...";
-        log.LogInformation("Attempting to auto-detect game from path: {Path}", dirPath);
+        log.LogInformation("Attempting to auto-detect game from root folder: {Path}", rootFolder);
 
         var searchCandidates = new List<string>();
 
-        // 1. Get the immediate folder name (most likely the game name)
-        var folderName = Path.GetFileName(dirPath);
-        if (!string.IsNullOrWhiteSpace(folderName))
+        // 1. Get the root folder name (most likely the game name)
+        var rootFolderName =
+            Path.GetFileName(rootFolder.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
+        if (!string.IsNullOrWhiteSpace(rootFolderName))
         {
-            searchCandidates.Add(CleanGameName(folderName));
-            log.LogDebug("Added folder name candidate: {FolderName}", folderName);
+            searchCandidates.Add(CleanGameName(rootFolderName));
+            log.LogDebug("Added root folder name candidate: {FolderName}", rootFolderName);
         }
 
-        // 2. Look for executable files in the directory
+        // 2. Look for executable files in the ROOT directory
         try
         {
-            var exeFiles = Directory.GetFiles(dirPath, "*.exe", SearchOption.TopDirectoryOnly);
+            var exeFiles = Directory.GetFiles(rootFolder, "*.exe", SearchOption.TopDirectoryOnly);
             foreach (var exeFile in exeFiles)
             {
                 var exeName = Path.GetFileNameWithoutExtension(exeFile);
@@ -512,29 +566,10 @@ public partial class MainViewModel(
         }
         catch (Exception ex)
         {
-            log.LogWarning(ex, "Failed to scan directory for executables");
+            log.LogWarning(ex, "Failed to scan root directory for executables");
         }
 
-        // 3. Check parent folder name as fallback (sometimes games are in subdirectories)
-        try
-        {
-            var parentDir = Directory.GetParent(dirPath);
-            if (parentDir != null)
-            {
-                var parentName = parentDir.Name;
-                if (!string.IsNullOrWhiteSpace(parentName) && !IsCommonDirectory(parentName))
-                {
-                    searchCandidates.Add(CleanGameName(parentName));
-                    log.LogDebug("Added parent folder name candidate: {ParentName}", parentName);
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            log.LogWarning(ex, "Failed to get parent directory");
-        }
-
-        // 4. Try to find a match for each candidate
+        // 3. Try to find a match for each candidate
         foreach (var candidate in searchCandidates.Distinct())
         {
             log.LogInformation("Searching for game: {Candidate}", candidate);
