@@ -192,7 +192,7 @@
                     </Grid>
                 </TabItem>-->
                 <!-- Settings -->
-                <TabItem Header="Global Settings">
+                <TabItem Header="Settings">
                     <StackPanel Margin="10,20,10,10">
                         <Grid Margin="0,0,0,5" MaxWidth="800" HorizontalAlignment="Left">
                             <Grid.ColumnDefinitions>
@@ -249,7 +249,7 @@
                         <GroupBox Header="Information" Margin="0,10,0,0" MaxWidth="800" HorizontalAlignment="Left">
                             <TextBlock TextWrapping="Wrap" Margin="5">
                                 <Run Text="These settings are saved in " />
-                                <Hyperlink Command="{Binding OpenGlobalSettingsFolderCommand}">
+                                <Hyperlink Command="{Binding OpenGoldbergSettingsFolderCommand}">
                                     <Run Text="app_config.json" FontWeight="Bold" />
                                 </Hyperlink>
                                 <Run

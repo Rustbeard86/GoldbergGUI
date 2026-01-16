@@ -136,7 +136,7 @@ public sealed record Achievement
     public string Description { get; set; } = string.Empty;
 
     /// <summary>
-    ///     Human readable name, as shown on webpage, game library, overlay, etc.
+    ///     Human-readable name, as shown on webpage, game library, overlay, etc.
     /// </summary>
     [JsonPropertyOrder(2)]
     [JsonPropertyName("displayName")]
@@ -212,84 +212,83 @@ public sealed record Stat
     public required string Type { get; init; }
 }
 
+/// <summary>
+///     Universal Steam item definition for inventory system.
+///     Contains only standard properties present across all Steam games.
+/// </summary>
 public sealed record Item
 {
-    [JsonPropertyName("Timestamp")] public required DateTimeOffset Timestamp { get; init; }
+    /// <summary>
+    ///     Item definition ID - universal identifier present in all games.
+    /// </summary>
+    [JsonPropertyName("itemdefid")]
+    public required string ItemDefId { get; init; }
 
-    [JsonPropertyName("modified")] public required string Modified { get; init; }
+    /// <summary>
+    ///     Internal item name.
+    /// </summary>
+    [JsonPropertyName("name")]
+    public required string Name { get; init; }
 
-    [JsonPropertyName("date_created")] public required string DateCreated { get; init; }
+    /// <summary>
+    ///     Item type classification.
+    /// </summary>
+    [JsonPropertyName("type")]
+    public string? Type { get; init; }
 
-    [JsonPropertyName("type")] public required string Type { get; init; }
+    /// <summary>
+    ///     Display type/category for UI presentation.
+    /// </summary>
+    [JsonPropertyName("display_type")]
+    public string? DisplayType { get; init; }
 
-    [JsonPropertyName("display_type")] public required string DisplayType { get; init; }
+    /// <summary>
+    ///     Item description text.
+    /// </summary>
+    [JsonPropertyName("description")]
+    public string? Description { get; init; }
 
-    [JsonPropertyName("name")] public required string Name { get; init; }
+    /// <summary>
+    ///     Background color (hex format).
+    /// </summary>
+    [JsonPropertyName("background_color")]
+    public string? BackgroundColor { get; init; }
 
-    [JsonPropertyName("bundle")] public string? Bundle { get; init; }
+    /// <summary>
+    ///     Name/text color (hex format).
+    /// </summary>
+    [JsonPropertyName("name_color")]
+    public string? NameColor { get; init; }
 
-    [JsonPropertyName("description")] public required string Description { get; init; }
+    /// <summary>
+    ///     URL to item icon.
+    /// </summary>
+    [JsonPropertyName("icon_url")]
+    public string? IconUrl { get; init; }
 
-    [JsonPropertyName("background_color")] public required string BackgroundColor { get; init; }
+    /// <summary>
+    ///     URL to large item icon.
+    /// </summary>
+    [JsonPropertyName("icon_url_large")]
+    public string? IconUrlLarge { get; init; }
 
-    [JsonPropertyName("icon_url")] public required Uri IconUrl { get; init; }
-
-    [JsonPropertyName("icon_url_large")] public required Uri IconUrlLarge { get; init; }
-
-    [JsonPropertyName("name_color")] public required string NameColor { get; init; }
-
+    /// <summary>
+    ///     Can this item be traded between users.
+    /// </summary>
     [JsonPropertyName("tradable")]
-    // [JsonConverter(typeof(PurpleParseStringConverter))]
-    public required bool Tradable { get; init; }
+    public bool? Tradable { get; init; }
 
+    /// <summary>
+    ///     Can this item be sold on the Steam Community Market.
+    /// </summary>
     [JsonPropertyName("marketable")]
-    // [JsonConverter(typeof(PurpleParseStringConverter))]
-    public required bool Marketable { get; init; }
+    public bool? Marketable { get; init; }
 
+    /// <summary>
+    ///     Is this item a commodity (identical items stack on market).
+    /// </summary>
     [JsonPropertyName("commodity")]
-    // [JsonConverter(typeof(PurpleParseStringConverter))]
-    public required bool Commodity { get; init; }
-
-    [JsonPropertyName("drop_interval")]
-    // [JsonConverter(typeof(FluffyParseStringConverter))]
-    public required long DropInterval { get; init; }
-
-    [JsonPropertyName("drop_max_per_window")]
-    // [JsonConverter(typeof(FluffyParseStringConverter))]
-    public required long DropMaxPerWindow { get; init; }
-
-    // ReSharper disable once StringLiteralTypo
-    [JsonPropertyName("workshopid")]
-    // [JsonConverter(typeof(FluffyParseStringConverter))]
-    public required long WorkshopId { get; init; }
-
-    [JsonPropertyName("tw_unique_to_own")]
-    // [JsonConverter(typeof(PurpleParseStringConverter))]
-    public required bool TwUniqueToOwn { get; init; }
-
-    [JsonPropertyName("item_quality")]
-    // [JsonConverter(typeof(FluffyParseStringConverter))]
-    public required long ItemQuality { get; init; }
-
-    [JsonPropertyName("tw_price")] public string? TwPrice { get; init; }
-
-    [JsonPropertyName("tw_type")] public string? TwType { get; init; }
-
-    [JsonPropertyName("tw_client_visible")]
-    // [JsonConverter(typeof(FluffyParseStringConverter))]
-    public required long TwClientVisible { get; init; }
-
-    [JsonPropertyName("tw_icon_small")] public string? TwIconSmall { get; init; }
-
-    [JsonPropertyName("tw_icon_large")] public string? TwIconLarge { get; init; }
-
-    [JsonPropertyName("tw_description")] public string? TwDescription { get; init; }
-
-    [JsonPropertyName("tw_client_name")] public string? TwClientName { get; init; }
-
-    [JsonPropertyName("tw_client_type")] public string? TwClientType { get; init; }
-
-    [JsonPropertyName("tw_rarity")] public string? TwRarity { get; init; }
+    public bool? Commodity { get; init; }
 }
 
 public sealed record Leaderboard

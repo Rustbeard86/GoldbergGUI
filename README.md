@@ -20,7 +20,7 @@ Set up any game with Goldberg's emulator easily and automatically.
     or copy the app ID from the Steam Store to field to the right of the "Find ID..." button.
 * Click the lower right "Get DLCs for AppID" button to fetch all available DLCs for the game.
 * Set advanced options like "Offline mode" in the "Advanced" tab.
-* Set global settings like account name and Steam64ID in the "Global Settings" tab.
+* Set Goldeberg settings like account name and Steam64ID in the "Settings" tab.
 * Click on "Save".
 
 ## Roadmap

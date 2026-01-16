@@ -21,8 +21,8 @@ public interface IGoldbergService
     public Task InitializeInBackground(Action<string> statusCallback);
     public Task<GoldbergConfiguration> Read(string path);
     public Task Save(string path, GoldbergConfiguration configuration, GoldbergGlobalConfiguration globalConfiguration);
-    public Task<GoldbergGlobalConfiguration> GetGlobalSettings();
-    public Task SetGlobalSettings(GoldbergGlobalConfiguration configuration);
+    public Task<GoldbergGlobalConfiguration> GetGoldbergSettings();
+    public Task SetGoldbergSettings(GoldbergGlobalConfiguration configuration);
     public Task SetGuiOnlySettings(int goldbergUpdateCheckHours, int databaseUpdateCheckHours);
     public bool GoldbergApplied(string path);
     public Task GenerateInterfacesFile(string filePath);
@@ -83,13 +83,13 @@ public partial class GoldbergService(
     ];
 
     // Call Download
-    // Get global settings
+    // Get goldberg settings
     public async Task<GoldbergGlobalConfiguration> Initialize()
     {
         var download = await Download().ConfigureAwait(false);
         if (download) await Extract(_goldbergArchivePath).ConfigureAwait(false);
 
-        return await GetGlobalSettings().ConfigureAwait(false);
+        return await GetGoldbergSettings().ConfigureAwait(false);
     }
 
     public bool IsInitialized()
@@ -127,13 +127,13 @@ public partial class GoldbergService(
         }
     }
 
-    public async Task<GoldbergGlobalConfiguration> GetGlobalSettings()
+    public async Task<GoldbergGlobalConfiguration> GetGoldbergSettings()
     {
-        log.LogInformation("Getting global settings...");
+        log.LogInformation("Getting Goldeberg settings...");
 
         var config = await GetAppConfiguration().ConfigureAwait(false);
 
-        log.LogInformation("Got global settings.");
+        log.LogInformation("Got Goldeberg settings.");
         return new GoldbergGlobalConfiguration
         {
             AccountName = config.GuiDefaults.AccountName,
@@ -144,9 +144,9 @@ public partial class GoldbergService(
         };
     }
 
-    public async Task SetGlobalSettings(GoldbergGlobalConfiguration c)
+    public async Task SetGoldbergSettings(GoldbergGlobalConfiguration c)
     {
-        log.LogInformation("Setting global settings...");
+        log.LogInformation("Setting Goldeberg settings...");
 
         // Load existing configuration to preserve state
         var existingConfig = await GetAppConfiguration().ConfigureAwait(false);
@@ -179,7 +179,7 @@ public partial class GoldbergService(
 
         await SaveAppConfiguration(updatedConfig).ConfigureAwait(false);
 
-        log.LogInformation("Global settings saved to app_config.json");
+        log.LogInformation("Goldeberg settings saved to app_config.json");
     }
 
     /// <summary>

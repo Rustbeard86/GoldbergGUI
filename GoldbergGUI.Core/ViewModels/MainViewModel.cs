@@ -323,7 +323,7 @@ public partial class MainViewModel(
         }
     });
 
-    public IMvxCommand OpenGlobalSettingsFolderCommand => new MvxCommand(OpenGlobalSettingsFolder);
+    public IMvxCommand OpenGoldbergSettingsFolderCommand => new MvxCommand(OpenGoldbergSettingsFolder);
 
     public override void Prepare()
     {
@@ -371,7 +371,7 @@ public partial class MainViewModel(
                     }
                     else
                     {
-                        var globalConfiguration = await goldberg.GetGlobalSettings().ConfigureAwait(false);
+                        var globalConfiguration = await goldberg.GetGoldbergSettings().ConfigureAwait(false);
                         AccountName = globalConfiguration.AccountName;
                         SteamId = globalConfiguration.UserSteamId;
                         SelectedLanguage = globalConfiguration.Language;
@@ -391,7 +391,7 @@ public partial class MainViewModel(
                     log.LogInformation("Files exist. Loading in background...");
 
                     // Load global configuration
-                    var globalConfiguration = await goldberg.GetGlobalSettings().ConfigureAwait(false);
+                    var globalConfiguration = await goldberg.GetGoldbergSettings().ConfigureAwait(false);
                     AccountName = globalConfiguration.AccountName;
                     SteamId = globalConfiguration.UserSteamId;
                     SelectedLanguage = globalConfiguration.Language;
@@ -833,7 +833,7 @@ public partial class MainViewModel(
 
     private async Task SaveConfig()
     {
-        log.LogInformation("Saving global settings...");
+        log.LogInformation("Saving Goldeberg settings...");
         var globalConfiguration = new GoldbergGlobalConfiguration
         {
             AccountName = AccountName,
@@ -841,7 +841,7 @@ public partial class MainViewModel(
             Language = SelectedLanguage,
             UseExperimental = UseExperimental
         };
-        await goldberg.SetGlobalSettings(globalConfiguration).ConfigureAwait(false);
+        await goldberg.SetGoldbergSettings(globalConfiguration).ConfigureAwait(false);
 
         // Save GUI-only settings (update check frequencies)
         await goldberg.SetGuiOnlySettings(GoldbergUpdateCheckHours, DatabaseUpdateCheckHours).ConfigureAwait(false);
@@ -891,7 +891,7 @@ public partial class MainViewModel(
 
     private async Task ResetConfig()
     {
-        var globalConfiguration = await goldberg.GetGlobalSettings().ConfigureAwait(false);
+        var globalConfiguration = await goldberg.GetGoldbergSettings().ConfigureAwait(false);
         AccountName = globalConfiguration.AccountName;
         SteamId = globalConfiguration.UserSteamId;
         SelectedLanguage = globalConfiguration.Language;
@@ -925,7 +925,7 @@ public partial class MainViewModel(
         StatusText = "Ready.";
     }
 
-    private void OpenGlobalSettingsFolder()
+    private void OpenGoldbergSettingsFolder()
     {
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
