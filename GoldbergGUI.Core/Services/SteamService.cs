@@ -82,6 +82,8 @@ public sealed partial class SteamService(
         }
     };
 
+    private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
+
     public bool IsInitialized()
     {
         try
@@ -547,8 +549,7 @@ public sealed partial class SteamService(
                 }
             };
 
-            var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
-            var updatedJson = JsonSerializer.Serialize(updatedConfig, jsonOptions);
+            var updatedJson = JsonSerializer.Serialize(updatedConfig, JsonOptions);
             await File.WriteAllTextAsync(appConfigPath, updatedJson).ConfigureAwait(false);
 
             log.LogInformation("Saved database update timestamp to app_config.json");

@@ -52,6 +52,33 @@ public partial class MainViewModel(
         }
     } = "Game name...";
 
+    public ObservableCollection<SteamApp> SuggestedGames
+    {
+        get;
+        set
+        {
+            field = value;
+            RaisePropertyChanged(() => SuggestedGames);
+        }
+    } = [];
+
+    public SteamApp? SelectedSuggestedGame
+    {
+        get;
+        set
+        {
+            field = value;
+            RaisePropertyChanged(() => SelectedSuggestedGame);
+            if (value is not null)
+            {
+                GameName = value.Name;
+                AppId = value.AppId;
+                log.LogInformation("User selected game from suggestions: {GameName} (AppID: {AppId})", value.Name,
+                    value.AppId);
+            }
+        }
+    }
+
     public int AppId
     {
         get;
@@ -432,9 +459,231 @@ public partial class MainViewModel(
 
         DllPath = dialog.FileName;
         await ReadConfig().ConfigureAwait(false);
-        if (!GoldbergApplied) await GetListOfDlc().ConfigureAwait(false);
+
+        // Auto-detect game if not already configured
+        if (!GoldbergApplied)
+        {
+            await AutoDetectGame().ConfigureAwait(false);
+            await GetListOfDlc().ConfigureAwait(false);
+        }
+
         MainWindowEnabled = true;
         StatusText = "Ready.";
+    }
+
+    /// <summary>
+    ///     Attempts to automatically detect and set the game's AppID based on folder name and executables
+    /// </summary>
+    private async Task AutoDetectGame()
+    {
+        if (!GetDllPathDir(out var dirPath) || dirPath is null)
+        {
+            log.LogWarning("Cannot auto-detect game: invalid DLL path");
+            return;
+        }
+
+        StatusText = "Auto-detecting game...";
+        log.LogInformation("Attempting to auto-detect game from path: {Path}", dirPath);
+
+        var searchCandidates = new List<string>();
+
+        // 1. Get the immediate folder name (most likely the game name)
+        var folderName = Path.GetFileName(dirPath);
+        if (!string.IsNullOrWhiteSpace(folderName))
+        {
+            searchCandidates.Add(CleanGameName(folderName));
+            log.LogDebug("Added folder name candidate: {FolderName}", folderName);
+        }
+
+        // 2. Look for executable files in the directory
+        try
+        {
+            var exeFiles = Directory.GetFiles(dirPath, "*.exe", SearchOption.TopDirectoryOnly);
+            foreach (var exeFile in exeFiles)
+            {
+                var exeName = Path.GetFileNameWithoutExtension(exeFile);
+                // Skip common launcher/utility executables
+                if (!IsUtilityExecutable(exeName))
+                {
+                    searchCandidates.Add(CleanGameName(exeName));
+                    log.LogDebug("Added executable name candidate: {ExeName}", exeName);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            log.LogWarning(ex, "Failed to scan directory for executables");
+        }
+
+        // 3. Check parent folder name as fallback (sometimes games are in subdirectories)
+        try
+        {
+            var parentDir = Directory.GetParent(dirPath);
+            if (parentDir != null)
+            {
+                var parentName = parentDir.Name;
+                if (!string.IsNullOrWhiteSpace(parentName) && !IsCommonDirectory(parentName))
+                {
+                    searchCandidates.Add(CleanGameName(parentName));
+                    log.LogDebug("Added parent folder name candidate: {ParentName}", parentName);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            log.LogWarning(ex, "Failed to get parent directory");
+        }
+
+        // 4. Try to find a match for each candidate
+        foreach (var candidate in searchCandidates.Distinct())
+        {
+            log.LogInformation("Searching for game: {Candidate}", candidate);
+
+            var appByName = await steam.GetAppByName(candidate).ConfigureAwait(false);
+            if (appByName != null)
+            {
+                // Exact match found
+                GameName = appByName.Name;
+                AppId = appByName.AppId;
+                SuggestedGames.Clear();
+                StatusText = $"Auto-detected: {appByName.Name}";
+                log.LogInformation("Auto-detected game: {GameName} (AppID: {AppId})", appByName.Name, appByName.AppId);
+                return;
+            }
+
+            // Try fuzzy search
+            var searchResults = await steam.GetListOfAppsByName(candidate).ConfigureAwait(false);
+            var steamApps = searchResults.ToArray();
+
+            if (steamApps.Length == 1)
+            {
+                // Single result - auto-select it
+                var steamApp = steamApps[0];
+                GameName = steamApp.Name;
+                AppId = steamApp.AppId;
+                SuggestedGames.Clear();
+                StatusText = $"Auto-detected: {steamApp.Name}";
+                log.LogInformation("Auto-detected game: {GameName} (AppID: {AppId})", steamApp.Name, steamApp.AppId);
+                return;
+            }
+
+            if (steamApps.Length > 1)
+            {
+                // Multiple results - check if first result is a very close match
+                var firstMatch = steamApps[0];
+                if (IsCloseMatch(candidate, firstMatch.Name))
+                {
+                    // Very close match - auto-select but still show suggestions
+                    GameName = firstMatch.Name;
+                    AppId = firstMatch.AppId;
+                    SuggestedGames = new ObservableCollection<SteamApp>(steamApps.Take(10)); // Limit to top 10
+                    StatusText = $"Auto-detected: {firstMatch.Name} (Click dropdown for other options)";
+                    log.LogInformation(
+                        "Auto-detected game (close match): {GameName} (AppID: {AppId}), showing {Count} suggestions",
+                        firstMatch.Name, firstMatch.AppId, SuggestedGames.Count);
+                    return;
+                }
+
+                // Multiple results but no close match - populate suggestions
+                SuggestedGames = new ObservableCollection<SteamApp>(steamApps.Take(10)); // Limit to top 10
+                GameName = candidate; // Set the search term
+                StatusText =
+                    $"Found {steamApps.Length} possible matches. Please select from dropdown or search manually.";
+                log.LogInformation("Found {Count} possible matches for '{Candidate}', showing suggestions",
+                    steamApps.Length, candidate);
+                return;
+            }
+        }
+
+        log.LogInformation("Could not auto-detect game from folder/executable names");
+        SuggestedGames.Clear();
+        StatusText = "Could not auto-detect game. Please search manually.";
+    }
+
+    /// <summary>
+    ///     Cleans up game name by removing common suffixes and special characters
+    /// </summary>
+    private static string CleanGameName(string name)
+    {
+        // Remove common version indicators, special editions, etc.
+        var cleaned = name;
+
+        // Remove patterns like (64-bit), [PLAZA], etc.
+        cleaned = BracketsPattern().Replace(cleaned, "").Trim();
+
+        // Remove common suffixes
+        var suffixesToRemove = new[] { "_Data", "_x64", "_x86", "Game", "Launcher" };
+        foreach (var suffix in suffixesToRemove)
+            if (cleaned.EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
+                cleaned = cleaned[..^suffix.Length].Trim();
+
+        // Replace underscores and multiple spaces with single space
+        cleaned = UnderscoreDashPattern().Replace(cleaned, " ");
+        cleaned = MultipleSpacesPattern().Replace(cleaned, " ").Trim();
+
+        return cleaned;
+    }
+
+    [GeneratedRegex(@"\[.*?\]|\(.*?\)")]
+    private static partial Regex BracketsPattern();
+
+    [GeneratedRegex(@"[_-]+")]
+    private static partial Regex UnderscoreDashPattern();
+
+    [GeneratedRegex(@"\s+")]
+    private static partial Regex MultipleSpacesPattern();
+
+    /// <summary>
+    ///     Checks if an executable name is likely a utility rather than the main game
+    /// </summary>
+    private static bool IsUtilityExecutable(string name)
+    {
+        var utilityKeywords = new[]
+        {
+            "unins", "setup", "install", "update", "launcher", "crash", "report",
+            "config", "settings", "tool", "editor", "uxhelper", "bootstrapper",
+            "prerequisite", "redist", "vcredist", "directx", "dx"
+        };
+
+        var lowerName = name.ToLowerInvariant();
+        return utilityKeywords.Any(keyword => lowerName.Contains(keyword));
+    }
+
+    /// <summary>
+    ///     Checks if a directory name is a common system/generic directory
+    /// </summary>
+    private static bool IsCommonDirectory(string name)
+    {
+        var commonDirs = new[]
+        {
+            "bin", "binary", "binaries", "common", "steamapps", "games",
+            "program files", "program files (x86)", "x64", "x86", "win64", "win32"
+        };
+
+        return commonDirs.Any(dir => name.Equals(dir, StringComparison.OrdinalIgnoreCase));
+    }
+
+    /// <summary>
+    ///     Determines if a search result is a close match to the candidate name
+    /// </summary>
+    private static bool IsCloseMatch(string candidate, string result)
+    {
+        var cleanCandidate = candidate.ToLowerInvariant().Replace(" ", "");
+        var cleanResult = result.ToLowerInvariant().Replace(" ", "");
+
+        // Check if the candidate is a substantial substring of the result or vice versa
+        if (cleanResult.Contains(cleanCandidate) || cleanCandidate.Contains(cleanResult))
+        {
+            // Calculate similarity ratio
+            var minLength = Math.Min(cleanCandidate.Length, cleanResult.Length);
+            var maxLength = Math.Max(cleanCandidate.Length, cleanResult.Length);
+            var ratio = (double)minLength / maxLength;
+
+            // If similarity is > 70%, consider it a close match
+            return ratio > 0.7;
+        }
+
+        return false;
     }
 
     private async Task FindId()
@@ -663,6 +912,8 @@ public partial class MainViewModel(
         AppId = -1;
         Achievements = [];
         DLCs = [];
+        SuggestedGames.Clear();
+        SelectedSuggestedGame = null;
         AccountName = "Account name...";
         SteamId = -1;
         Offline = false;
